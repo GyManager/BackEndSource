@@ -1,5 +1,6 @@
 package org.gymanager.model.domain.usuarios;
 
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,28 +13,24 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "usuario", schema = "develop") // TODO: remove schema
-public class Usuario {
+@Table(name = "rol", schema = "develop") // TODO: remove schema
+public class Rol {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idUsuario;
-    private String nombre;
-    private String pass;
-    private LocalDate fechaAlta;
-    private LocalDate fechaBaja;
-    private String mail;
+    private Long idRol;
+    private String nombreRol;
 
     @ManyToMany
-    @JoinTable( name = "usuario_por_rol", schema = "develop", // TODO: remove schema
-            joinColumns = @JoinColumn(name = "id_usuario"),
-            inverseJoinColumns = @JoinColumn(name = "id_rol"))
-    private List<Rol> roles;
+    @JoinTable( name = "rol_por_permiso", schema = "develop", // TODO: remove schema
+            joinColumns = @JoinColumn(name = "id_rol"),
+            inverseJoinColumns = @JoinColumn(name = "id_permiso"))
+    private List<Permiso> permisos;
+
 }
