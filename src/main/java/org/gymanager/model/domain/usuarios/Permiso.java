@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "permiso", schema = "develop") // TODO: remove schema
+@Table(name = "permiso")
 public class Permiso {
 
     @Id

@@ -19,7 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "rol", schema = "develop") // TODO: remove schema
+@Table(name = "rol")
 public class Rol {
 
     @Id
@@ -28,7 +28,7 @@ public class Rol {
     private String nombreRol;
 
     @ManyToMany
-    @JoinTable( name = "rol_por_permiso", schema = "develop", // TODO: remove schema
+    @JoinTable( name = "rol_por_permiso",
             joinColumns = @JoinColumn(name = "id_rol"),
             inverseJoinColumns = @JoinColumn(name = "id_permiso"))
     private List<Permiso> permisos;
