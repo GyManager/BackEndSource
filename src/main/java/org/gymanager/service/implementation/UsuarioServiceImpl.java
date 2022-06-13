@@ -3,6 +3,7 @@ package org.gymanager.service.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.gymanager.converter.UsuarioEntityToDtoConverter;
 import org.gymanager.model.client.usuarios.UsuarioDto;
 import org.gymanager.model.client.usuarios.UsuarioDtoRegistro;
@@ -11,6 +12,7 @@ import org.gymanager.model.domain.usuarios.Rol;
 import org.gymanager.model.domain.usuarios.Usuario;
 import org.gymanager.repository.specification.UsuarioRepository;
 import org.gymanager.service.specification.UsuarioService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -85,7 +88,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
         if(usuario.isEmpty()){
             log.error("Usuario con mail {} no encontrado", mail);
-            throw new UsernameNotFoundException("Usuario con mail " + mail + " no encontrado");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario con mail " + mail + " no encontrado");
         }
 
         return usuarioEntityToDtoConverter.convert(usuario.get());
