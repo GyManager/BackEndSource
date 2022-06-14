@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     private static final String USUARIO_NO_ENCONTRADO = "Usuario con mail (%s) no encontrado";
+    private static final String USUARIO_YA_EXISTE = "Ya existe un usuario registrado con el mail (%s)";
     private static final String MAIL_VACIO = "El mail de login no debe ser vacio";
 
     @NonNull
@@ -76,6 +77,8 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public UsuarioDto addUsuario(UsuarioDtoRegistro usuarioDtoRegistro) {
+        validarUsuarioConMailNoExiste(usuarioDtoRegistro.getMail());
+
         Usuario usuario = new Usuario();
         usuario.setNombre(usuarioDtoRegistro.getNombre());
         usuario.setPass(passwordEncoder.encode(usuarioDtoRegistro.getPass()));
@@ -88,5 +91,12 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Override
     public List<UsuarioDto> getUsuarios() {
         return usuarioEntityToDtoConverter.convert(usuarioRepository.findAll());
+    }
+
+    private void validarUsuarioConMailNoExiste(String mail){
+        if(usuarioRepository.findByMail(mail).isPresent()){
+            log.error(String.format(USUARIO_YA_EXISTE, mail));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(USUARIO_YA_EXISTE, mail));
+        }
     }
 }
