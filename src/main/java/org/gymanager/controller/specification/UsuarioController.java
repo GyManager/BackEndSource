@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/api/usuarios")
 public interface UsuarioController {
 
     @PostMapping
-    ResponseEntity<UsuarioDto> addUsuario(@RequestBody UsuarioDtoRegistro usuarioDtoRegistro);
+    ResponseEntity<UsuarioDto> addUsuario(@RequestBody @Valid UsuarioDtoRegistro usuarioDtoRegistro);
 
     @GetMapping
     ResponseEntity<List<UsuarioDto>> getUsuarios();
