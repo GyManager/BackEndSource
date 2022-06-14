@@ -3,7 +3,6 @@ package org.gymanager.service.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.gymanager.converter.UsuarioEntityToDtoConverter;
 import org.gymanager.model.client.usuarios.UsuarioDto;
 import org.gymanager.model.client.usuarios.UsuarioDtoRegistro;
@@ -25,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,6 +32,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
+
+    private static final String USUARIO_NO_ENCONTRADO = "Usuario con mail (%s) no encontrado";
+    private static final String MAIL_VACIO = "El mail de login no debe ser vacio";
 
     @NonNull
     private UsuarioRepository usuarioRepository;
@@ -47,11 +50,16 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
+        if(Objects.isNull(mail)){
+            log.error(String.format(MAIL_VACIO));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(MAIL_VACIO));
+        }
+
         Optional<Usuario> usuario = usuarioRepository.findByMail(mail);
 
         if(usuario.isEmpty()){
-            log.error("Usuario con mail {} no encontrado", mail);
-            throw new UsernameNotFoundException("Usuario con mail " + mail + " no encontrado");
+            log.error(String.format(USUARIO_NO_ENCONTRADO, mail));
+            throw new UsernameNotFoundException(String.format(USUARIO_NO_ENCONTRADO, mail));
         }
 
         Collection<SimpleGrantedAuthority> authorities = usuario.get().getRoles().stream()
@@ -80,17 +88,5 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Override
     public List<UsuarioDto> getUsuarios() {
         return usuarioEntityToDtoConverter.convert(usuarioRepository.findAll());
-    }
-
-    @Override
-    public UsuarioDto getUsuarioByMail(String mail) {
-        Optional<Usuario> usuario = usuarioRepository.findByMail(mail);
-
-        if(usuario.isEmpty()){
-            log.error("Usuario con mail {} no encontrado", mail);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario con mail " + mail + " no encontrado");
-        }
-
-        return usuarioEntityToDtoConverter.convert(usuario.get());
     }
 }

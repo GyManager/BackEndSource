@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.gymanager.security.filter.GyManagerAuthenticationFilter;
 import org.gymanager.security.filter.GyManagerAuthorizationFilter;
 import org.gymanager.service.specification.TokenService;
-import org.gymanager.service.specification.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
