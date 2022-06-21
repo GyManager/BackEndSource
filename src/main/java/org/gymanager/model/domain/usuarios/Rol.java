@@ -28,7 +28,7 @@ public class Rol {
     private Long idRol;
     private String nombreRol;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable( name = "rol_por_permiso",
             joinColumns = @JoinColumn(name = "id_rol"),
             inverseJoinColumns = @JoinColumn(name = "id_permiso"))

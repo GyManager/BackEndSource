@@ -35,7 +35,7 @@ public class Usuario {
     @Column(unique=true)
     private String mail;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable( name = "usuario_por_rol",
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_rol"))
