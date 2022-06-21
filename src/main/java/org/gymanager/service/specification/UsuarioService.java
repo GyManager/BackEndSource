@@ -10,4 +10,6 @@ public interface UsuarioService {
     UsuarioDto addUsuario(UsuarioDtoRegistro usuarioDtoRegistro);
 
     List<UsuarioDto> getUsuarios();
+
+    UsuarioDto getUsuarioById(Long idUsuario);
 }

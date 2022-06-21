@@ -33,7 +33,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
-    private static final String USUARIO_NO_ENCONTRADO = "Usuario con mail (%s) no encontrado";
+    private static final String USUARIO_CON_MAIL_NO_ENCONTRADO = "Usuario con mail (%s) no encontrado";
+    private static final String USUARIO_NO_ENCONTRADO = "Usuario no encontrado";
     private static final String USUARIO_YA_EXISTE = "Ya existe un usuario registrado con el mail (%s)";
     private static final String MAIL_VACIO = "El mail de login no debe ser vacio";
 
@@ -59,8 +60,8 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         Optional<Usuario> usuario = usuarioRepository.findByMail(mail);
 
         if(usuario.isEmpty()){
-            log.error(String.format(USUARIO_NO_ENCONTRADO, mail));
-            throw new UsernameNotFoundException(String.format(USUARIO_NO_ENCONTRADO, mail));
+            log.error(String.format(USUARIO_CON_MAIL_NO_ENCONTRADO, mail));
+            throw new UsernameNotFoundException(String.format(USUARIO_CON_MAIL_NO_ENCONTRADO, mail));
         }
 
         Collection<SimpleGrantedAuthority> authorities = usuario.get().getRoles().stream()
@@ -91,6 +92,18 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Override
     public List<UsuarioDto> getUsuarios() {
         return usuarioEntityToDtoConverter.convert(usuarioRepository.findAll());
+    }
+
+    @Override
+    public UsuarioDto getUsuarioById(Long idUsuario) {
+        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+
+        if(usuario.isEmpty()){
+            log.error(USUARIO_NO_ENCONTRADO);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USUARIO_NO_ENCONTRADO);
+        }
+
+        return usuarioEntityToDtoConverter.convert(usuario.get());
     }
 
     private void validarUsuarioConMailNoExiste(String mail){

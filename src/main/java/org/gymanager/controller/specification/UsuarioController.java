@@ -4,6 +4,7 @@ import org.gymanager.model.client.usuarios.UsuarioDto;
 import org.gymanager.model.client.usuarios.UsuarioDtoRegistro;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,4 +20,7 @@ public interface UsuarioController {
 
     @GetMapping
     ResponseEntity<List<UsuarioDto>> getUsuarios();
+
+    @GetMapping("/{idUsuario}")
+    ResponseEntity<UsuarioDto> getUsuarioById(@PathVariable("idUsuario") Long idUsuario);
 }

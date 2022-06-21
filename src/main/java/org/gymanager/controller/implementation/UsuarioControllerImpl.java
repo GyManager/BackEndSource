@@ -30,4 +30,9 @@ public class UsuarioControllerImpl implements UsuarioController {
     public ResponseEntity<List<UsuarioDto>> getUsuarios() {
         return ResponseEntity.ok(usuarioService.getUsuarios());
     }
+
+    @Override
+    public ResponseEntity<UsuarioDto> getUsuarioById(Long idUsuario) {
+        return ResponseEntity.ok(usuarioService.getUsuarioById(idUsuario));
+    }
 }
