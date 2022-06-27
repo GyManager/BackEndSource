@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -37,6 +38,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     private static final String USUARIO_NO_ENCONTRADO = "Usuario no encontrado";
     private static final String USUARIO_YA_EXISTE = "Ya existe un usuario registrado con el mail (%s)";
     private static final String MAIL_VACIO = "El mail de login no debe ser vacio";
+    private static final String PASS_NO_COINCIDEN = "La contraseña y la confirmacion de la contraseña no coinciden";
 
     @NonNull
     private UsuarioRepository usuarioRepository;
@@ -51,6 +53,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
      * Implementacion del metodo de UserDetailsService para validar las credenciales de login
      */
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
         if(Objects.isNull(mail)){
             log.error(String.format(MAIL_VACIO));
@@ -61,7 +64,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
         if(usuario.isEmpty()){
             log.error(String.format(USUARIO_CON_MAIL_NO_ENCONTRADO, mail));
-            throw new UsernameNotFoundException(String.format(USUARIO_CON_MAIL_NO_ENCONTRADO, mail));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(USUARIO_CON_MAIL_NO_ENCONTRADO, mail));
         }
 
         Collection<SimpleGrantedAuthority> authorities = usuario.get().getRoles().stream()
@@ -79,6 +82,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Override
     public UsuarioDto addUsuario(UsuarioDtoRegistro usuarioDtoRegistro) {
         validarUsuarioConMailNoExiste(usuarioDtoRegistro.getMail());
+        validarConfirmacionPass(usuarioDtoRegistro);
 
         Usuario usuario = new Usuario();
         usuario.setNombre(usuarioDtoRegistro.getNombre());
@@ -110,6 +114,13 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         if(usuarioRepository.findByMail(mail).isPresent()){
             log.error(String.format(USUARIO_YA_EXISTE, mail));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(USUARIO_YA_EXISTE, mail));
+        }
+    }
+
+    private void validarConfirmacionPass(UsuarioDtoRegistro usuarioDtoRegistro){
+        if(!usuarioDtoRegistro.isPassEqualConfirmacionPass()){
+            log.error(String.format(PASS_NO_COINCIDEN));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(PASS_NO_COINCIDEN));
         }
     }
 }
