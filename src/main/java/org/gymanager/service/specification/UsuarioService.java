@@ -12,4 +12,6 @@ public interface UsuarioService {
     List<UsuarioDto> getUsuarios();
 
     UsuarioDto getUsuarioById(Long idUsuario);
+
+    void updateUsuarioById(Long idUsuario, UsuarioDtoRegistro usuarioDtoRegistro);
 }

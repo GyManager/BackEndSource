@@ -35,4 +35,10 @@ public class UsuarioControllerImpl implements UsuarioController {
     public ResponseEntity<UsuarioDto> getUsuarioById(Long idUsuario) {
         return ResponseEntity.ok(usuarioService.getUsuarioById(idUsuario));
     }
+
+    @Override
+    public ResponseEntity updateUsuarioById(Long idUsuario, UsuarioDtoRegistro usuarioDtoRegistro) {
+        usuarioService.updateUsuarioById(idUsuario, usuarioDtoRegistro);
+        return ResponseEntity.noContent().build();
+    }
 }

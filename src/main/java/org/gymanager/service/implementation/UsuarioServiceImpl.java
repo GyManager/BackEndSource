@@ -100,14 +100,20 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public UsuarioDto getUsuarioById(Long idUsuario) {
-        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+        return usuarioEntityToDtoConverter.convert(buscarUsuarioPorIdYValidarExistencia(idUsuario));
+    }
 
-        if(usuario.isEmpty()){
-            log.error(USUARIO_NO_ENCONTRADO);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USUARIO_NO_ENCONTRADO);
-        }
+    @Override
+    public void updateUsuarioById(Long idUsuario, UsuarioDtoRegistro usuarioDtoRegistro) {
+        Usuario usuario = buscarUsuarioPorIdYValidarExistencia(idUsuario);
 
-        return usuarioEntityToDtoConverter.convert(usuario.get());
+        validarConfirmacionPass(usuarioDtoRegistro);
+
+        usuario.setNombre(usuarioDtoRegistro.getNombre());
+        usuario.setPass(passwordEncoder.encode(usuarioDtoRegistro.getPass()));
+        usuario.setMail(usuarioDtoRegistro.getMail());
+
+        usuarioRepository.save(usuario);
     }
 
     private void validarUsuarioConMailNoExiste(String mail){
@@ -122,5 +128,16 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
             log.error(String.format(PASS_NO_COINCIDEN));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(PASS_NO_COINCIDEN));
         }
+    }
+
+    private Usuario buscarUsuarioPorIdYValidarExistencia(Long idUsuario){
+        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+
+        if(usuario.isEmpty()){
+            log.error(USUARIO_NO_ENCONTRADO);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USUARIO_NO_ENCONTRADO);
+        }
+
+        return usuario.get();
     }
 }
