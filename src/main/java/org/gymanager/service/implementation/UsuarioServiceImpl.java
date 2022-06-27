@@ -71,6 +71,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
                 .map(Rol::getPermisos)
                 .flatMap(List::stream)
                 .map(Permiso::getNombrePermiso)
+                .distinct()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
