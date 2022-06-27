@@ -64,7 +64,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
         if(usuario.isEmpty()){
             log.error(String.format(USUARIO_CON_MAIL_NO_ENCONTRADO, mail));
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(USUARIO_CON_MAIL_NO_ENCONTRADO, mail));
+            throw new UsernameNotFoundException(String.format(USUARIO_CON_MAIL_NO_ENCONTRADO, mail));
         }
 
         Collection<SimpleGrantedAuthority> authorities = usuario.get().getRoles().stream()
