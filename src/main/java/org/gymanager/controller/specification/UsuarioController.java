@@ -3,6 +3,7 @@ package org.gymanager.controller.specification;
 import org.gymanager.model.client.usuarios.UsuarioDto;
 import org.gymanager.model.client.usuarios.UsuarioDtoRegistro;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,5 +28,8 @@ public interface UsuarioController {
 
     @PutMapping("/{idUsuario}")
     ResponseEntity updateUsuarioById(@PathVariable("idUsuario") Long idUsuario,
-                                                 @RequestBody @Valid UsuarioDtoRegistro usuarioDtoRegistro);
+                                     @RequestBody @Valid UsuarioDtoRegistro usuarioDtoRegistro);
+
+    @DeleteMapping("/{idUsuario}")
+    ResponseEntity deleteUsuarioById(@PathVariable("idUsuario") Long idUsuario);
 }

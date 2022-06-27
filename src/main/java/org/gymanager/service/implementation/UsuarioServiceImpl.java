@@ -116,6 +116,13 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuarioRepository.save(usuario);
     }
 
+    @Override
+    public void deleteUsuarioById(Long idUsuario) {
+        Usuario usuario = buscarUsuarioPorIdYValidarExistencia(idUsuario);
+
+        usuarioRepository.delete(usuario);
+    }
+
     private void validarUsuarioConMailNoExiste(String mail){
         if(usuarioRepository.findByMail(mail).isPresent()){
             log.error(String.format(USUARIO_YA_EXISTE, mail));
