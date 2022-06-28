@@ -1,5 +1,13 @@
 package org.gymanager.controller.specification;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.gymanager.model.client.usuarios.UsuarioDto;
 import org.gymanager.model.client.usuarios.UsuarioDtoRegistro;
 import org.springframework.http.ResponseEntity;
@@ -15,21 +23,47 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/api/usuarios")
+@Tag(name = "Usuarios", description = "Gestion de usuarios")
 public interface UsuarioController {
 
-    @PostMapping
+    @Operation(summary = "Agregar usuario", description = "Esta operación es para agregar un usuario. Se valida \n" +
+            "* El nombre del usuario es obligatorio \n" +
+            "* La contraseña es obligatoria \n" +
+            "* La contraseña debe tener entre 8 y 25 caracteres. \n" +
+            "* La contraseña debe contener al menos un numero, una mayuscula y una minuscula \n" +
+            "* El mail es obligatorio y debe tener un formato de mail correcto")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    @PostMapping(produces = { "application/json"}, consumes = { "application/json"})
     ResponseEntity<UsuarioDto> addUsuario(@RequestBody @Valid UsuarioDtoRegistro usuarioDtoRegistro);
 
-    @GetMapping
+    @Operation(summary = "Obtener todos los usuarios", description = "Esta operación es para buscar todos los usuarios")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    @GetMapping(produces = { "application/json"})
     ResponseEntity<List<UsuarioDto>> getUsuarios();
 
-    @GetMapping("/{idUsuario}")
+    @Operation(summary = "Obtener un usuario por Id", description = "Esta operación es para buscar un usuario por Id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    @GetMapping(value = "/{idUsuario}", produces = { "application/json"})
     ResponseEntity<UsuarioDto> getUsuarioById(@PathVariable("idUsuario") Long idUsuario);
 
-    @PutMapping("/{idUsuario}")
+    @Operation(summary = "Actualizar un usuario", description = "Esta operación es para actualizar un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
+    @PutMapping(value = "/{idUsuario}", consumes = { "application/json"})
     ResponseEntity<Void> updateUsuarioById(@PathVariable("idUsuario") Long idUsuario,
                                      @RequestBody @Valid UsuarioDtoRegistro usuarioDtoRegistro);
 
+    @Operation(summary = "Borrar un usuario", description = "Esta operación es para borrar un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
     @DeleteMapping("/{idUsuario}")
     ResponseEntity<Void> deleteUsuarioById(@PathVariable("idUsuario") Long idUsuario);
 }
