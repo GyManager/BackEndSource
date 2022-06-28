@@ -132,7 +132,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     private void validarConfirmacionPass(UsuarioDtoRegistro usuarioDtoRegistro){
-        if(!usuarioDtoRegistro.isPassEqualConfirmacionPass()){
+        if(!usuarioDtoRegistro.getPass().equals(usuarioDtoRegistro.getConfirmacionPass())){
             log.error(String.format(PASS_NO_COINCIDEN));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(PASS_NO_COINCIDEN));
         }

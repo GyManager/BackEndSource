@@ -26,8 +26,4 @@ public class UsuarioDtoRegistro {
     @NotBlank(message = "El mail es obligatorio.")
     @Email(message = "El mail ingresado debe ser un mail correctamente formado.")
     private String mail;
-
-    public Boolean isPassEqualConfirmacionPass(){
-        return pass.equals(confirmacionPass);
-    }
 }

@@ -27,9 +27,9 @@ public interface UsuarioController {
     ResponseEntity<UsuarioDto> getUsuarioById(@PathVariable("idUsuario") Long idUsuario);
 
     @PutMapping("/{idUsuario}")
-    ResponseEntity updateUsuarioById(@PathVariable("idUsuario") Long idUsuario,
+    ResponseEntity<Void> updateUsuarioById(@PathVariable("idUsuario") Long idUsuario,
                                      @RequestBody @Valid UsuarioDtoRegistro usuarioDtoRegistro);
 
     @DeleteMapping("/{idUsuario}")
-    ResponseEntity deleteUsuarioById(@PathVariable("idUsuario") Long idUsuario);
+    ResponseEntity<Void> deleteUsuarioById(@PathVariable("idUsuario") Long idUsuario);
 }

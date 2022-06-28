@@ -37,13 +37,13 @@ public class UsuarioControllerImpl implements UsuarioController {
     }
 
     @Override
-    public ResponseEntity updateUsuarioById(Long idUsuario, UsuarioDtoRegistro usuarioDtoRegistro) {
+    public ResponseEntity<Void> updateUsuarioById(Long idUsuario, UsuarioDtoRegistro usuarioDtoRegistro) {
         usuarioService.updateUsuarioById(idUsuario, usuarioDtoRegistro);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity deleteUsuarioById(Long idUsuario) {
+    public ResponseEntity<Void> deleteUsuarioById(Long idUsuario) {
         usuarioService.deleteUsuarioById(idUsuario);
         return ResponseEntity.noContent().build();
     }

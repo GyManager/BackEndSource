@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +36,7 @@ class UsuarioEntityToDtoConverterTest {
         usuario.setFechaAlta(now);
         usuario.setFechaBaja(now);
 
-        UsuarioDto resultado = usuarioEntityToDtoConverter.convert(usuario);
+        UsuarioDto resultado = usuarioEntityToDtoConverter.convert(List.of(usuario)).get(0);
 
         assertThat(resultado).isNotNull();
         assertThat(resultado.getIdUsuario()).isEqualTo(USUARIO_ID);
@@ -43,5 +44,13 @@ class UsuarioEntityToDtoConverterTest {
         assertThat(resultado.getMail()).isEqualTo(MAIL);
         assertThat(resultado.getFechaAlta()).isEqualTo(now);
         assertThat(resultado.getFechaBaja()).isEqualTo(now);
+    }
+
+    @Test
+    public void convert_WhenNull_ThenNull(){
+        List<Usuario> usuarioList = null;
+        List<UsuarioDto> resultado = usuarioEntityToDtoConverter.convert(usuarioList);
+
+        assertThat(resultado).isNull();
     }
 }

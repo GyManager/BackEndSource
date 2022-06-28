@@ -199,4 +199,77 @@ class UsuarioServiceImplTest {
 
         verify(usuarioRepository).findById(USUARIO_ID);
     }
+
+    @Test
+    public void updateUsuarioById_WhenOk_ThenUpdateUsuario(){
+        UsuarioDtoRegistro usuarioDtoRegistro = new UsuarioDtoRegistro();
+        usuarioDtoRegistro.setMail(MAIL);
+        usuarioDtoRegistro.setNombre(NOMBRE_USUARIO);
+        usuarioDtoRegistro.setPass(PASS);
+        usuarioDtoRegistro.setConfirmacionPass(PASS);
+
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario(USUARIO_ID);
+
+        when(usuarioRepository.findById(USUARIO_ID)).thenReturn(Optional.of(usuario));
+        when(passwordEncoder.encode(PASS)).thenReturn(String.valueOf(PASS.hashCode()));
+
+        usuarioService.updateUsuarioById(USUARIO_ID, usuarioDtoRegistro);
+
+        assertThat(usuario.getMail()).isEqualTo(MAIL);
+        assertThat(usuario.getPass()).isEqualTo(String.valueOf(PASS.hashCode()));
+        assertThat(usuario.getNombre()).isEqualTo(NOMBRE_USUARIO);
+
+        verify(usuarioRepository).findById(USUARIO_ID);
+        verify(passwordEncoder).encode(PASS);
+        verify(usuarioRepository).save(usuario);
+    }
+
+    @Test
+    public void updateUsuarioById_WhenUsuarioInexistente_ThenNotFound(){
+        UsuarioDtoRegistro usuarioDtoRegistro = new UsuarioDtoRegistro();
+
+        when(usuarioRepository.findById(USUARIO_ID)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> usuarioService.updateUsuarioById(USUARIO_ID, usuarioDtoRegistro))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("Usuario no encontrado")
+                .extracting("status").isEqualTo(HttpStatus.NOT_FOUND);
+
+        verify(usuarioRepository).findById(USUARIO_ID);
+    }
+
+    @Test
+    public void updateUsuarioById_WhenPassYConfirmacionNoIguales_ThenBadRequest(){
+        UsuarioDtoRegistro usuarioDtoRegistro = new UsuarioDtoRegistro();
+        usuarioDtoRegistro.setMail(MAIL);
+        usuarioDtoRegistro.setNombre(NOMBRE_USUARIO);
+        usuarioDtoRegistro.setPass(PASS);
+        usuarioDtoRegistro.setConfirmacionPass(PASS.concat("DISTINTA"));
+
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario(USUARIO_ID);
+
+        when(usuarioRepository.findById(USUARIO_ID)).thenReturn(Optional.of(usuario));
+
+        assertThatThrownBy(() -> usuarioService.updateUsuarioById(USUARIO_ID, usuarioDtoRegistro))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("La contraseña y la confirmacion de la contraseña no coinciden")
+                .extracting("status").isEqualTo(HttpStatus.BAD_REQUEST);
+
+        verify(usuarioRepository).findById(USUARIO_ID);
+    }
+
+    @Test
+    public void deleteUsuarioById_WhenOk_ThenBorrarUsuario(){
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario(USUARIO_ID);
+
+        when(usuarioRepository.findById(USUARIO_ID)).thenReturn(Optional.of(usuario));
+
+        usuarioService.deleteUsuarioById(USUARIO_ID);
+
+        verify(usuarioRepository).findById(USUARIO_ID);
+        verify(usuarioRepository).delete(usuario);
+    }
 }
