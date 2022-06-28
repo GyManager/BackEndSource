@@ -73,6 +73,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/health", refreshPath, loginPath).permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/usuarios/**").hasAnyAuthority("admin");
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/usuarios/**").hasAnyAuthority("admin");
+        http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasAnyAuthority("admin");
+        http.authorizeRequests().antMatchers(HttpMethod.PUT, "/api/usuarios/**").hasAnyAuthority("admin");
         http.addFilter(authenticationFilter);
         http.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
