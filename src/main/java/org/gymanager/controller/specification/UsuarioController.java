@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.gymanager.model.client.usuarios.UsuarioDto;
 import org.gymanager.model.client.usuarios.UsuarioDtoRegistro;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +34,7 @@ public interface UsuarioController {
             @ApiResponse(responseCode = "200", description = "OK")
     })
     @PostMapping(produces = { "application/json"}, consumes = { "application/json"})
+    @PreAuthorize("hasAuthority('post-usuarios')")
     ResponseEntity<UsuarioDto> addUsuario(@RequestBody @Valid UsuarioDtoRegistro usuarioDtoRegistro);
 
     @Operation(summary = "Obtener todos los usuarios", description = "Esta operación es para buscar todos los usuarios")
@@ -39,6 +42,7 @@ public interface UsuarioController {
             @ApiResponse(responseCode = "200", description = "OK")
     })
     @GetMapping(produces = { "application/json"})
+    @PreAuthorize("hasAuthority('get-usuarios')")
     ResponseEntity<List<UsuarioDto>> getUsuarios();
 
     @Operation(summary = "Obtener un usuario por Id", description = "Esta operación es para buscar un usuario por Id")
@@ -46,6 +50,7 @@ public interface UsuarioController {
             @ApiResponse(responseCode = "200", description = "OK")
     })
     @GetMapping(value = "/{idUsuario}", produces = { "application/json"})
+    @PreAuthorize("hasAuthority('get-usuarios')")
     ResponseEntity<UsuarioDto> getUsuarioById(@PathVariable("idUsuario") Long idUsuario);
 
     @Operation(summary = "Actualizar un usuario", description = "Esta operación es para actualizar un usuario")
@@ -53,6 +58,7 @@ public interface UsuarioController {
             @ApiResponse(responseCode = "204", description = "NO CONTENT")
     })
     @PutMapping(value = "/{idUsuario}", consumes = { "application/json"})
+    @PreAuthorize("hasAuthority('put-usuarios')")
     ResponseEntity<Void> updateUsuarioById(@PathVariable("idUsuario") Long idUsuario,
                                      @RequestBody @Valid UsuarioDtoRegistro usuarioDtoRegistro);
 
@@ -61,5 +67,6 @@ public interface UsuarioController {
             @ApiResponse(responseCode = "204", description = "NO CONTENT")
     })
     @DeleteMapping("/{idUsuario}")
+    @PreAuthorize("hasAuthority('delete-usuarios')")
     ResponseEntity<Void> deleteUsuarioById(@PathVariable("idUsuario") Long idUsuario);
 }

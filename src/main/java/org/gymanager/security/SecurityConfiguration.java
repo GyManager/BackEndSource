@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -27,6 +28,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Value("${login-path}")
@@ -71,10 +73,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers("/health", refreshPath, loginPath).permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/usuarios/**").hasAnyAuthority("admin");
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/usuarios/**").hasAnyAuthority("admin");
-        http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasAnyAuthority("admin");
-        http.authorizeRequests().antMatchers(HttpMethod.PUT, "/api/usuarios/**").hasAnyAuthority("admin");
         http.addFilter(authenticationFilter);
         http.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
