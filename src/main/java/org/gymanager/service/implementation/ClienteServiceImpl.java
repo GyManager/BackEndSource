@@ -7,6 +7,7 @@ import org.gymanager.converter.ClienteEntityToDtoConverter;
 import org.gymanager.model.client.clientes.ClienteDto;
 import org.gymanager.model.domain.clientes.Cliente;
 import org.gymanager.repository.specification.ClienteRepository;
+import org.gymanager.repository.specification.filters.ClienteSpecification;
 import org.gymanager.service.specification.ClienteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,10 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     @Transactional
-    public List<ClienteDto> getClientes() {
-        return clienteEntityToDtoConverter.convert(clienteRepository.findAll());
+    public List<ClienteDto> getClientes(String fuzzySearch) {
+        ClienteSpecification clienteSpecification = new ClienteSpecification();
+        clienteSpecification.setFuzzySearch(fuzzySearch);
+        return clienteEntityToDtoConverter.convert(clienteRepository.findAll(clienteSpecification));
     }
 
     @Override

@@ -18,8 +18,8 @@ public class ClienteControllerImpl implements ClienteController {
     private ClienteService clienteService;
 
     @Override
-    public ResponseEntity<List<ClienteDto>> getClientes() {
-        return ResponseEntity.ok(clienteService.getClientes());
+    public ResponseEntity<List<ClienteDto>> getClientes(String fuzzySearch) {
+        return ResponseEntity.ok(clienteService.getClientes(fuzzySearch));
     }
 
     @Override

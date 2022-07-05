@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ClienteService {
 
-    List<ClienteDto> getClientes();
+    List<ClienteDto> getClientes(String fuzzySearch);
 
     ClienteDto getClientesById(Long idCliente);
 }
