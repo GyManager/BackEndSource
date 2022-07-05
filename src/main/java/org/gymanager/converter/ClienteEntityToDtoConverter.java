@@ -14,7 +14,7 @@ public class ClienteEntityToDtoConverter implements GyManagerConverter<Cliente, 
     @Override
     public ClienteDto convert(Cliente source) {
         ClienteDto clienteDto = new ClienteDto();
-        clienteDto.setIdCliente(source.getIdCliente());
+        clienteDto.setIdPersona(source.getIdPersona());
         if(Objects.nonNull(source.getUsuario())){
             clienteDto.setIdUsuario(source.getUsuario().getIdUsuario());
             clienteDto.setMail(source.getUsuario().getMail());

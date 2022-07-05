@@ -9,7 +9,7 @@ import java.util.Date;
 @Setter
 public class ClienteDto {
 
-    private Long idCliente;
+    private Long idPersona;
     private Long idUsuario;
     private String mail;
     private Long numeroDocumento;
