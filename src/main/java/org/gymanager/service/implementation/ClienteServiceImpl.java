@@ -7,7 +7,7 @@ import org.gymanager.converter.ClienteEntityToDtoConverter;
 import org.gymanager.model.client.clientes.ClienteDto;
 import org.gymanager.model.domain.clientes.Cliente;
 import org.gymanager.repository.specification.ClienteRepository;
-import org.gymanager.repository.specification.filters.ClienteSpecification;
+import org.gymanager.repository.filters.ClienteSpecification;
 import org.gymanager.service.specification.ClienteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

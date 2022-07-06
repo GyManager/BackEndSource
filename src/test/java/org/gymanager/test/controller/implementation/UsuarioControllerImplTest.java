@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.gymanager.test.constants.Constantes.USUARIO_ID;
+import static org.gymanager.test.constants.Constantes.ID_USUARIO;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -63,37 +63,37 @@ class UsuarioControllerImplTest {
     public void getUsuarioById_WhenOk_ThenReturnUsuario(){
         UsuarioDto usuarioDto = new UsuarioDto();
 
-        when(usuarioService.getUsuarioById(USUARIO_ID)).thenReturn(usuarioDto);
+        when(usuarioService.getUsuarioById(ID_USUARIO)).thenReturn(usuarioDto);
 
-        ResponseEntity<UsuarioDto> resultado = usuarioController.getUsuarioById(USUARIO_ID);
+        ResponseEntity<UsuarioDto> resultado = usuarioController.getUsuarioById(ID_USUARIO);
 
         assertThat(resultado).isNotNull();
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resultado.getBody()).isEqualTo(usuarioDto);
 
-        verify(usuarioService).getUsuarioById(USUARIO_ID);
+        verify(usuarioService).getUsuarioById(ID_USUARIO);
     }
 
     @Test
     public void updateUsuarioById_WhenOk_ThenReturnNoContent(){
         UsuarioDtoRegistro usuarioDtoRegistro = new UsuarioDtoRegistro();
 
-        ResponseEntity<Void> resultado = usuarioController.updateUsuarioById(USUARIO_ID, usuarioDtoRegistro);
+        ResponseEntity<Void> resultado = usuarioController.updateUsuarioById(ID_USUARIO, usuarioDtoRegistro);
 
         assertThat(resultado).isNotNull();
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-        verify(usuarioService).updateUsuarioById(USUARIO_ID, usuarioDtoRegistro);
+        verify(usuarioService).updateUsuarioById(ID_USUARIO, usuarioDtoRegistro);
     }
 
     @Test
     public void deleteUsuarioById_WhenOk_ThenReturnNoContent(){
-        ResponseEntity<Void> resultado = usuarioController.deleteUsuarioById(USUARIO_ID);
+        ResponseEntity<Void> resultado = usuarioController.deleteUsuarioById(ID_USUARIO);
 
         assertThat(resultado).isNotNull();
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-        verify(usuarioService).deleteUsuarioById(USUARIO_ID);
+        verify(usuarioService).deleteUsuarioById(ID_USUARIO);
     }
 
 }

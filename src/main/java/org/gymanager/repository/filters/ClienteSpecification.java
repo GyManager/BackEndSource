@@ -1,4 +1,4 @@
-package org.gymanager.repository.specification.filters;
+package org.gymanager.repository.filters;
 
 import lombok.Getter;
 import lombok.Setter;

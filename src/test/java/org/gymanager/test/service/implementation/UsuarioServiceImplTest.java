@@ -31,7 +31,7 @@ import static org.gymanager.test.constants.Constantes.NOMBRE_USUARIO;
 import static org.gymanager.test.constants.Constantes.PASS;
 import static org.gymanager.test.constants.Constantes.PERMISO_DOS;
 import static org.gymanager.test.constants.Constantes.PERMISO_UNO;
-import static org.gymanager.test.constants.Constantes.USUARIO_ID;
+import static org.gymanager.test.constants.Constantes.ID_USUARIO;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -177,27 +177,27 @@ class UsuarioServiceImplTest {
         Usuario usuario = mock(Usuario.class);
         UsuarioDto usuarioDto = mock(UsuarioDto.class);
 
-        when(usuarioRepository.findById(USUARIO_ID)).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.of(usuario));
         when(usuarioEntityToDtoConverter.convert(usuario)).thenReturn(usuarioDto);
 
-        UsuarioDto resultado = usuarioService.getUsuarioById(USUARIO_ID);
+        UsuarioDto resultado = usuarioService.getUsuarioById(ID_USUARIO);
 
         assertThat(resultado).isEqualTo(usuarioDto);
 
-        verify(usuarioRepository).findById(USUARIO_ID);
+        verify(usuarioRepository).findById(ID_USUARIO);
         verify(usuarioEntityToDtoConverter).convert(usuario);
     }
 
     @Test
     public void getUsuarioById_WhenUsuarioNoExiste_ThenNotFound() {
-        when(usuarioRepository.findById(USUARIO_ID)).thenReturn(Optional.empty());
+        when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> usuarioService.getUsuarioById(USUARIO_ID))
+        assertThatThrownBy(() -> usuarioService.getUsuarioById(ID_USUARIO))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("Usuario no encontrado")
                 .extracting("status").isEqualTo(HttpStatus.NOT_FOUND);
 
-        verify(usuarioRepository).findById(USUARIO_ID);
+        verify(usuarioRepository).findById(ID_USUARIO);
     }
 
     @Test
@@ -209,18 +209,18 @@ class UsuarioServiceImplTest {
         usuarioDtoRegistro.setConfirmacionPass(PASS);
 
         Usuario usuario = new Usuario();
-        usuario.setIdUsuario(USUARIO_ID);
+        usuario.setIdUsuario(ID_USUARIO);
 
-        when(usuarioRepository.findById(USUARIO_ID)).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.of(usuario));
         when(passwordEncoder.encode(PASS)).thenReturn(String.valueOf(PASS.hashCode()));
 
-        usuarioService.updateUsuarioById(USUARIO_ID, usuarioDtoRegistro);
+        usuarioService.updateUsuarioById(ID_USUARIO, usuarioDtoRegistro);
 
         assertThat(usuario.getMail()).isEqualTo(MAIL);
         assertThat(usuario.getPass()).isEqualTo(String.valueOf(PASS.hashCode()));
         assertThat(usuario.getNombre()).isEqualTo(NOMBRE_USUARIO);
 
-        verify(usuarioRepository).findById(USUARIO_ID);
+        verify(usuarioRepository).findById(ID_USUARIO);
         verify(passwordEncoder).encode(PASS);
         verify(usuarioRepository).save(usuario);
     }
@@ -229,14 +229,14 @@ class UsuarioServiceImplTest {
     public void updateUsuarioById_WhenUsuarioInexistente_ThenNotFound(){
         UsuarioDtoRegistro usuarioDtoRegistro = new UsuarioDtoRegistro();
 
-        when(usuarioRepository.findById(USUARIO_ID)).thenReturn(Optional.empty());
+        when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> usuarioService.updateUsuarioById(USUARIO_ID, usuarioDtoRegistro))
+        assertThatThrownBy(() -> usuarioService.updateUsuarioById(ID_USUARIO, usuarioDtoRegistro))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("Usuario no encontrado")
                 .extracting("status").isEqualTo(HttpStatus.NOT_FOUND);
 
-        verify(usuarioRepository).findById(USUARIO_ID);
+        verify(usuarioRepository).findById(ID_USUARIO);
     }
 
     @Test
@@ -248,28 +248,28 @@ class UsuarioServiceImplTest {
         usuarioDtoRegistro.setConfirmacionPass(PASS.concat("DISTINTA"));
 
         Usuario usuario = new Usuario();
-        usuario.setIdUsuario(USUARIO_ID);
+        usuario.setIdUsuario(ID_USUARIO);
 
-        when(usuarioRepository.findById(USUARIO_ID)).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.of(usuario));
 
-        assertThatThrownBy(() -> usuarioService.updateUsuarioById(USUARIO_ID, usuarioDtoRegistro))
+        assertThatThrownBy(() -> usuarioService.updateUsuarioById(ID_USUARIO, usuarioDtoRegistro))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("La contraseña y la confirmacion de la contraseña no coinciden")
                 .extracting("status").isEqualTo(HttpStatus.BAD_REQUEST);
 
-        verify(usuarioRepository).findById(USUARIO_ID);
+        verify(usuarioRepository).findById(ID_USUARIO);
     }
 
     @Test
     public void deleteUsuarioById_WhenOk_ThenBorrarUsuario(){
         Usuario usuario = new Usuario();
-        usuario.setIdUsuario(USUARIO_ID);
+        usuario.setIdUsuario(ID_USUARIO);
 
-        when(usuarioRepository.findById(USUARIO_ID)).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.of(usuario));
 
-        usuarioService.deleteUsuarioById(USUARIO_ID);
+        usuarioService.deleteUsuarioById(ID_USUARIO);
 
-        verify(usuarioRepository).findById(USUARIO_ID);
+        verify(usuarioRepository).findById(ID_USUARIO);
         verify(usuarioRepository).delete(usuario);
     }
 }

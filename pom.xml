@@ -99,6 +99,7 @@
                         <exclude>org/gymanager/configuration/**</exclude>
                         <exclude>org/gymanager/controller/HealthCheckController.class</exclude>
                         <exclude>org/gymanager/model/**</exclude>
+                        <exclude>org/gymanager/repository/filters/*.class</exclude>
 
                         <exclude>org/gymanager/service/implementation/TokenServiceImpl</exclude>
                         <exclude>org/gymanager/security/**</exclude>
