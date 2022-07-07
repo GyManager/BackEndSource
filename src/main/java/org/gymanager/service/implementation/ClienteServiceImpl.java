@@ -35,8 +35,8 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     @Transactional
-    public GyManagerPage<ClienteDto> getClientes(String fuzzySearch, Integer page, Integer pageSize, ClienteSortBy sortBy,
-                                        Sort.Direction direction) {
+    public GyManagerPage<ClienteDto> getClientes(String fuzzySearch, Integer page, Integer pageSize,
+                                                 ClienteSortBy sortBy, Sort.Direction direction) {
         ClienteSpecification clienteSpecification = new ClienteSpecification();
         clienteSpecification.setFuzzySearch(fuzzySearch);
 
