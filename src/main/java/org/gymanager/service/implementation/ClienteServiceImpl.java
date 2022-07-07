@@ -6,15 +6,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.ClienteEntityToDtoConverter;
 import org.gymanager.model.client.clientes.ClienteDto;
 import org.gymanager.model.domain.clientes.Cliente;
-import org.gymanager.repository.specification.ClienteRepository;
+import org.gymanager.model.enums.ClienteSortBy;
+import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.repository.filters.ClienteSpecification;
+import org.gymanager.repository.specification.ClienteRepository;
 import org.gymanager.service.specification.ClienteService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,10 +35,16 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     @Transactional
-    public List<ClienteDto> getClientes(String fuzzySearch) {
+    public GyManagerPage<ClienteDto> getClientes(String fuzzySearch, Integer page, Integer pageSize, ClienteSortBy sortBy,
+                                        Sort.Direction direction) {
         ClienteSpecification clienteSpecification = new ClienteSpecification();
         clienteSpecification.setFuzzySearch(fuzzySearch);
-        return clienteEntityToDtoConverter.convert(clienteRepository.findAll(clienteSpecification));
+
+        Sort sort = sortBy.equals(ClienteSortBy.NONE) ? Sort.unsorted() : Sort.by(direction, sortBy.getField());
+        PageRequest pageable = PageRequest.of(page, pageSize, sort);
+
+        return new GyManagerPage<>(clienteRepository.findAll(clienteSpecification, pageable)
+                .map(clienteEntityToDtoConverter::convert));
     }
 
     @Override

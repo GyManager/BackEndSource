@@ -1,12 +1,14 @@
 package org.gymanager.service.specification;
 
 import org.gymanager.model.client.clientes.ClienteDto;
-
-import java.util.List;
+import org.gymanager.model.enums.ClienteSortBy;
+import org.gymanager.model.page.GyManagerPage;
+import org.springframework.data.domain.Sort;
 
 public interface ClienteService {
 
-    List<ClienteDto> getClientes(String fuzzySearch);
+    GyManagerPage<ClienteDto> getClientes(String fuzzySearch, Integer page, Integer pageSize, ClienteSortBy sortBy,
+                                          Sort.Direction direction);
 
     ClienteDto getClientesById(Long idCliente);
 }

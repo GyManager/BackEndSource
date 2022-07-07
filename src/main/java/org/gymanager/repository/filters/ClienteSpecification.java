@@ -57,7 +57,6 @@ public class ClienteSpecification implements Specification<Cliente> {
             predicateList.add(fuzzySearchPredicateList.stream().reduce(builder::or).get());
         }
 
-        query.distinct(true);
         return predicateList.stream().reduce(builder::and)
                 .orElse(builder.isTrue(builder.literal(true)));
     }

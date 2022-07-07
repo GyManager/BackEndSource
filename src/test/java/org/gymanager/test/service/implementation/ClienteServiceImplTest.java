@@ -3,14 +3,19 @@ package org.gymanager.test.service.implementation;
 import org.gymanager.converter.ClienteEntityToDtoConverter;
 import org.gymanager.model.client.clientes.ClienteDto;
 import org.gymanager.model.domain.clientes.Cliente;
-import org.gymanager.repository.specification.ClienteRepository;
+import org.gymanager.model.enums.ClienteSortBy;
+import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.repository.filters.ClienteSpecification;
+import org.gymanager.repository.specification.ClienteRepository;
 import org.gymanager.service.implementation.ClienteServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -40,19 +45,25 @@ class ClienteServiceImplTest {
     @Test
     public void getClientes_WhenOk_ThenReturnClientes(){
         String fuzzySearch = "";
-        List<Cliente> clienteList = List.of(mock(Cliente.class));
-        List<ClienteDto> clienteDtoList = List.of(mock(ClienteDto.class));
+        Integer page = 1;
+        Integer size = 10;
+        ClienteSortBy sortBy = ClienteSortBy.NONE;
+        Sort.Direction direction = Sort.Direction.ASC;
 
-        when(clienteRepository.findAll(any(ClienteSpecification.class))).thenReturn(clienteList);
-        when(clienteEntityToDtoConverter.convert(clienteList)).thenReturn(clienteDtoList);
+        Cliente cliente = mock(Cliente.class);
+        ClienteDto clienteDto = mock(ClienteDto.class);
 
-        List<ClienteDto> resultado = clienteService.getClientes(fuzzySearch);
+        when(clienteRepository.findAll(any(ClienteSpecification.class), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(cliente)));
+        when(clienteEntityToDtoConverter.convert(cliente)).thenReturn(clienteDto);
+
+        GyManagerPage<ClienteDto> resultado = clienteService.getClientes(fuzzySearch, page, size, sortBy, direction);
 
         assertThat(resultado).isNotNull();
-        assertThat(resultado).isEqualTo(clienteDtoList);
+        assertThat(resultado.getContent().contains(clienteDto)).isTrue();
 
-        verify(clienteRepository).findAll(any(ClienteSpecification.class));
-        verify(clienteEntityToDtoConverter).convert(clienteList);
+        verify(clienteRepository).findAll(any(ClienteSpecification.class), any(Pageable.class));
+        verify(clienteEntityToDtoConverter).convert(cliente);
     }
 
     @Test
