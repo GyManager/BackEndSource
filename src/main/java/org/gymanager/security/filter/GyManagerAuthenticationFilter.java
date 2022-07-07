@@ -40,11 +40,6 @@ public class GyManagerAuthenticationFilter extends UsernamePasswordAuthenticatio
         final String pass = request.getParameter("pass");
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(mail, pass);
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "POST");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Headers",
-                "content-type, x-gwt-module-base, x-gwt-permutation, clientid, longpush");
 
         return authenticationManager.authenticate(authenticationToken);
     }
