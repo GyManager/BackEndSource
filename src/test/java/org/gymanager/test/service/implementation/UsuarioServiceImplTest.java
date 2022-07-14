@@ -1,11 +1,9 @@
 package org.gymanager.test.service.implementation;
 
-import org.gymanager.converter.UsuarioEntityToDtoConverter;
-import org.gymanager.model.client.usuarios.UsuarioDto;
-import org.gymanager.model.client.usuarios.UsuarioDtoRegistro;
-import org.gymanager.model.domain.usuarios.Permiso;
-import org.gymanager.model.domain.usuarios.Rol;
-import org.gymanager.model.domain.usuarios.Usuario;
+import org.gymanager.model.client.UsuarioDtoRegistro;
+import org.gymanager.model.domain.Permiso;
+import org.gymanager.model.domain.Rol;
+import org.gymanager.model.domain.Usuario;
 import org.gymanager.repository.specification.UsuarioRepository;
 import org.gymanager.service.implementation.UsuarioServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -26,12 +24,12 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.gymanager.test.constants.Constantes.ID_USUARIO;
 import static org.gymanager.test.constants.Constantes.MAIL;
 import static org.gymanager.test.constants.Constantes.NOMBRE_USUARIO;
 import static org.gymanager.test.constants.Constantes.PASS;
 import static org.gymanager.test.constants.Constantes.PERMISO_DOS;
 import static org.gymanager.test.constants.Constantes.PERMISO_UNO;
-import static org.gymanager.test.constants.Constantes.ID_USUARIO;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -45,9 +43,6 @@ class UsuarioServiceImplTest {
 
     @Mock
     private UsuarioRepository usuarioRepository;
-
-    @Mock
-    private UsuarioEntityToDtoConverter usuarioEntityToDtoConverter;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -108,8 +103,13 @@ class UsuarioServiceImplTest {
         usuarioDtoRegistro.setPass(PASS);
         usuarioDtoRegistro.setConfirmacionPass(PASS);
 
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario(ID_USUARIO);
+
         when(usuarioRepository.findByMail(MAIL)).thenReturn(Optional.empty());
         when(passwordEncoder.encode(PASS)).thenReturn(String.valueOf(PASS.hashCode()));
+        when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
+
 
         usuarioService.addUsuario(usuarioDtoRegistro);
 
@@ -159,33 +159,27 @@ class UsuarioServiceImplTest {
     @Test
     public void getUsuarios_WhenOk_ThenReturnUsuarios() {
         List<Usuario> usuarioList = List.of(mock(Usuario.class));
-        List<UsuarioDto> usuarioDtoList = List.of(mock(UsuarioDto.class));
 
         when(usuarioRepository.findAll()).thenReturn(usuarioList);
-        when(usuarioEntityToDtoConverter.convert(usuarioList)).thenReturn(usuarioDtoList);
 
-        List<UsuarioDto> resultado = usuarioService.getUsuarios();
+        List<Usuario> resultado = usuarioService.getUsuarios();
 
-        assertThat(resultado).isEqualTo(usuarioDtoList);
+        assertThat(resultado).isEqualTo(usuarioList);
 
         verify(usuarioRepository).findAll();
-        verify(usuarioEntityToDtoConverter).convert(usuarioList);
     }
 
     @Test
     public void getUsuarioById_WhenOk_ThenReturnUsuario() {
         Usuario usuario = mock(Usuario.class);
-        UsuarioDto usuarioDto = mock(UsuarioDto.class);
 
         when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.of(usuario));
-        when(usuarioEntityToDtoConverter.convert(usuario)).thenReturn(usuarioDto);
 
-        UsuarioDto resultado = usuarioService.getUsuarioById(ID_USUARIO);
+        Usuario resultado = usuarioService.getUsuarioById(ID_USUARIO);
 
-        assertThat(resultado).isEqualTo(usuarioDto);
+        assertThat(resultado).isEqualTo(usuario);
 
         verify(usuarioRepository).findById(ID_USUARIO);
-        verify(usuarioEntityToDtoConverter).convert(usuario);
     }
 
     @Test

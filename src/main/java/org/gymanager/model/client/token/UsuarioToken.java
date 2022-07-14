@@ -1,4 +1,4 @@
-package org.gymanager.model.client.usuarios.token;
+package org.gymanager.model.client.token;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,9 +1,9 @@
 package org.gymanager.test.controller.implementation;
 
 import org.gymanager.controller.implementation.UsuarioControllerImpl;
-import org.gymanager.model.client.usuarios.UsuarioDto;
-import org.gymanager.model.client.usuarios.UsuarioDtoRegistro;
-import org.gymanager.service.specification.UsuarioService;
+import org.gymanager.model.client.UsuarioDto;
+import org.gymanager.model.client.UsuarioDtoRegistro;
+import org.gymanager.orchestrator.specification.UsuarioOrchestrator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,29 +26,28 @@ class UsuarioControllerImplTest {
     private UsuarioControllerImpl usuarioController;
 
     @Mock
-    private UsuarioService usuarioService;
+    private UsuarioOrchestrator usuarioOrchestrator;
 
     @Test
     public void addUsuario_WhenOk_ThenCreated(){
         UsuarioDtoRegistro usuarioDtoRegistro = new UsuarioDtoRegistro();
-        UsuarioDto usuarioDto = new UsuarioDto();
 
-        when(usuarioService.addUsuario(usuarioDtoRegistro)).thenReturn(usuarioDto);
+        when(usuarioOrchestrator.addUsuario(usuarioDtoRegistro)).thenReturn(ID_USUARIO);
 
-        ResponseEntity<UsuarioDto> resultado = usuarioController.addUsuario(usuarioDtoRegistro);
+        ResponseEntity<Long> resultado = usuarioController.addUsuario(usuarioDtoRegistro);
 
         assertThat(resultado).isNotNull();
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(resultado.getBody()).isEqualTo(usuarioDto);
+        assertThat(resultado.getBody()).isEqualTo(ID_USUARIO);
 
-        verify(usuarioService).addUsuario(usuarioDtoRegistro);
+        verify(usuarioOrchestrator).addUsuario(usuarioDtoRegistro);
     }
 
     @Test
     public void getUsuarios_WhenOk_ThenReturnUsuarios(){
         List<UsuarioDto> usuarioDtoList = List.of(new UsuarioDto());
 
-        when(usuarioService.getUsuarios()).thenReturn(usuarioDtoList);
+        when(usuarioOrchestrator.getUsuarios()).thenReturn(usuarioDtoList);
 
         ResponseEntity<List<UsuarioDto>> resultado = usuarioController.getUsuarios();
 
@@ -56,14 +55,14 @@ class UsuarioControllerImplTest {
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resultado.getBody()).isEqualTo(usuarioDtoList);
 
-        verify(usuarioService).getUsuarios();
+        verify(usuarioOrchestrator).getUsuarios();
     }
 
     @Test
     public void getUsuarioById_WhenOk_ThenReturnUsuario(){
         UsuarioDto usuarioDto = new UsuarioDto();
 
-        when(usuarioService.getUsuarioById(ID_USUARIO)).thenReturn(usuarioDto);
+        when(usuarioOrchestrator.getUsuarioById(ID_USUARIO)).thenReturn(usuarioDto);
 
         ResponseEntity<UsuarioDto> resultado = usuarioController.getUsuarioById(ID_USUARIO);
 
@@ -71,7 +70,7 @@ class UsuarioControllerImplTest {
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resultado.getBody()).isEqualTo(usuarioDto);
 
-        verify(usuarioService).getUsuarioById(ID_USUARIO);
+        verify(usuarioOrchestrator).getUsuarioById(ID_USUARIO);
     }
 
     @Test
@@ -83,7 +82,7 @@ class UsuarioControllerImplTest {
         assertThat(resultado).isNotNull();
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-        verify(usuarioService).updateUsuarioById(ID_USUARIO, usuarioDtoRegistro);
+        verify(usuarioOrchestrator).updateUsuarioById(ID_USUARIO, usuarioDtoRegistro);
     }
 
     @Test
@@ -93,7 +92,7 @@ class UsuarioControllerImplTest {
         assertThat(resultado).isNotNull();
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-        verify(usuarioService).deleteUsuarioById(ID_USUARIO);
+        verify(usuarioOrchestrator).deleteUsuarioById(ID_USUARIO);
     }
 
 }

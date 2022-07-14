@@ -1,30 +1,28 @@
 package org.gymanager.test.converter;
 
 import org.gymanager.converter.ClienteEntityToDtoConverter;
-import org.gymanager.model.client.clientes.ClienteDto;
-import org.gymanager.model.domain.clientes.Cliente;
-import org.gymanager.model.domain.clientes.TipoDocumento;
-import org.gymanager.model.domain.usuarios.Usuario;
+import org.gymanager.converter.UsuarioEntityToDtoConverter;
+import org.gymanager.model.client.ClienteDto;
+import org.gymanager.model.client.UsuarioDto;
+import org.gymanager.model.domain.Cliente;
+import org.gymanager.model.domain.Objetivo;
+import org.gymanager.model.domain.Usuario;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.gymanager.test.constants.Constantes.APELLIDO;
-import static org.gymanager.test.constants.Constantes.CELULAR;
 import static org.gymanager.test.constants.Constantes.DIRECCION;
 import static org.gymanager.test.constants.Constantes.FECHA_NACIMIENTO;
-import static org.gymanager.test.constants.Constantes.ID_PERSONA;
-import static org.gymanager.test.constants.Constantes.ID_TIPO_DOCUMENTO;
-import static org.gymanager.test.constants.Constantes.ID_USUARIO;
-import static org.gymanager.test.constants.Constantes.MAIL;
-import static org.gymanager.test.constants.Constantes.NOMBRE;
-import static org.gymanager.test.constants.Constantes.NUMERO_DOCUMENTO;
+import static org.gymanager.test.constants.Constantes.ID_CLIENTE;
 import static org.gymanager.test.constants.Constantes.OBJETIVO;
-import static org.gymanager.test.constants.Constantes.TIPO_DOCUMENTO;
+import static org.gymanager.test.constants.Constantes.OBSERVACIONES;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -33,42 +31,35 @@ class ClienteEntityToDtoConverterTest {
     @InjectMocks
     private ClienteEntityToDtoConverter clienteEntityToDtoConverter;
 
+    @Mock
+    private UsuarioEntityToDtoConverter usuarioEntityToDtoConverter;
+
     @Test
     public void convert_WhenOk_ThenReturnUsuarioDto(){
-        Usuario usuario = new Usuario();
-        usuario.setIdUsuario(ID_USUARIO);
-        usuario.setMail(MAIL);
+        Usuario usuario = mock(Usuario.class);
+        UsuarioDto usuarioDto = mock(UsuarioDto.class);
 
-        TipoDocumento tipoDocumento = new TipoDocumento();
-        tipoDocumento.setIdTipoDocumento(ID_TIPO_DOCUMENTO);
-        tipoDocumento.setTipo(TIPO_DOCUMENTO);
+        Objetivo objetivo = new Objetivo();
+        objetivo.setObjetivo(OBJETIVO);
 
         Cliente cliente = new Cliente();
-        cliente.setIdPersona(ID_PERSONA);
+        cliente.setIdCliente(ID_CLIENTE);
         cliente.setUsuario(usuario);
-        cliente.setNumeroDocumento(NUMERO_DOCUMENTO);
-        cliente.setTipoDocumento(tipoDocumento);
-        cliente.setNombre(NOMBRE);
-        cliente.setApellido(APELLIDO);
-        cliente.setCelular(CELULAR);
         cliente.setDireccion(DIRECCION);
         cliente.setFechaNacimiento(FECHA_NACIMIENTO);
-        cliente.setObjetivo(OBJETIVO);
+        cliente.setObservaciones(OBSERVACIONES);
+        cliente.setObjetivo(objetivo);
+
+        when(usuarioEntityToDtoConverter.convert(usuario)).thenReturn(usuarioDto);
 
         ClienteDto resultado = clienteEntityToDtoConverter.convert(List.of(cliente)).get(0);
 
         assertThat(resultado).isNotNull();
-        assertThat(resultado.getIdPersona()).isEqualTo(ID_PERSONA);
-        assertThat(resultado.getIdUsuario()).isEqualTo(ID_USUARIO);
-        assertThat(resultado.getMail()).isEqualTo(MAIL);
-        assertThat(resultado.getNumeroDocumento()).isEqualTo(NUMERO_DOCUMENTO);
-        assertThat(resultado.getIdTipoDocumento()).isEqualTo(ID_TIPO_DOCUMENTO);
-        assertThat(resultado.getTipoDocumento()).isEqualTo(TIPO_DOCUMENTO);
-        assertThat(resultado.getNombre()).isEqualTo(NOMBRE);
-        assertThat(resultado.getApellido()).isEqualTo(APELLIDO);
+        assertThat(resultado.getIdCliente()).isEqualTo(ID_CLIENTE);
+        assertThat(resultado.getUsuario()).isEqualTo(usuarioDto);
         assertThat(resultado.getDireccion()).isEqualTo(DIRECCION);
         assertThat(resultado.getFechaNacimiento()).isEqualTo(FECHA_NACIMIENTO);
-        assertThat(resultado.getCelular()).isEqualTo(CELULAR);
+        assertThat(resultado.getObservaciones()).isEqualTo(OBSERVACIONES);
         assertThat(resultado.getObjetivo()).isEqualTo(OBJETIVO);
     }
 

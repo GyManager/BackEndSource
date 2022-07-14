@@ -1,11 +1,7 @@
 package org.gymanager.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gymanager.model.client.usuarios.RolDto;
-import org.gymanager.model.client.usuarios.UsuarioDto;
-import org.gymanager.model.domain.usuarios.Usuario;
 import org.gymanager.service.specification.TokenService;
-import org.gymanager.service.specification.UsuarioService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

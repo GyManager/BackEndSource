@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -20,15 +22,21 @@ public class GyManagerPage<T> {
     private Long totalElements;
     private Integer totalPages;
 
+    public GyManagerPage(List<T> content, Boolean last, Boolean first, Boolean empty, Integer pageSize,
+                         Integer pageNumber, Long totalElements, Integer totalPages) {
+        this.content = content;
+        this.last = last;
+        this.first = first;
+        this.empty = empty;
+        this.pageSize = pageSize;
+        this.pageNumber = pageNumber;
+        this.totalElements = totalElements;
+        this.totalPages = totalPages;
+    }
+
     public GyManagerPage(Page<T> page) {
-        this.content = page.getContent();
-        this.last = page.isLast();
-        this.first = page.isFirst();
-        this.empty = page.isEmpty();
-        this.pageSize = page.getSize();
-        this.pageNumber = page.getNumber();
-        this.totalElements = page.getTotalElements();
-        this.totalPages = page.getTotalPages();
+        this(page.getContent(), page.isLast(), page.isFirst(), page.isEmpty(), page.getSize(), page.getNumber(),
+                page.getTotalElements(), page.getTotalPages());
     }
 
     public GyManagerPage(List<T> list) {
@@ -37,5 +45,14 @@ public class GyManagerPage<T> {
 
     public GyManagerPage(T element) {
         this(List.of(element));
+    }
+
+    public <U> GyManagerPage<U> map(Function<? super T, ? extends U> converter){
+        return new GyManagerPage<U>(getConvertedContent(converter), last, first, empty, pageSize, pageNumber,
+                totalElements, totalPages);
+    }
+
+    private <U> List<U> getConvertedContent(Function<? super T,? extends U> converter) {
+        return content.stream().map(converter).collect(Collectors.toList());
     }
 }

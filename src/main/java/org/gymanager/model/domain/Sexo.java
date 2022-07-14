@@ -1,8 +1,6 @@
-package org.gymanager.model.domain.usuarios;
-
+package org.gymanager.model.domain;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -14,14 +12,11 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@Table(name = "permiso")
-public class Permiso {
-
+@Table(name = "sexo")
+public class Sexo {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idPermiso;
-    private String nombrePermiso;
-    private String objeto;
-    private String descripcion;
+    private Long idSexo;
+    private String sexo;
 }

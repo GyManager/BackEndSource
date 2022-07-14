@@ -1,10 +1,10 @@
 package org.gymanager.test.controller.implementation;
 
 import org.gymanager.controller.implementation.ClienteControllerImpl;
-import org.gymanager.model.client.clientes.ClienteDto;
+import org.gymanager.model.client.ClienteDto;
 import org.gymanager.model.enums.ClienteSortBy;
 import org.gymanager.model.page.GyManagerPage;
-import org.gymanager.service.specification.ClienteService;
+import org.gymanager.orchestrator.specification.ClienteOrchestrator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.gymanager.test.constants.Constantes.ID_PERSONA;
+import static org.gymanager.test.constants.Constantes.ID_CLIENTE;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,7 +27,7 @@ class ClienteControllerImplTest {
     private ClienteControllerImpl clienteController;
 
     @Mock
-    private ClienteService clienteService;
+    private ClienteOrchestrator clienteOrchestrator;
 
     @Test
     public void getClientes_WhenOk_ThenReturnClientes(){
@@ -38,7 +38,7 @@ class ClienteControllerImplTest {
         ClienteSortBy sortBy = ClienteSortBy.NONE;
         Sort.Direction direction = Sort.Direction.ASC;
 
-        when(clienteService.getClientes(fuzzySearch, page, size, sortBy, direction))
+        when(clienteOrchestrator.getClientes(fuzzySearch, page, size, sortBy, direction))
                 .thenReturn(new GyManagerPage<>(clienteDto));
 
         ResponseEntity<GyManagerPage<ClienteDto>> resultado = clienteController.getClientes(fuzzySearch, page, size, sortBy, direction);
@@ -48,22 +48,22 @@ class ClienteControllerImplTest {
         assertThat(resultado.getBody()).isNotNull();
         assertThat(resultado.getBody().getContent().contains(clienteDto)).isTrue();
 
-        verify(clienteService).getClientes(fuzzySearch, page, size, sortBy, direction);
+        verify(clienteOrchestrator).getClientes(fuzzySearch, page, size, sortBy, direction);
     }
 
     @Test
     public void getClienteById_WhenOk_ThenReturnCliente(){
         ClienteDto clienteDto = new ClienteDto();
 
-        when(clienteService.getClientesById(ID_PERSONA)).thenReturn(clienteDto);
+        when(clienteOrchestrator.getClientesById(ID_CLIENTE)).thenReturn(clienteDto);
 
-        ResponseEntity<ClienteDto> resultado = clienteController.getClienteById(ID_PERSONA);
+        ResponseEntity<ClienteDto> resultado = clienteController.getClienteById(ID_CLIENTE);
 
         assertThat(resultado).isNotNull();
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resultado.getBody()).isEqualTo(clienteDto);
 
-        verify(clienteService).getClientesById(ID_PERSONA);
+        verify(clienteOrchestrator).getClientesById(ID_CLIENTE);
     }
 
 }

@@ -3,12 +3,10 @@ package org.gymanager.service.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.gymanager.converter.UsuarioEntityToDtoConverter;
-import org.gymanager.model.client.usuarios.UsuarioDto;
-import org.gymanager.model.client.usuarios.UsuarioDtoRegistro;
-import org.gymanager.model.domain.usuarios.Permiso;
-import org.gymanager.model.domain.usuarios.Rol;
-import org.gymanager.model.domain.usuarios.Usuario;
+import org.gymanager.model.client.UsuarioDtoRegistro;
+import org.gymanager.model.domain.Permiso;
+import org.gymanager.model.domain.Rol;
+import org.gymanager.model.domain.Usuario;
 import org.gymanager.repository.specification.UsuarioRepository;
 import org.gymanager.service.specification.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -46,9 +44,6 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @NonNull
     private final PasswordEncoder passwordEncoder;
 
-    @NonNull
-    private UsuarioEntityToDtoConverter usuarioEntityToDtoConverter;
-
     /**
      * Implementacion del metodo de UserDetailsService para validar las credenciales de login
      */
@@ -81,7 +76,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     @Override
-    public UsuarioDto addUsuario(UsuarioDtoRegistro usuarioDtoRegistro) {
+    public Long addUsuario(UsuarioDtoRegistro usuarioDtoRegistro) {
         validarUsuarioConMailNoExiste(usuarioDtoRegistro.getMail());
         validarConfirmacionPass(usuarioDtoRegistro);
 
@@ -91,22 +86,29 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuario.setFechaAlta(LocalDate.now());
         usuario.setMail(usuarioDtoRegistro.getMail());
 
-        return usuarioEntityToDtoConverter.convert(usuarioRepository.save(usuario));
+        return usuarioRepository.save(usuario).getIdUsuario();
     }
 
     @Override
-    public List<UsuarioDto> getUsuarios() {
-        return usuarioEntityToDtoConverter.convert(usuarioRepository.findAll());
+    public List<Usuario> getUsuarios() {
+        return usuarioRepository.findAll();
     }
 
     @Override
-    public UsuarioDto getUsuarioById(Long idUsuario) {
-        return usuarioEntityToDtoConverter.convert(buscarUsuarioPorIdYValidarExistencia(idUsuario));
+    public Usuario getUsuarioById(Long idUsuario) {
+        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+
+        if(usuario.isEmpty()){
+            log.error(USUARIO_NO_ENCONTRADO);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USUARIO_NO_ENCONTRADO);
+        }
+
+        return usuario.get();
     }
 
     @Override
     public void updateUsuarioById(Long idUsuario, UsuarioDtoRegistro usuarioDtoRegistro) {
-        Usuario usuario = buscarUsuarioPorIdYValidarExistencia(idUsuario);
+        Usuario usuario = getUsuarioById(idUsuario);
 
         validarConfirmacionPass(usuarioDtoRegistro);
 
@@ -119,7 +121,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public void deleteUsuarioById(Long idUsuario) {
-        Usuario usuario = buscarUsuarioPorIdYValidarExistencia(idUsuario);
+        Usuario usuario = getUsuarioById(idUsuario);
 
         usuarioRepository.delete(usuario);
     }
@@ -138,14 +140,4 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         }
     }
 
-    private Usuario buscarUsuarioPorIdYValidarExistencia(Long idUsuario){
-        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
-
-        if(usuario.isEmpty()){
-            log.error(USUARIO_NO_ENCONTRADO);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USUARIO_NO_ENCONTRADO);
-        }
-
-        return usuario.get();
-    }
 }
