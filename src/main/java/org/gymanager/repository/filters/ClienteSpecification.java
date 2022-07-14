@@ -3,7 +3,7 @@ package org.gymanager.repository.filters;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-import org.gymanager.model.domain.clientes.Cliente;
+import org.gymanager.model.domain.Cliente;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -36,21 +36,26 @@ public class ClienteSpecification implements Specification<Cliente> {
         List<Predicate> predicateList = new ArrayList<>();
 
         if(!StringUtils.isEmpty(fuzzySearch)){
+
             List<Predicate> fuzzySearchPredicateList = new ArrayList<>();
+            var joinUsuario = root.join(TABLA_USUARIO);
 
             if(NUMBER_PATTERN.matcher(fuzzySearch).matches()){
-                fuzzySearchPredicateList.add(builder.like(root.get(CAMPO_NUMERO_DOCUMENTO).as(String.class),
+                fuzzySearchPredicateList.add(builder.like(
+                        joinUsuario.get(CAMPO_NUMERO_DOCUMENTO).as(String.class),
                         rodearConLikeWildcard(fuzzySearch)));
             }
             else if (fuzzySearch.contains(PSEUDO_EMAIL_PATTERN)){
                 fuzzySearchPredicateList.add(builder.like(
-                        builder.lower(root.join(TABLA_USUARIO).get(CAMPO_MAIL)),
+                        builder.lower(joinUsuario.get(CAMPO_MAIL)),
                         rodearConLikeWildcard(fuzzySearch.toLowerCase())));
             }
             else {
-                fuzzySearchPredicateList.add(builder.like(builder.lower(root.get(CAMPO_NOMBRE)),
+                fuzzySearchPredicateList.add(builder.like(
+                        builder.lower(joinUsuario.get(CAMPO_NOMBRE)),
                         rodearConLikeWildcard(fuzzySearch.toLowerCase())));
-                fuzzySearchPredicateList.add(builder.like(builder.lower(root.get(CAMPO_APELLIDO)),
+                fuzzySearchPredicateList.add(builder.like(
+                        builder.lower(joinUsuario.get(CAMPO_APELLIDO)),
                         rodearConLikeWildcard(fuzzySearch.toLowerCase())));
             }
 

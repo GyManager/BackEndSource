@@ -3,13 +3,17 @@ package org.gymanager.service.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.gymanager.converter.UsuarioEntityToDtoConverter;
-import org.gymanager.model.client.usuarios.UsuarioDto;
-import org.gymanager.model.client.usuarios.UsuarioDtoRegistro;
-import org.gymanager.model.domain.usuarios.Permiso;
-import org.gymanager.model.domain.usuarios.Rol;
-import org.gymanager.model.domain.usuarios.Usuario;
+import org.gymanager.model.client.UsuarioDto;
+import org.gymanager.model.client.UsuarioDtoRegistro;
+import org.gymanager.model.domain.Permiso;
+import org.gymanager.model.domain.Rol;
+import org.gymanager.model.domain.TipoDocumento;
+import org.gymanager.model.domain.Usuario;
 import org.gymanager.repository.specification.UsuarioRepository;
+import org.gymanager.service.specification.SexoService;
+import org.gymanager.service.specification.TipoDocumentoService;
 import org.gymanager.service.specification.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,7 +40,9 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     private static final String USUARIO_CON_MAIL_NO_ENCONTRADO = "Usuario con mail (%s) no encontrado";
     private static final String USUARIO_NO_ENCONTRADO = "Usuario no encontrado";
-    private static final String USUARIO_YA_EXISTE = "Ya existe un usuario registrado con el mail (%s)";
+    private static final String MAIL_EN_USO = "Ya existe un usuario registrado con el mail (%s)";
+    private static final String NUMERO_TIPO_DOCUMENTO_EN_USO = "Ya existe un usuario registrado con el numero (%s)" +
+            " y tipo (%s) de documento";
     private static final String MAIL_VACIO = "El mail de login no debe ser vacio";
     private static final String PASS_NO_COINCIDEN = "La contraseña y la confirmacion de la contraseña no coinciden";
 
@@ -44,10 +50,16 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     private UsuarioRepository usuarioRepository;
 
     @NonNull
-    private final PasswordEncoder passwordEncoder;
+    private final UsuarioEntityToDtoConverter usuarioEntityToDtoConverter;
 
     @NonNull
-    private UsuarioEntityToDtoConverter usuarioEntityToDtoConverter;
+    private final TipoDocumentoService tipoDocumentoService;
+
+    @NonNull
+    private final SexoService sexoService;
+
+    @NonNull
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Implementacion del metodo de UserDetailsService para validar las credenciales de login
@@ -81,53 +93,90 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     @Override
-    public UsuarioDto addUsuario(UsuarioDtoRegistro usuarioDtoRegistro) {
-        validarUsuarioConMailNoExiste(usuarioDtoRegistro.getMail());
-        validarConfirmacionPass(usuarioDtoRegistro);
-
-        Usuario usuario = new Usuario();
-        usuario.setNombre(usuarioDtoRegistro.getNombre());
-        usuario.setPass(passwordEncoder.encode(usuarioDtoRegistro.getPass()));
-        usuario.setFechaAlta(LocalDate.now());
-        usuario.setMail(usuarioDtoRegistro.getMail());
-
-        return usuarioEntityToDtoConverter.convert(usuarioRepository.save(usuario));
-    }
-
-    @Override
     public List<UsuarioDto> getUsuarios() {
         return usuarioEntityToDtoConverter.convert(usuarioRepository.findAll());
     }
 
     @Override
     public UsuarioDto getUsuarioById(Long idUsuario) {
-        return usuarioEntityToDtoConverter.convert(buscarUsuarioPorIdYValidarExistencia(idUsuario));
+        return usuarioEntityToDtoConverter.convert(getUsuarioEntityById(idUsuario));
+    }
+
+    @Override
+    public Usuario getUsuarioEntityById(Long idUsuario) {
+        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+
+        if(usuario.isEmpty()){
+            log.error(USUARIO_NO_ENCONTRADO);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USUARIO_NO_ENCONTRADO);
+        }
+
+        return usuario.get();
+    }
+
+    @Override
+    public Long addUsuario(UsuarioDtoRegistro usuarioDtoRegistro) {
+        validarConfirmacionPass(usuarioDtoRegistro);
+        validarUsuarioConMailNoExiste(usuarioDtoRegistro.getMail());
+
+        TipoDocumento tipoDocumento = tipoDocumentoService.getTipoDocumentoByTipo(usuarioDtoRegistro.getTipoDocumento());
+        validarUsuarioConNroYTipoDocumentoNoExiste(tipoDocumento, usuarioDtoRegistro.getNumeroDocumento());
+
+        Usuario usuario = new Usuario();
+        usuario.setNumeroDocumento(usuarioDtoRegistro.getNumeroDocumento());
+        usuario.setTipoDocumento(tipoDocumento);
+        usuario.setNombre(usuarioDtoRegistro.getNombre());
+        usuario.setApellido(usuarioDtoRegistro.getApellido());
+
+        if(!StringUtils.isEmpty(usuarioDtoRegistro.getSexo())){
+            usuario.setSexo(sexoService.getSexoByNombreSexo(usuarioDtoRegistro.getSexo()));
+        }
+        usuario.setMail(usuarioDtoRegistro.getMail());
+        usuario.setCelular(usuarioDtoRegistro.getCelular());
+        usuario.setPass(passwordEncoder.encode(usuarioDtoRegistro.getPass()));
+        usuario.setFechaAlta(LocalDate.now());
+
+        return usuarioRepository.save(usuario).getIdUsuario();
     }
 
     @Override
     public void updateUsuarioById(Long idUsuario, UsuarioDtoRegistro usuarioDtoRegistro) {
-        Usuario usuario = buscarUsuarioPorIdYValidarExistencia(idUsuario);
 
-        validarConfirmacionPass(usuarioDtoRegistro);
+        Usuario usuario = getUsuarioEntityById(idUsuario);
 
+        TipoDocumento tipoDocumento = tipoDocumentoService.getTipoDocumentoByTipo(usuarioDtoRegistro.getTipoDocumento());
+
+        usuario.setNumeroDocumento(usuarioDtoRegistro.getNumeroDocumento());
+        usuario.setTipoDocumento(tipoDocumento);
         usuario.setNombre(usuarioDtoRegistro.getNombre());
-        usuario.setPass(passwordEncoder.encode(usuarioDtoRegistro.getPass()));
+        usuario.setApellido(usuarioDtoRegistro.getApellido());
+
+        if(!StringUtils.isEmpty(usuarioDtoRegistro.getSexo())){
+            usuario.setSexo(sexoService.getSexoByNombreSexo(usuarioDtoRegistro.getSexo()));
+        }
         usuario.setMail(usuarioDtoRegistro.getMail());
+        usuario.setCelular(usuarioDtoRegistro.getCelular());
+
+        if(StringUtils.isEmpty(usuarioDtoRegistro.getPass())){
+            validarConfirmacionPass(usuarioDtoRegistro);
+            usuario.setPass(passwordEncoder.encode(usuarioDtoRegistro.getPass()));
+        }
+        usuario.setFechaAlta(LocalDate.now());
 
         usuarioRepository.save(usuario);
     }
 
     @Override
     public void deleteUsuarioById(Long idUsuario) {
-        Usuario usuario = buscarUsuarioPorIdYValidarExistencia(idUsuario);
+        Usuario usuario = getUsuarioEntityById(idUsuario);
 
         usuarioRepository.delete(usuario);
     }
 
     private void validarUsuarioConMailNoExiste(String mail){
         if(usuarioRepository.findByMail(mail).isPresent()){
-            log.error(String.format(USUARIO_YA_EXISTE, mail));
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(USUARIO_YA_EXISTE, mail));
+            log.error(String.format(MAIL_EN_USO, mail));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(MAIL_EN_USO, mail));
         }
     }
 
@@ -138,14 +187,11 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         }
     }
 
-    private Usuario buscarUsuarioPorIdYValidarExistencia(Long idUsuario){
-        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
-
-        if(usuario.isEmpty()){
-            log.error(USUARIO_NO_ENCONTRADO);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USUARIO_NO_ENCONTRADO);
+    private void validarUsuarioConNroYTipoDocumentoNoExiste(TipoDocumento tipoDocumento, Long numeroDocumento) {
+        if(usuarioRepository.findByTipoDocumentoAndNumeroDocumento(tipoDocumento, numeroDocumento).isPresent()){
+            log.error(String.format(NUMERO_TIPO_DOCUMENTO_EN_USO, numeroDocumento, tipoDocumento.getTipo()));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format(NUMERO_TIPO_DOCUMENTO_EN_USO, numeroDocumento, tipoDocumento.getTipo()));
         }
-
-        return usuario.get();
     }
 }

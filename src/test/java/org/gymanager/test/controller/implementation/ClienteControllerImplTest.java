@@ -1,7 +1,7 @@
 package org.gymanager.test.controller.implementation;
 
 import org.gymanager.controller.implementation.ClienteControllerImpl;
-import org.gymanager.model.client.clientes.ClienteDto;
+import org.gymanager.model.client.ClienteDto;
 import org.gymanager.model.enums.ClienteSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.ClienteService;
@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.gymanager.test.constants.Constantes.ID_PERSONA;
+import static org.gymanager.test.constants.Constantes.ID_CLIENTE;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,15 +55,15 @@ class ClienteControllerImplTest {
     public void getClienteById_WhenOk_ThenReturnCliente(){
         ClienteDto clienteDto = new ClienteDto();
 
-        when(clienteService.getClientesById(ID_PERSONA)).thenReturn(clienteDto);
+        when(clienteService.getClientesById(ID_CLIENTE)).thenReturn(clienteDto);
 
-        ResponseEntity<ClienteDto> resultado = clienteController.getClienteById(ID_PERSONA);
+        ResponseEntity<ClienteDto> resultado = clienteController.getClienteById(ID_CLIENTE);
 
         assertThat(resultado).isNotNull();
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resultado.getBody()).isEqualTo(clienteDto);
 
-        verify(clienteService).getClientesById(ID_PERSONA);
+        verify(clienteService).getClientesById(ID_CLIENTE);
     }
 
 }

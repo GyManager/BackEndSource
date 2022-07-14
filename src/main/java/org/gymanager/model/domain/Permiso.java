@@ -1,6 +1,8 @@
-package org.gymanager.model.domain.clientes;
+package org.gymanager.model.domain;
+
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -12,11 +14,14 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@Table(name = "tipo_documento")
-public class TipoDocumento {
+@NoArgsConstructor
+@Table(name = "permiso")
+public class Permiso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idTipoDocumento;
-    private String tipo;
+    private Long idPermiso;
+    private String nombrePermiso;
+    private String objeto;
+    private String descripcion;
 }

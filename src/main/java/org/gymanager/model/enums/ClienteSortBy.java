@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum ClienteSortBy {
     NONE(""),
-    NUMERO_DOCUMENTO("numeroDocumento"),
-    NOMBRE("nombre"),
-    APELLIDO("apellido"),
+    NUMERO_DOCUMENTO("usuario.numeroDocumento"),
+    NOMBRE("usuario.nombre"),
+    APELLIDO("usuario.apellido"),
     MAIL("usuario.mail");
 
     private final String field;

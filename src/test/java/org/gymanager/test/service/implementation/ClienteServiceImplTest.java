@@ -1,8 +1,8 @@
 package org.gymanager.test.service.implementation;
 
 import org.gymanager.converter.ClienteEntityToDtoConverter;
-import org.gymanager.model.client.clientes.ClienteDto;
-import org.gymanager.model.domain.clientes.Cliente;
+import org.gymanager.model.client.ClienteDto;
+import org.gymanager.model.domain.Cliente;
 import org.gymanager.model.enums.ClienteSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.repository.filters.ClienteSpecification;
@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.gymanager.test.constants.Constantes.ID_PERSONA;
+import static org.gymanager.test.constants.Constantes.ID_CLIENTE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -71,26 +71,26 @@ class ClienteServiceImplTest {
         Cliente cliente = mock(Cliente.class);
         ClienteDto clienteDto = mock(ClienteDto.class);
 
-        when(clienteRepository.findById(ID_PERSONA)).thenReturn(Optional.of(cliente));
+        when(clienteRepository.findById(ID_CLIENTE)).thenReturn(Optional.of(cliente));
         when(clienteEntityToDtoConverter.convert(cliente)).thenReturn(clienteDto);
 
-        ClienteDto resultado = clienteService.getClientesById(ID_PERSONA);
+        ClienteDto resultado = clienteService.getClientesById(ID_CLIENTE);
 
         assertThat(resultado).isEqualTo(clienteDto);
 
-        verify(clienteRepository).findById(ID_PERSONA);
+        verify(clienteRepository).findById(ID_CLIENTE);
         verify(clienteEntityToDtoConverter).convert(cliente);
     }
 
     @Test
     public void getClientesById_WhenClienteNoExiste_ThenThrownNotFound(){
-        when(clienteRepository.findById(ID_PERSONA)).thenReturn(Optional.empty());
+        when(clienteRepository.findById(ID_CLIENTE)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> clienteService.getClientesById(ID_PERSONA))
+        assertThatThrownBy(() -> clienteService.getClientesById(ID_CLIENTE))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("Cliente no encontrado")
                 .extracting("status").isEqualTo(HttpStatus.NOT_FOUND);
 
-        verify(clienteRepository).findById(ID_PERSONA);
+        verify(clienteRepository).findById(ID_CLIENTE);
     }
 }

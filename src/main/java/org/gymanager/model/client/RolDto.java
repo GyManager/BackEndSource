@@ -1,4 +1,4 @@
-package org.gymanager.model.client.usuarios;
+package org.gymanager.model.client;
 
 import lombok.Getter;
 import lombok.Setter;

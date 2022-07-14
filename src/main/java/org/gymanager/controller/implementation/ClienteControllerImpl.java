@@ -3,7 +3,7 @@ package org.gymanager.controller.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.ClienteController;
-import org.gymanager.model.client.clientes.ClienteDto;
+import org.gymanager.model.client.ClienteDto;
 import org.gymanager.model.enums.ClienteSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.ClienteService;

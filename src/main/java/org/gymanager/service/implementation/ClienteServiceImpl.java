@@ -4,8 +4,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.ClienteEntityToDtoConverter;
-import org.gymanager.model.client.clientes.ClienteDto;
-import org.gymanager.model.domain.clientes.Cliente;
+import org.gymanager.model.client.ClienteDto;
+import org.gymanager.model.domain.Cliente;
 import org.gymanager.model.enums.ClienteSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.repository.filters.ClienteSpecification;
@@ -37,7 +37,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Transactional
     public GyManagerPage<ClienteDto> getClientes(String fuzzySearch, Integer page, Integer pageSize,
                                                  ClienteSortBy sortBy, Sort.Direction direction) {
-        ClienteSpecification clienteSpecification = new ClienteSpecification();
+        var clienteSpecification = new ClienteSpecification();
         clienteSpecification.setFuzzySearch(fuzzySearch);
 
         Sort sort = sortBy.equals(ClienteSortBy.NONE) ? Sort.unsorted() : Sort.by(direction, sortBy.getField());
@@ -50,10 +50,11 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public ClienteDto getClientesById(Long idCliente) {
-        return clienteEntityToDtoConverter.convert(buscarClientePorIdYValidarExistencia(idCliente));
+        return clienteEntityToDtoConverter.convert(getClienteEntityById(idCliente));
     }
 
-    private Cliente buscarClientePorIdYValidarExistencia(Long idCliente){
+    @Override
+    public Cliente getClienteEntityById(Long idCliente){
         Optional<Cliente> cliente = clienteRepository.findById(idCliente);
 
         if(cliente.isEmpty()){

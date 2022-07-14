@@ -1,8 +1,9 @@
 package org.gymanager.converter;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.gymanager.model.client.clientes.ClienteDto;
-import org.gymanager.model.domain.clientes.Cliente;
+import org.gymanager.model.client.ClienteDto;
+import org.gymanager.model.domain.Cliente;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -11,25 +12,20 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ClienteEntityToDtoConverter implements GyManagerConverter<Cliente, ClienteDto> {
 
+    @NonNull
+    private UsuarioEntityToDtoConverter usuarioEntityToDtoConverter;
+
     @Override
     public ClienteDto convert(Cliente source) {
         ClienteDto clienteDto = new ClienteDto();
-        clienteDto.setIdPersona(source.getIdPersona());
+        clienteDto.setIdCliente(source.getIdCliente());
         if(Objects.nonNull(source.getUsuario())){
-            clienteDto.setIdUsuario(source.getUsuario().getIdUsuario());
-            clienteDto.setMail(source.getUsuario().getMail());
+            clienteDto.setUsuario(usuarioEntityToDtoConverter.convert(source.getUsuario()));
         }
-        clienteDto.setNumeroDocumento(source.getNumeroDocumento());
-        if(Objects.nonNull(source.getTipoDocumento())){
-            clienteDto.setIdTipoDocumento(source.getTipoDocumento().getIdTipoDocumento());
-            clienteDto.setTipoDocumento(source.getTipoDocumento().getTipo());
-        }
-        clienteDto.setNombre(source.getNombre());
-        clienteDto.setApellido(source.getApellido());
+        clienteDto.setObjetivo(Objects.isNull(source.getObjetivo()) ? null : source.getObjetivo().getObjetivo());
         clienteDto.setDireccion(source.getDireccion());
         clienteDto.setFechaNacimiento(source.getFechaNacimiento());
-        clienteDto.setCelular(source.getCelular());
-        clienteDto.setObjetivo(source.getObjetivo());
+        clienteDto.setObservaciones(source.getObservaciones());
         return clienteDto;
     }
 }

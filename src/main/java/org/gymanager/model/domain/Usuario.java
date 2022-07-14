@@ -1,4 +1,4 @@
-package org.gymanager.model.domain.usuarios;
+package org.gymanager.model.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -6,13 +6,13 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
@@ -27,13 +27,32 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUsuario;
+
+    @Column(nullable = false)
+    private Long numeroDocumento;
+
+    @ManyToOne
+    @JoinColumn(name = "id_tipo_documento", nullable = false)
+    private TipoDocumento tipoDocumento;
+
+    @Column(nullable = false)
     private String nombre;
+
+    @Column(nullable = false)
+    private String apellido;
+
+    @ManyToOne
+    @JoinColumn(name = "id_sexo")
+    private Sexo sexo;
+
+    @Column(nullable = false)
     private String pass;
     private LocalDate fechaAlta;
     private LocalDate fechaBaja;
 
-    @Column(unique=true)
+    @Column(unique = true, nullable = false)
     private String mail;
+    private Long celular;
 
     @ManyToMany
     @JoinTable( name = "usuario_por_rol",

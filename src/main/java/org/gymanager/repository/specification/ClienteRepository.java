@@ -1,6 +1,6 @@
 package org.gymanager.repository.specification;
 
-import org.gymanager.model.domain.clientes.Cliente;
+import org.gymanager.model.domain.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

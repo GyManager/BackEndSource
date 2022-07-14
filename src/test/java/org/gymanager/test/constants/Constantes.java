@@ -13,15 +13,17 @@ public class Constantes {
     public static final String PERMISO_UNO = "permiso_uno";
     public static final String PERMISO_DOS = "permiso_dos";
 
-    public static final long ID_PERSONA = 100L;
+    public static final long ID_CLIENTE = 100L;
     public static final long ID_TIPO_DOCUMENTO = 200L;
     public static final String TIPO_DOCUMENTO = "DNI";
     public static final long NUMERO_DOCUMENTO = 39_072_000L;
     public static final String NOMBRE = "Nombre";
     public static final String APELLIDO = "Apellido";
-    public static final String CELULAR = "351-30900000";
+    public static final Long CELULAR = 35130900000L;
     public static final String DIRECCION = "Av Colon 5000";
     public static final Date FECHA_NACIMIENTO = new Date();
     public static final String OBJETIVO = "Objetivo 1";
+    public static final String OBSERVACIONES = "Observaciones 1";
+    public static final String SEXO = "Masculino";
 
 }

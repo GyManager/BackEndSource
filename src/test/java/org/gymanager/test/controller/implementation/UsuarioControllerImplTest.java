@@ -1,8 +1,8 @@
 package org.gymanager.test.controller.implementation;
 
 import org.gymanager.controller.implementation.UsuarioControllerImpl;
-import org.gymanager.model.client.usuarios.UsuarioDto;
-import org.gymanager.model.client.usuarios.UsuarioDtoRegistro;
+import org.gymanager.model.client.UsuarioDto;
+import org.gymanager.model.client.UsuarioDtoRegistro;
 import org.gymanager.service.specification.UsuarioService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,15 +31,14 @@ class UsuarioControllerImplTest {
     @Test
     public void addUsuario_WhenOk_ThenCreated(){
         UsuarioDtoRegistro usuarioDtoRegistro = new UsuarioDtoRegistro();
-        UsuarioDto usuarioDto = new UsuarioDto();
 
-        when(usuarioService.addUsuario(usuarioDtoRegistro)).thenReturn(usuarioDto);
+        when(usuarioService.addUsuario(usuarioDtoRegistro)).thenReturn(ID_USUARIO);
 
-        ResponseEntity<UsuarioDto> resultado = usuarioController.addUsuario(usuarioDtoRegistro);
+        ResponseEntity<Long> resultado = usuarioController.addUsuario(usuarioDtoRegistro);
 
         assertThat(resultado).isNotNull();
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(resultado.getBody()).isEqualTo(usuarioDto);
+        assertThat(resultado.getBody()).isEqualTo(ID_USUARIO);
 
         verify(usuarioService).addUsuario(usuarioDtoRegistro);
     }
