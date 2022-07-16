@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.UsuarioController;
 import org.gymanager.model.client.UsuarioDto;
-import org.gymanager.model.client.UsuarioDtoRegistro;
 import org.gymanager.service.specification.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,15 +29,15 @@ public class UsuarioControllerImpl implements UsuarioController {
     }
 
     @Override
-    public ResponseEntity<Long> addUsuario(UsuarioDtoRegistro usuarioDtoRegistro) {
+    public ResponseEntity<Long> addUsuario(UsuarioDto usuarioDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(usuarioService.addUsuario(usuarioDtoRegistro));
+                .body(usuarioService.addUsuario(usuarioDto));
     }
 
     @Override
-    public ResponseEntity<Void> updateUsuarioById(Long idUsuario, UsuarioDtoRegistro usuarioDtoRegistro) {
-        usuarioService.updateUsuarioById(idUsuario, usuarioDtoRegistro);
+    public ResponseEntity<Void> updateUsuarioById(Long idUsuario, UsuarioDto usuarioDto) {
+        usuarioService.updateUsuarioById(idUsuario, usuarioDto);
         return ResponseEntity.noContent().build();
     }
 

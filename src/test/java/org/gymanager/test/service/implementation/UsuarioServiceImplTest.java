@@ -2,7 +2,6 @@ package org.gymanager.test.service.implementation;
 
 import org.gymanager.converter.UsuarioEntityToDtoConverter;
 import org.gymanager.model.client.UsuarioDto;
-import org.gymanager.model.client.UsuarioDtoRegistro;
 import org.gymanager.model.domain.Permiso;
 import org.gymanager.model.domain.Rol;
 import org.gymanager.model.domain.Usuario;
@@ -28,18 +27,11 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.gymanager.test.constants.Constantes.APELLIDO;
 import static org.gymanager.test.constants.Constantes.ID_USUARIO;
 import static org.gymanager.test.constants.Constantes.MAIL;
-import static org.gymanager.test.constants.Constantes.NOMBRE;
-import static org.gymanager.test.constants.Constantes.NOMBRE_USUARIO;
-import static org.gymanager.test.constants.Constantes.NUMERO_DOCUMENTO;
 import static org.gymanager.test.constants.Constantes.PASS;
 import static org.gymanager.test.constants.Constantes.PERMISO_DOS;
 import static org.gymanager.test.constants.Constantes.PERMISO_UNO;
-import static org.gymanager.test.constants.Constantes.SEXO;
-import static org.gymanager.test.constants.Constantes.TIPO_DOCUMENTO;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

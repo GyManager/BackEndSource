@@ -1,7 +1,6 @@
 package org.gymanager.service.specification;
 
 import org.gymanager.model.client.UsuarioDto;
-import org.gymanager.model.client.UsuarioDtoRegistro;
 import org.gymanager.model.domain.Usuario;
 
 import java.util.List;
@@ -14,9 +13,9 @@ public interface UsuarioService {
 
     Usuario getUsuarioEntityById(Long idUsuario);
 
-    Long addUsuario(UsuarioDtoRegistro usuarioDtoRegistro);
+    Long addUsuario(UsuarioDto usuarioDto);
 
-    void updateUsuarioById(Long idUsuario, UsuarioDtoRegistro usuarioDtoRegistro);
+    void updateUsuarioById(Long idUsuario, UsuarioDto usuarioDto);
 
     void deleteUsuarioById(Long idUsuario);
 }

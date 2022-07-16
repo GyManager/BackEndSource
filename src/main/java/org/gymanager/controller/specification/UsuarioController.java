@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.gymanager.model.client.UsuarioDto;
-import org.gymanager.model.client.UsuarioDtoRegistro;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,7 +49,7 @@ public interface UsuarioController {
     })
     @PostMapping(produces = { "application/json"}, consumes = { "application/json"})
     @PreAuthorize("hasAuthority('post-usuarios')")
-    ResponseEntity<Long> addUsuario(@RequestBody @Valid UsuarioDtoRegistro usuarioDtoRegistro);
+    ResponseEntity<Long> addUsuario(@RequestBody @Valid UsuarioDto usuarioDto);
 
     @Operation(summary = "Actualizar un usuario", description = "Esta operación es para actualizar un usuario")
     @ApiResponses(value = {
@@ -59,7 +58,7 @@ public interface UsuarioController {
     @PutMapping(value = "/{idUsuario}", consumes = { "application/json"})
     @PreAuthorize("hasAuthority('put-usuarios')")
     ResponseEntity<Void> updateUsuarioById(@PathVariable("idUsuario") Long idUsuario,
-                                     @RequestBody @Valid UsuarioDtoRegistro usuarioDtoRegistro);
+                                     @RequestBody @Valid UsuarioDto usuarioDto);
 
     @Operation(summary = "Borrar un usuario", description = "Esta operación es para borrar un usuario")
     @ApiResponses(value = {

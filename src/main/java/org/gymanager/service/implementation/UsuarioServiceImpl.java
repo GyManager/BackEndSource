@@ -6,9 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.gymanager.converter.UsuarioEntityToDtoConverter;
 import org.gymanager.model.client.UsuarioDto;
-import org.gymanager.model.client.UsuarioDtoRegistro;
 import org.gymanager.model.domain.Permiso;
 import org.gymanager.model.domain.Rol;
+import org.gymanager.model.domain.Sexo;
 import org.gymanager.model.domain.TipoDocumento;
 import org.gymanager.model.domain.Usuario;
 import org.gymanager.repository.specification.UsuarioRepository;
@@ -115,53 +115,52 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     @Override
-    public Long addUsuario(UsuarioDtoRegistro usuarioDtoRegistro) {
-        validarConfirmacionPass(usuarioDtoRegistro);
-        validarUsuarioConMailNoExiste(usuarioDtoRegistro.getMail());
+    public Long addUsuario(UsuarioDto usuarioDto) {
+        validarUsuarioConMailNoExiste(usuarioDto.getMail());
 
-        TipoDocumento tipoDocumento = tipoDocumentoService.getTipoDocumentoByTipo(usuarioDtoRegistro.getTipoDocumento());
-        validarUsuarioConNroYTipoDocumentoNoExiste(tipoDocumento, usuarioDtoRegistro.getNumeroDocumento());
+        TipoDocumento tipoDocumento = tipoDocumentoService.getTipoDocumentoByTipo(usuarioDto.getTipoDocumento());
+        validarUsuarioConNroYTipoDocumentoNoExiste(tipoDocumento, usuarioDto.getNumeroDocumento());
+
+        Sexo sexo = buscarSexoByName(usuarioDto.getSexo());
 
         Usuario usuario = new Usuario();
-        usuario.setNumeroDocumento(usuarioDtoRegistro.getNumeroDocumento());
+        usuario.setNumeroDocumento(usuarioDto.getNumeroDocumento());
         usuario.setTipoDocumento(tipoDocumento);
-        usuario.setNombre(usuarioDtoRegistro.getNombre());
-        usuario.setApellido(usuarioDtoRegistro.getApellido());
-
-        if(!StringUtils.isEmpty(usuarioDtoRegistro.getSexo())){
-            usuario.setSexo(sexoService.getSexoByNombreSexo(usuarioDtoRegistro.getSexo()));
-        }
-        usuario.setMail(usuarioDtoRegistro.getMail());
-        usuario.setCelular(usuarioDtoRegistro.getCelular());
-        usuario.setPass(passwordEncoder.encode(usuarioDtoRegistro.getPass()));
+        usuario.setNombre(usuarioDto.getNombre());
+        usuario.setApellido(usuarioDto.getApellido());
+        usuario.setSexo(sexo);
+        usuario.setMail(usuarioDto.getMail());
+        usuario.setCelular(usuarioDto.getCelular());
         usuario.setFechaAlta(LocalDate.now());
+
+        usuario.setPass(passwordEncoder.encode(usuarioDto.getNumeroDocumento().toString()));
 
         return usuarioRepository.save(usuario).getIdUsuario();
     }
 
     @Override
-    public void updateUsuarioById(Long idUsuario, UsuarioDtoRegistro usuarioDtoRegistro) {
-
+    public void updateUsuarioById(Long idUsuario, UsuarioDto usuarioDto) {
         Usuario usuario = getUsuarioEntityById(idUsuario);
 
-        TipoDocumento tipoDocumento = tipoDocumentoService.getTipoDocumentoByTipo(usuarioDtoRegistro.getTipoDocumento());
+        if(!usuarioDto.getMail().equals(usuario.getMail())){
+            validarUsuarioConMailNoExiste(usuarioDto.getMail());
+        }
 
-        usuario.setNumeroDocumento(usuarioDtoRegistro.getNumeroDocumento());
+        TipoDocumento tipoDocumento = tipoDocumentoService.getTipoDocumentoByTipo(usuarioDto.getTipoDocumento());
+        if(!usuarioDto.getNumeroDocumento().equals(usuario.getNumeroDocumento())
+                || !usuarioDto.getTipoDocumento().equals(usuario.getTipoDocumento().getTipo())){
+            validarUsuarioConNroYTipoDocumentoNoExiste(tipoDocumento, usuarioDto.getNumeroDocumento());
+        }
+
+        Sexo sexo = buscarSexoByName(usuarioDto.getSexo());
+
+        usuario.setNumeroDocumento(usuarioDto.getNumeroDocumento());
         usuario.setTipoDocumento(tipoDocumento);
-        usuario.setNombre(usuarioDtoRegistro.getNombre());
-        usuario.setApellido(usuarioDtoRegistro.getApellido());
-
-        if(!StringUtils.isEmpty(usuarioDtoRegistro.getSexo())){
-            usuario.setSexo(sexoService.getSexoByNombreSexo(usuarioDtoRegistro.getSexo()));
-        }
-        usuario.setMail(usuarioDtoRegistro.getMail());
-        usuario.setCelular(usuarioDtoRegistro.getCelular());
-
-        if(StringUtils.isEmpty(usuarioDtoRegistro.getPass())){
-            validarConfirmacionPass(usuarioDtoRegistro);
-            usuario.setPass(passwordEncoder.encode(usuarioDtoRegistro.getPass()));
-        }
-        usuario.setFechaAlta(LocalDate.now());
+        usuario.setNombre(usuarioDto.getNombre());
+        usuario.setApellido(usuarioDto.getApellido());
+        usuario.setSexo(sexo);
+        usuario.setMail(usuarioDto.getMail());
+        usuario.setCelular(usuarioDto.getCelular());
 
         usuarioRepository.save(usuario);
     }
@@ -180,18 +179,16 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         }
     }
 
-    private void validarConfirmacionPass(UsuarioDtoRegistro usuarioDtoRegistro){
-        if(!usuarioDtoRegistro.getPass().equals(usuarioDtoRegistro.getConfirmacionPass())){
-            log.error(String.format(PASS_NO_COINCIDEN));
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(PASS_NO_COINCIDEN));
-        }
-    }
-
     private void validarUsuarioConNroYTipoDocumentoNoExiste(TipoDocumento tipoDocumento, Long numeroDocumento) {
         if(usuarioRepository.findByTipoDocumentoAndNumeroDocumento(tipoDocumento, numeroDocumento).isPresent()){
             log.error(String.format(NUMERO_TIPO_DOCUMENTO_EN_USO, numeroDocumento, tipoDocumento.getTipo()));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     String.format(NUMERO_TIPO_DOCUMENTO_EN_USO, numeroDocumento, tipoDocumento.getTipo()));
         }
+    }
+
+    private Sexo buscarSexoByName(String sexo){
+        return StringUtils.isEmpty(sexo) ? null :
+                sexoService.getSexoByNombreSexo(sexo);
     }
 }
