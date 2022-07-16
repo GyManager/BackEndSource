@@ -94,12 +94,30 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
+    @Transactional
     public void updateClienteById(Long idCliente, ClienteDto clienteDto) {
+        Cliente cliente = getClienteEntityById(idCliente);
 
+        Long idUsuario = cliente.getUsuario().getIdUsuario();
+        usuarioService.updateUsuarioById(idUsuario, clienteDto.getUsuario());
+        Usuario usuario = usuarioService.getUsuarioEntityById(idUsuario);
+        Objetivo objetivo = objetivoService.getObjetivoByObjetivo(clienteDto.getObjetivo());
+
+        cliente.setUsuario(usuario);
+        cliente.setObjetivo(objetivo);
+        cliente.setDireccion(clienteDto.getDireccion());
+        cliente.setFechaNacimiento(clienteDto.getFechaNacimiento());
+        cliente.setObservaciones(clienteDto.getObservaciones());
+
+        clienteRepository.save(cliente);
     }
 
     @Override
+    @Transactional
     public void deleteClienteById(Long idCliente) {
+        Cliente cliente = getClienteEntityById(idCliente);
 
+        clienteRepository.delete(cliente);
+        usuarioService.deleteUsuarioById(cliente.getUsuario().getIdUsuario());
     }
 }
