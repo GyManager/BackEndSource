@@ -2,6 +2,8 @@ package org.gymanager.controller.specification;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -55,7 +57,10 @@ public interface ClienteController {
     })
     @PostMapping(produces = { "application/json"}, consumes = { "application/json"})
     @PreAuthorize("hasAuthority('post-clientes')")
-    ResponseEntity<Long> addCliente(@RequestBody @Valid ClienteDto clienteDto);
+    ResponseEntity<Long> addCliente(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Cliente request body.",
+                    content = @Content(schema = @Schema(implementation = ClienteDto.class)), required = true)
+            @RequestBody @Valid ClienteDto clienteDto);
 
     @Operation(summary = "Actualizar un cliente", description = "Esta operación es para actualizar un cliente")
     @ApiResponses(value = {
@@ -63,8 +68,11 @@ public interface ClienteController {
     })
     @PutMapping(value = "/{idCliente}", consumes = { "application/json"})
     @PreAuthorize("hasAuthority('put-clientes')")
-    ResponseEntity<Void> updateClienteById(@PathVariable("idCliente") Long idCliente,
-                                           @RequestBody @Valid ClienteDto clienteDto);
+    ResponseEntity<Void> updateClienteById(
+            @PathVariable("idCliente") Long idCliente,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Cliente request body.",
+                    content = @Content(schema = @Schema(implementation = ClienteDto.class)), required = true)
+            @RequestBody @Valid ClienteDto clienteDto);
 
     @Operation(summary = "Borrar un cliente", description = "Esta operación es para borrar un cliente")
     @ApiResponses(value = {
