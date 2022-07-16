@@ -11,10 +11,16 @@ import org.gymanager.model.page.GyManagerPage;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.Valid;
 
 @RequestMapping("/api/clientes")
 @Tag(name = "Clientes", description = "Gestion de clientes")
@@ -42,4 +48,29 @@ public interface ClienteController {
     @GetMapping(value = "/{idCliente}", produces = { "application/json"})
     @PreAuthorize("hasAuthority('get-clientes')")
     ResponseEntity<ClienteDto> getClienteById(@PathVariable("idCliente") Long idCliente);
+
+    @Operation(summary = "Agregar cliente", description = "Esta operación es para agregar un cliente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    @PostMapping(produces = { "application/json"}, consumes = { "application/json"})
+    @PreAuthorize("hasAuthority('post-clientes')")
+    ResponseEntity<Long> addCliente(@RequestBody @Valid ClienteDto clienteDto);
+
+    @Operation(summary = "Actualizar un cliente", description = "Esta operación es para actualizar un cliente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
+    @PutMapping(value = "/{idCliente}", consumes = { "application/json"})
+    @PreAuthorize("hasAuthority('put-clientes')")
+    ResponseEntity<Void> updateClienteById(@PathVariable("idCliente") Long idCliente,
+                                           @RequestBody @Valid ClienteDto clienteDto);
+
+    @Operation(summary = "Borrar un cliente", description = "Esta operación es para borrar un cliente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
+    @DeleteMapping("/{idCliente}")
+    @PreAuthorize("hasAuthority('delete-clientes')")
+    ResponseEntity<Void> deleteClienteById(@PathVariable("idCliente") Long idCliente);
 }

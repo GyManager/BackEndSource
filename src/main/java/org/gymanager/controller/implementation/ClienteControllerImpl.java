@@ -8,6 +8,7 @@ import org.gymanager.model.enums.ClienteSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.ClienteService;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +28,24 @@ public class ClienteControllerImpl implements ClienteController {
     @Override
     public ResponseEntity<ClienteDto> getClienteById(Long idCliente) {
         return ResponseEntity.ok(clienteService.getClientesById(idCliente));
+    }
+
+    @Override
+    public ResponseEntity<Long> addCliente(ClienteDto clienteDto) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(clienteService.addCliente(clienteDto));
+    }
+
+    @Override
+    public ResponseEntity<Void> updateClienteById(Long idCliente, ClienteDto clienteDto) {
+        clienteService.updateClienteById(idCliente, clienteDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteClienteById(Long idCliente) {
+        clienteService.deleteClienteById(idCliente);
+        return ResponseEntity.noContent().build();
     }
 }

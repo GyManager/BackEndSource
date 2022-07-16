@@ -6,11 +6,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.ClienteEntityToDtoConverter;
 import org.gymanager.model.client.ClienteDto;
 import org.gymanager.model.domain.Cliente;
+import org.gymanager.model.domain.Objetivo;
+import org.gymanager.model.domain.Usuario;
 import org.gymanager.model.enums.ClienteSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.repository.filters.ClienteSpecification;
 import org.gymanager.repository.specification.ClienteRepository;
 import org.gymanager.service.specification.ClienteService;
+import org.gymanager.service.specification.ObjetivoService;
+import org.gymanager.service.specification.UsuarioService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -32,6 +36,12 @@ public class ClienteServiceImpl implements ClienteService {
 
     @NonNull
     private ClienteEntityToDtoConverter clienteEntityToDtoConverter;
+
+    @NonNull
+    private UsuarioService usuarioService;
+
+    @NonNull
+    private ObjetivoService objetivoService;
 
     @Override
     @Transactional
@@ -63,5 +73,33 @@ public class ClienteServiceImpl implements ClienteService {
         }
 
         return cliente.get();
+    }
+
+    @Override
+    @Transactional
+    public Long addCliente(ClienteDto clienteDto) {
+        Cliente cliente = new Cliente();
+
+        Long idUsuario = usuarioService.addUsuario(clienteDto.getUsuario());
+        Usuario usuario = usuarioService.getUsuarioEntityById(idUsuario);
+        Objetivo objetivo = objetivoService.getObjetivoByObjetivo(clienteDto.getObjetivo());
+
+        cliente.setUsuario(usuario);
+        cliente.setObjetivo(objetivo);
+        cliente.setDireccion(clienteDto.getDireccion());
+        cliente.setFechaNacimiento(clienteDto.getFechaNacimiento());
+        cliente.setObservaciones(clienteDto.getObservaciones());
+
+        return clienteRepository.save(cliente).getIdCliente();
+    }
+
+    @Override
+    public void updateClienteById(Long idCliente, ClienteDto clienteDto) {
+
+    }
+
+    @Override
+    public void deleteClienteById(Long idCliente) {
+
     }
 }

@@ -14,4 +14,10 @@ public interface ClienteService {
     ClienteDto getClientesById(Long idCliente);
 
     Cliente getClienteEntityById(Long idCliente);
+
+    Long addCliente(ClienteDto clienteDto);
+
+    void updateClienteById(Long idCliente, ClienteDto clienteDto);
+
+    void deleteClienteById(Long idCliente);
 }
