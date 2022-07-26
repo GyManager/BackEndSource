@@ -6,14 +6,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.EjercicioEntityToDtoConverter;
 import org.gymanager.model.client.EjercicioDto;
 import org.gymanager.model.domain.Ejercicio;
+import org.gymanager.model.enums.EjercicioSortBy;
+import org.gymanager.model.page.GyManagerPage;
+import org.gymanager.repository.filters.EjercicioSpecification;
 import org.gymanager.repository.specification.EjercicioRepository;
 import org.gymanager.service.specification.EjercicioService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,8 +36,16 @@ public class EjercicioServiceImpl implements EjercicioService {
 
     @Override
     @Transactional
-    public List<EjercicioDto> getEjercicios() {
-        return ejercicioEntityToDtoConverter.convert(ejercicioRepository.findAll());
+    public GyManagerPage<EjercicioDto> getEjercicios(String search, Integer page, Integer pageSize,
+                                            EjercicioSortBy sortBy, Sort.Direction direction) {
+        var ejercicioSpecification = new EjercicioSpecification();
+        ejercicioSpecification.setNombreEjercicioOrTipoEjercicio(search);
+
+        Sort sort = sortBy.equals(EjercicioSortBy.NONE) ? Sort.unsorted() : Sort.by(direction, sortBy.getField());
+        PageRequest pageable = PageRequest.of(page, pageSize, sort);
+
+        return new GyManagerPage<>(ejercicioRepository.findAll(ejercicioSpecification, pageable)
+                .map(ejercicioEntityToDtoConverter::convert));
     }
 
     @Override
