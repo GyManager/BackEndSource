@@ -1,11 +1,7 @@
 package org.gymanager.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gymanager.model.client.usuarios.RolDto;
-import org.gymanager.model.client.usuarios.UsuarioDto;
-import org.gymanager.model.domain.usuarios.Usuario;
 import org.gymanager.service.specification.TokenService;
-import org.gymanager.service.specification.UsuarioService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,11 +36,6 @@ public class GyManagerAuthenticationFilter extends UsernamePasswordAuthenticatio
         final String pass = request.getParameter("pass");
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(mail, pass);
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "POST");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Headers",
-                "content-type, x-gwt-module-base, x-gwt-permutation, clientid, longpush");
 
         return authenticationManager.authenticate(authenticationToken);
     }

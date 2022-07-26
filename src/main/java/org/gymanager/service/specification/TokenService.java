@@ -1,9 +1,6 @@
 package org.gymanager.service.specification;
 
-import org.gymanager.model.client.usuarios.RolDto;
-import org.gymanager.model.client.usuarios.UsuarioDto;
-import org.gymanager.model.client.usuarios.token.UsuarioToken;
-import org.springframework.security.core.userdetails.User;
+import org.gymanager.model.client.token.UsuarioToken;
 
 import java.util.List;
 

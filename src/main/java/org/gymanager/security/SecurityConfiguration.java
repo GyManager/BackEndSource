@@ -45,7 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("*"));
+        corsConfiguration.addAllowedOriginPattern("*");
         corsConfiguration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
@@ -70,9 +70,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         final GyManagerAuthorizationFilter authorizationFilter = new GyManagerAuthorizationFilter(loginPath, refreshPath, tokenService);
 
-        http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/health", refreshPath, loginPath).permitAll();
+        http.cors().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.csrf().disable().anonymous();
+        http.authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                .antMatchers("/health", refreshPath, loginPath).permitAll();
         http.addFilter(authenticationFilter);
         http.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
