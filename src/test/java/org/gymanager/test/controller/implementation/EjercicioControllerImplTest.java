@@ -2,6 +2,7 @@ package org.gymanager.test.controller.implementation;
 
 import org.gymanager.controller.implementation.EjercicioControllerImpl;
 import org.gymanager.model.client.EjercicioDto;
+import org.gymanager.model.client.EjercicioDtoRequest;
 import org.gymanager.model.enums.EjercicioSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.EjercicioService;
@@ -61,5 +62,19 @@ class EjercicioControllerImplTest {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isNotNull();
         assertThat(result.getBody()).isEqualTo(ejercicioDto);
+    }
+
+    @Test
+    public void addEjercicio_WhenOk_ThenReturnIdEjercicioNuevo(){
+        var ejercicioDtoRequest = mock(EjercicioDtoRequest.class);
+
+        when(ejercicioService.addEjercicio(ejercicioDtoRequest)).thenReturn(ID_EJERCICIO);
+
+        var result = ejercicioController.addEjercicio(ejercicioDtoRequest);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(result.getBody()).isNotNull();
+        assertThat(result.getBody()).isEqualTo(ID_EJERCICIO);
     }
 }

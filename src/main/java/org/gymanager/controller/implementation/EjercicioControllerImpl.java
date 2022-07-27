@@ -9,6 +9,7 @@ import org.gymanager.model.enums.EjercicioSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.EjercicioService;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +33,8 @@ public class EjercicioControllerImpl implements EjercicioController {
 
     @Override
     public ResponseEntity<Long> addEjercicio(EjercicioDtoRequest ejercicioDtoRequest) {
-        return ResponseEntity.ok(ejercicioService.addEjercicio(ejercicioDtoRequest));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ejercicioService.addEjercicio(ejercicioDtoRequest));
     }
 }

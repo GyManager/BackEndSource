@@ -15,6 +15,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.gymanager.test.constants.Constantes.ID_EJERCICIO;
+import static org.gymanager.test.constants.Constantes.ID_HERRAMIENTA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,5 +43,28 @@ class HerramientaServiceImplTest {
 
         assertThat(result).isNotNull();
         assertThat(result).containsExactly(herramientaDto);
+    }
+
+    @Test
+    public void getHerramientasByIds_WhenOk_ThenReturnHerramientas(){
+        var idHerramientaList = List.of(ID_HERRAMIENTA);
+
+        var herramienta = new Herramienta();
+        herramienta.setIdHerramienta(ID_HERRAMIENTA);
+
+        when(herramientaRepository.findAllById(idHerramientaList)).thenReturn(List.of(herramienta));
+
+        var result = herramientaService.getHerramientasByIds(idHerramientaList);
+
+        assertThat(result).isNotNull();
+        assertThat(result).containsExactly(herramienta);
+    }
+
+    @Test
+    public void getHerramientasByIds_WhenNullList_ThenReturnEmptyList(){
+        var result = herramientaService.getHerramientasByIds(null);
+
+        assertThat(result).isNotNull();
+        assertThat(result.isEmpty()).isTrue();
     }
 }
