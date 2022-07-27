@@ -36,6 +36,13 @@ public class Ejercicio {
 
     private String video;
 
+    @ManyToMany
+    @JoinTable( name = "ejercicio_por_herramienta",
+            joinColumns = @JoinColumn(name = "id_ejercicio"),
+            inverseJoinColumns = @JoinColumn(name = "id_herramienta"))
+    private List<Herramienta> herramientas;
+
+
     @OneToMany(mappedBy = "ejercicio", cascade = CascadeType.ALL)
     private List<Paso> pasos;
 }
