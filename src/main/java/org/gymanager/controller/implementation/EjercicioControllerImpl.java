@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.EjercicioController;
 import org.gymanager.model.client.EjercicioDto;
+import org.gymanager.model.client.EjercicioDtoRequest;
 import org.gymanager.model.enums.EjercicioSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.EjercicioService;
@@ -27,5 +28,10 @@ public class EjercicioControllerImpl implements EjercicioController {
     @Override
     public ResponseEntity<EjercicioDto> getEjercicioById(Long idEjercicio) {
         return ResponseEntity.ok(ejercicioService.getEjercicioById(idEjercicio));
+    }
+
+    @Override
+    public ResponseEntity<Long> addEjercicio(EjercicioDtoRequest ejercicioDtoRequest) {
+        return ResponseEntity.ok(ejercicioService.addEjercicio(ejercicioDtoRequest));
     }
 }

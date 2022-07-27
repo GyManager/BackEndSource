@@ -42,7 +42,11 @@ public class Ejercicio {
             inverseJoinColumns = @JoinColumn(name = "id_herramienta"))
     private List<Herramienta> herramientas;
 
-
     @OneToMany(mappedBy = "ejercicio", cascade = CascadeType.ALL)
     private List<Paso> pasos;
+
+    public void setPasos(List<Paso> pasos) {
+        this.pasos = pasos;
+        pasos.forEach(paso -> paso.setEjercicio(this));
+    }
 }

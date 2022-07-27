@@ -1,6 +1,7 @@
 package org.gymanager.service.specification;
 
 import org.gymanager.model.client.EjercicioDto;
+import org.gymanager.model.client.EjercicioDtoRequest;
 import org.gymanager.model.domain.Ejercicio;
 import org.gymanager.model.enums.EjercicioSortBy;
 import org.gymanager.model.page.GyManagerPage;
@@ -14,4 +15,6 @@ public interface EjercicioService {
     EjercicioDto getEjercicioById(Long idEjercicio);
 
     Ejercicio getEjercicioEntityById(Long idEjercicio);
+
+    Long addEjercicio(EjercicioDtoRequest ejercicioDtoRequest);
 }

@@ -5,12 +5,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.EjercicioEntityToDtoConverter;
 import org.gymanager.model.client.EjercicioDto;
+import org.gymanager.model.client.EjercicioDtoRequest;
 import org.gymanager.model.domain.Ejercicio;
+import org.gymanager.model.domain.TipoEjercicio;
 import org.gymanager.model.enums.EjercicioSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.repository.filters.EjercicioSpecification;
 import org.gymanager.repository.specification.EjercicioRepository;
 import org.gymanager.service.specification.EjercicioService;
+import org.gymanager.service.specification.HerramientaService;
+import org.gymanager.service.specification.PasoService;
+import org.gymanager.service.specification.TipoEjercicioService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -26,6 +31,8 @@ import java.util.Optional;
 public class EjercicioServiceImpl implements EjercicioService {
 
     private static final String EJERCICIO_NO_ENCONTRADO = "Ejercicio no encontrado";
+    private static final String NOMBRE_TIPO_EJERCICIO_EN_USO = "Ya existe un ejercicio con el nombre (%s)" +
+            " del tipo (%s)";
 
     @NonNull
     private EjercicioRepository ejercicioRepository;
@@ -33,6 +40,14 @@ public class EjercicioServiceImpl implements EjercicioService {
     @NonNull
     private EjercicioEntityToDtoConverter ejercicioEntityToDtoConverter;
 
+    @NonNull
+    private TipoEjercicioService tipoEjercicioService;
+
+    @NonNull
+    private PasoService pasoService;
+
+    @NonNull
+    private HerramientaService herramientaService;
 
     @Override
     @Transactional
@@ -64,5 +79,33 @@ public class EjercicioServiceImpl implements EjercicioService {
         }
 
         return ejercicio.get();
+    }
+
+    @Override
+    @Transactional
+    public Long addEjercicio(EjercicioDtoRequest ejercicioDtoRequest) {
+        var ejercicio = new Ejercicio();
+
+        var tipoEjercicio = tipoEjercicioService.getTipoEjercicioByNombre(ejercicioDtoRequest.getTipoEjercicio());
+        validarEjercicioConTipoYNombreNoExiste(tipoEjercicio, ejercicioDtoRequest.getNombre());
+
+        var herramientas = herramientaService.getHerramientasByIds(ejercicioDtoRequest.getIdHerramientaList());
+        var pasos = pasoService.crearPasos(ejercicioDtoRequest.getPasos());
+
+        ejercicio.setNombre(ejercicioDtoRequest.getNombre());
+        ejercicio.setTipoEjercicio(tipoEjercicio);
+        ejercicio.setVideo(ejercicioDtoRequest.getVideo());
+        ejercicio.setHerramientas(herramientas);
+        ejercicio.setPasos(pasos);
+
+        return ejercicioRepository.save(ejercicio).getIdEjercicio();
+    }
+
+    private void validarEjercicioConTipoYNombreNoExiste(TipoEjercicio tipoEjercicio, String nombre){
+        if(ejercicioRepository.findByTipoEjercicioAndNombre(tipoEjercicio, nombre).isPresent()){
+            log.error(String.format(NOMBRE_TIPO_EJERCICIO_EN_USO, nombre, tipoEjercicio.getNombre()));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format(NOMBRE_TIPO_EJERCICIO_EN_USO, nombre, tipoEjercicio.getNombre()));
+        }
     }
 }
