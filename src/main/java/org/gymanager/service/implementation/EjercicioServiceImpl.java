@@ -117,13 +117,12 @@ public class EjercicioServiceImpl implements EjercicioService {
 
         var herramientas = herramientaService.getHerramientasByIds(ejercicioDtoRequest.getIdHerramientaList());
 
-        var pasos = pasoService.actualizarYCrearPasos(ejercicioDtoRequest.getPasos(), ejercicio.getPasos());
+        pasoService.actualizarPasosEjercicio(ejercicioDtoRequest.getPasos(), ejercicio);
 
         ejercicio.setNombre(ejercicioDtoRequest.getNombre());
         ejercicio.setTipoEjercicio(tipoEjercicio);
         ejercicio.setVideo(ejercicioDtoRequest.getVideo());
         ejercicio.setHerramientas(herramientas);
-        ejercicio.setPasos(pasos);
 
         ejercicioRepository.save(ejercicio);
     }

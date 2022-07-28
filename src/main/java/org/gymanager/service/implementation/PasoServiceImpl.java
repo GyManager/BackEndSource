@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.PasoEntityToDtoConverter;
 import org.gymanager.model.client.PasoDto;
+import org.gymanager.model.domain.Ejercicio;
 import org.gymanager.model.domain.Paso;
 import org.gymanager.repository.specification.PasoRepository;
 import org.gymanager.service.specification.PasoService;
@@ -45,38 +46,37 @@ public class PasoServiceImpl implements PasoService {
 
         validarListaDePasosNoRepiteNumeroDePaso(pasoDtos);
 
-        return pasoDtos.stream().map(this::crearPaso).toList();
+        return pasoDtos.stream().map(this::crearPaso).collect(Collectors.toList());
     }
 
     @Override
-    public List<Paso> actualizarYCrearPasos(List<PasoDto> pasoDtos, List<Paso> pasos) {
-        validarListaDePasosNoRepiteNumeroDePaso(pasoDtos);
+    public void actualizarPasosEjercicio(List<PasoDto> pasoDtoList, Ejercicio ejercicio) {
+        if(Objects.isNull(pasoDtoList)){
+            pasoDtoList = new ArrayList<>();
+        }
 
-        final var mapPasoDtoPorId = pasoDtos.stream()
+        validarListaDePasosNoRepiteNumeroDePaso(pasoDtoList);
+
+        final var mapPasoExistenteIdPasoActualizadoDto = pasoDtoList.stream()
                 .filter(pasoDto -> Objects.nonNull(pasoDto.getIdPaso()))
                 .collect(Collectors.toMap(PasoDto::getIdPaso, Function.identity()));
 
-        var idsPasosAEliminar = pasos.stream()
-                .map(Paso::getIdPaso)
-                .filter(idPaso -> !mapPasoDtoPorId.containsKey(idPaso))
-                .toList();
-        pasoRepository.deleteAllByIdInBatch(idsPasosAEliminar);
-        pasos.removeIf(paso -> !mapPasoDtoPorId.containsKey(paso.getIdPaso()));
+        ejercicio.getPasos().removeIf(paso -> !mapPasoExistenteIdPasoActualizadoDto.containsKey(paso.getIdPaso()));
 
-        pasos.forEach(paso -> {
-            var pasoDtoActualizado = mapPasoDtoPorId.get(paso.getIdPaso());
+        ejercicio.getPasos().forEach(paso -> {
+            var pasoDtoActualizado = mapPasoExistenteIdPasoActualizadoDto.get(paso.getIdPaso());
             paso.setNumeroPaso(pasoDtoActualizado.getNumeroPaso());
             paso.setImagen(pasoDtoActualizado.getImagen());
             paso.setContenido(pasoDtoActualizado.getContenido());
         });
 
-        var pasosACrear = pasoDtos.stream()
+        ejercicio.addAllPasos(crearPasos(getPasosSinId(pasoDtoList)));
+    }
+
+    private List<PasoDto> getPasosSinId(List<PasoDto> pasoDtoList){
+        return pasoDtoList.stream()
                 .filter(pasoDto -> Objects.isNull(pasoDto.getIdPaso()))
                 .toList();
-        var pasosNuevos = crearPasos(pasosACrear);
-
-        pasos.addAll(pasosNuevos);
-        return pasos;
     }
 
     private Paso crearPaso(PasoDto pasoDto){
