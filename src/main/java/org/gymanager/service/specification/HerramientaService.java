@@ -9,4 +9,6 @@ public interface HerramientaService {
     List<HerramientaDto> getHerramientasByIdEjercicio(Long idEjercicio);
 
     List<Herramienta> getHerramientasByIds(List<Long> idHerramientaList);
+
+    List<HerramientaDto> getHerramientas();
 }

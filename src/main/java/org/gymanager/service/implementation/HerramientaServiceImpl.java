@@ -38,4 +38,9 @@ public class HerramientaServiceImpl implements HerramientaService {
 
         return herramientaRepository.findAllById(idHerramientaList);
     }
+
+    @Override
+    public List<HerramientaDto> getHerramientas() {
+        return herramientaEntityToDtoConverter.convert(herramientaRepository.findAll());
+    }
 }

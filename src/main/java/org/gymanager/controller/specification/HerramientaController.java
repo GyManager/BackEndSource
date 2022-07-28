@@ -26,4 +26,13 @@ public interface HerramientaController {
     @PreAuthorize("hasAuthority('get-ejercicios')")
     ResponseEntity<List<HerramientaDto>> getHerramientasByIdEjercicio(@PathVariable("idEjercicio") Long idEjercicio);
 
+    @Operation(summary = "Obtener todas las herramientas",
+            description = "Esta operación es para obtener todas las herramientas en existencia")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    @GetMapping(value = "/herramientas", produces = { "application/json"})
+    @PreAuthorize("hasAuthority('get-herramientas')")
+    ResponseEntity<List<HerramientaDto>> getHerramientas();
+
 }

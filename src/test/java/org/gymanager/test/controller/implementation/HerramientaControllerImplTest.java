@@ -40,4 +40,18 @@ class HerramientaControllerImplTest {
         assertThat(result.getBody()).isNotNull();
         assertThat(result.getBody()).containsExactly(herramientaDto);
     }
+
+    @Test
+    public void getHerramientas_WhenOk_ThenReturnHerramientas(){
+        var herramientaDto = mock(HerramientaDto.class);
+
+        when(herramientaService.getHerramientas()).thenReturn(List.of(herramientaDto));
+
+        var result = herramientasController.getHerramientas();
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).isNotNull();
+        assertThat(result.getBody()).containsExactly(herramientaDto);
+    }
 }

@@ -67,4 +67,18 @@ class HerramientaServiceImplTest {
         assertThat(result).isNotNull();
         assertThat(result.isEmpty()).isTrue();
     }
+
+    @Test
+    public void getHerramientas_WhenOk_ThenReturnHerramientas(){
+        var herramienta = mock(Herramienta.class);
+        var herramientaDto = mock(HerramientaDto.class);
+
+        when(herramientaRepository.findAll()).thenReturn(List.of(herramienta));
+        when(herramientaEntityToDtoConverter.convert(List.of(herramienta))).thenReturn(List.of(herramientaDto));
+
+        var result = herramientaService.getHerramientas();
+
+        assertThat(result).isNotNull();
+        assertThat(result).containsExactly(herramientaDto);
+    }
 }

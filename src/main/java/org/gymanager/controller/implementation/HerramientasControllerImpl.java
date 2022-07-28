@@ -22,4 +22,9 @@ public class HerramientasControllerImpl implements HerramientaController {
     public ResponseEntity<List<HerramientaDto>> getHerramientasByIdEjercicio(Long idEjercicio) {
         return ResponseEntity.ok(herramientaService.getHerramientasByIdEjercicio(idEjercicio));
     }
+
+    @Override
+    public ResponseEntity<List<HerramientaDto>> getHerramientas() {
+        return ResponseEntity.ok(herramientaService.getHerramientas());
+    }
 }
