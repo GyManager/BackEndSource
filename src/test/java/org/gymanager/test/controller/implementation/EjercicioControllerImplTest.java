@@ -83,7 +83,11 @@ class EjercicioControllerImplTest {
     public void updateEjercicioById_WhenOk_ThenReturnNull(){
         var ejercicioDtoRequest = mock(EjercicioDtoRequest.class);
 
-        ejercicioController.updateEjercicioById(ID_EJERCICIO, ejercicioDtoRequest);
+        var result = ejercicioController.updateEjercicioById(ID_EJERCICIO, ejercicioDtoRequest);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(result.getBody()).isNull();
 
         verify(ejercicioService).updateEjercicioById(ID_EJERCICIO, ejercicioDtoRequest);
     }
