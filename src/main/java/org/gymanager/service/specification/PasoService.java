@@ -8,5 +8,7 @@ import java.util.List;
 public interface PasoService {
     List<PasoDto> getPasosByIdEjercicio(Long idEjercicio);
 
-    List<Paso> crearPasos(List<PasoDto> pasoDto);
+    List<Paso> crearPasos(List<PasoDto> pasoDtos);
+
+    List<Paso> actualizarYCrearPasos(List<PasoDto> pasoDtos, List<Paso> pasos);
 }

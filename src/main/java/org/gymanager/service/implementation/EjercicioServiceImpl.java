@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.EjercicioEntityToDtoConverter;
 import org.gymanager.model.client.EjercicioDto;
 import org.gymanager.model.client.EjercicioDtoRequest;
+import org.gymanager.model.client.PasoDto;
 import org.gymanager.model.domain.Ejercicio;
+import org.gymanager.model.domain.Paso;
 import org.gymanager.model.domain.TipoEjercicio;
 import org.gymanager.model.enums.EjercicioSortBy;
 import org.gymanager.model.page.GyManagerPage;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -99,6 +102,30 @@ public class EjercicioServiceImpl implements EjercicioService {
         ejercicio.setPasos(pasos);
 
         return ejercicioRepository.save(ejercicio).getIdEjercicio();
+    }
+
+    @Override
+    @Transactional
+    public void updateEjercicioById(Long idEjercicio, EjercicioDtoRequest ejercicioDtoRequest) {
+        var ejercicio = getEjercicioEntityById(idEjercicio);
+
+        var tipoEjercicio = tipoEjercicioService.getTipoEjercicioByNombre(ejercicioDtoRequest.getTipoEjercicio());
+        if(!ejercicio.getNombre().equals(ejercicioDtoRequest.getNombre()) ||
+                !ejercicio.getTipoEjercicio().getNombre().equals(ejercicioDtoRequest.getTipoEjercicio())){
+            validarEjercicioConTipoYNombreNoExiste(tipoEjercicio, ejercicioDtoRequest.getNombre());
+        }
+
+        var herramientas = herramientaService.getHerramientasByIds(ejercicioDtoRequest.getIdHerramientaList());
+
+        var pasos = pasoService.actualizarYCrearPasos(ejercicioDtoRequest.getPasos(), ejercicio.getPasos());
+
+        ejercicio.setNombre(ejercicioDtoRequest.getNombre());
+        ejercicio.setTipoEjercicio(tipoEjercicio);
+        ejercicio.setVideo(ejercicioDtoRequest.getVideo());
+        ejercicio.setHerramientas(herramientas);
+        ejercicio.setPasos(pasos);
+
+        ejercicioRepository.save(ejercicio);
     }
 
     private void validarEjercicioConTipoYNombreNoExiste(TipoEjercicio tipoEjercicio, String nombre){

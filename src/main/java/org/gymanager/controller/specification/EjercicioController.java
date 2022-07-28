@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,6 +59,18 @@ public interface EjercicioController {
     @PostMapping(produces = { "application/json"}, consumes = { "application/json"})
     @PreAuthorize("hasAuthority('post-ejercicios')")
     ResponseEntity<Long> addEjercicio(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Ejercicio request body.",
+                    content = @Content(schema = @Schema(implementation = EjercicioDtoRequest.class)), required = true)
+            @RequestBody @Valid EjercicioDtoRequest ejercicioDtoRequest);
+
+    @Operation(summary = "Actualizar un ejercicio", description = "Esta operación es para actualizar un ejercicio")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
+    @PutMapping(value = "/{idEjercicio}", consumes = { "application/json"})
+    @PreAuthorize("hasAuthority('put-ejercicios')")
+    ResponseEntity<Void> updateEjercicioById(
+            @PathVariable("idEjercicio") Long idEjercicio,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Ejercicio request body.",
                     content = @Content(schema = @Schema(implementation = EjercicioDtoRequest.class)), required = true)
             @RequestBody @Valid EjercicioDtoRequest ejercicioDtoRequest);

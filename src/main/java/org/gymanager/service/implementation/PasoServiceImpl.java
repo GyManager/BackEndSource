@@ -15,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +46,37 @@ public class PasoServiceImpl implements PasoService {
         validarListaDePasosNoRepiteNumeroDePaso(pasoDtos);
 
         return pasoDtos.stream().map(this::crearPaso).toList();
+    }
+
+    @Override
+    public List<Paso> actualizarYCrearPasos(List<PasoDto> pasoDtos, List<Paso> pasos) {
+        validarListaDePasosNoRepiteNumeroDePaso(pasoDtos);
+
+        final var mapPasoDtoPorId = pasoDtos.stream()
+                .filter(pasoDto -> Objects.nonNull(pasoDto.getIdPaso()))
+                .collect(Collectors.toMap(PasoDto::getIdPaso, Function.identity()));
+
+        var idsPasosAEliminar = pasos.stream()
+                .map(Paso::getIdPaso)
+                .filter(idPaso -> !mapPasoDtoPorId.containsKey(idPaso))
+                .toList();
+        pasoRepository.deleteAllByIdInBatch(idsPasosAEliminar);
+        pasos.removeIf(paso -> !mapPasoDtoPorId.containsKey(paso.getIdPaso()));
+
+        pasos.forEach(paso -> {
+            var pasoDtoActualizado = mapPasoDtoPorId.get(paso.getIdPaso());
+            paso.setNumeroPaso(pasoDtoActualizado.getNumeroPaso());
+            paso.setImagen(pasoDtoActualizado.getImagen());
+            paso.setContenido(pasoDtoActualizado.getContenido());
+        });
+
+        var pasosACrear = pasoDtos.stream()
+                .filter(pasoDto -> Objects.isNull(pasoDto.getIdPaso()))
+                .toList();
+        var pasosNuevos = crearPasos(pasosACrear);
+
+        pasos.addAll(pasosNuevos);
+        return pasos;
     }
 
     private Paso crearPaso(PasoDto pasoDto){

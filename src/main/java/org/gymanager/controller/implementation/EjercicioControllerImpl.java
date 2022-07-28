@@ -37,4 +37,10 @@ public class EjercicioControllerImpl implements EjercicioController {
                 .status(HttpStatus.CREATED)
                 .body(ejercicioService.addEjercicio(ejercicioDtoRequest));
     }
+
+    @Override
+    public ResponseEntity<Void> updateEjercicioById(Long idEjercicio, EjercicioDtoRequest ejercicioDtoRequest) {
+        ejercicioService.updateEjercicioById(idEjercicio, ejercicioDtoRequest);
+        return ResponseEntity.noContent().build();
+    }
 }
