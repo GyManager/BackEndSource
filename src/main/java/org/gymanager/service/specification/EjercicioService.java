@@ -19,4 +19,6 @@ public interface EjercicioService {
     Long addEjercicio(EjercicioDtoRequest ejercicioDtoRequest);
 
     void updateEjercicioById(Long idEjercicio, EjercicioDtoRequest ejercicioDtoRequest);
+
+    void deleteEjercicioById(Long idEjercicio);
 }

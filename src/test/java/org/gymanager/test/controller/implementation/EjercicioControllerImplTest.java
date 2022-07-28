@@ -91,4 +91,15 @@ class EjercicioControllerImplTest {
 
         verify(ejercicioService).updateEjercicioById(ID_EJERCICIO, ejercicioDtoRequest);
     }
+
+    @Test
+    public void deleteEjercicioById_WhenOk_ThenReturnNull(){
+        var result = ejercicioController.deleteEjercicioById(ID_EJERCICIO);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(result.getBody()).isNull();
+
+        verify(ejercicioService).deleteEjercicioById(ID_EJERCICIO);
+    }
 }

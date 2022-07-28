@@ -43,4 +43,10 @@ public class EjercicioControllerImpl implements EjercicioController {
         ejercicioService.updateEjercicioById(idEjercicio, ejercicioDtoRequest);
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public ResponseEntity<Void> deleteEjercicioById(Long idEjercicio) {
+        ejercicioService.deleteEjercicioById(idEjercicio);
+        return ResponseEntity.noContent().build();
+    }
 }

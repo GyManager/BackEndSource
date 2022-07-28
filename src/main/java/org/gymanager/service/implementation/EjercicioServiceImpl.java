@@ -124,6 +124,13 @@ public class EjercicioServiceImpl implements EjercicioService {
         ejercicioRepository.save(ejercicio);
     }
 
+    @Override
+    public void deleteEjercicioById(Long idEjercicio) {
+        var ejercicio = getEjercicioEntityById(idEjercicio);
+
+        ejercicioRepository.delete(ejercicio);
+    }
+
     private void validarEjercicioConTipoYNombreNoExiste(TipoEjercicio tipoEjercicio, String nombre){
         if(ejercicioRepository.findByTipoEjercicioAndNombre(tipoEjercicio, nombre).isPresent()){
             log.error(String.format(NOMBRE_TIPO_EJERCICIO_EN_USO, nombre, tipoEjercicio.getNombre()));

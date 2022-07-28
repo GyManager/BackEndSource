@@ -14,6 +14,7 @@ import org.gymanager.model.page.GyManagerPage;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,4 +75,12 @@ public interface EjercicioController {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Ejercicio request body.",
                     content = @Content(schema = @Schema(implementation = EjercicioDtoRequest.class)), required = true)
             @RequestBody @Valid EjercicioDtoRequest ejercicioDtoRequest);
+
+    @Operation(summary = "Borrar un ejercicio", description = "Esta operación es para borrar un ejercicio")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
+    @DeleteMapping("/{idEjercicio}")
+    @PreAuthorize("hasAuthority('delete-ejercicios')")
+    ResponseEntity<Void> deleteEjercicioById(@PathVariable("idEjercicio") Long idEjercicio);
 }

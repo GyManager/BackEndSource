@@ -237,4 +237,15 @@ class EjercicioServiceImplTest {
         assertThat(ejercicioCapturado.getVideo()).isEqualTo(VIDEO_EJERCICIO);
         assertThat(ejercicioCapturado.getHerramientas()).containsExactly(herramienta);
     }
+
+    @Test
+    public void deleteEjercicioById_WhenOk_ThenDeleteEjercicio(){
+        var ejercicio = new Ejercicio();
+
+        when(ejercicioRepository.findById(ID_EJERCICIO)).thenReturn(Optional.of(ejercicio));
+
+        ejercicioService.deleteEjercicioById(ID_EJERCICIO);
+
+        verify(ejercicioRepository).delete(ejercicio);
+    }
 }
