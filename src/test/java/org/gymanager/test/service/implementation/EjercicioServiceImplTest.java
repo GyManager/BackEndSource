@@ -37,7 +37,9 @@ import static org.gymanager.test.constants.Constantes.ID_EJERCICIO;
 import static org.gymanager.test.constants.Constantes.ID_HERRAMIENTA;
 import static org.gymanager.test.constants.Constantes.ID_PASO;
 import static org.gymanager.test.constants.Constantes.ID_TIPO_EJERCICIO;
+import static org.gymanager.test.constants.Constantes.NOMBRE;
 import static org.gymanager.test.constants.Constantes.NOMBRE_EJERCICIO;
+import static org.gymanager.test.constants.Constantes.NOMBRE_HERRAMIENTA;
 import static org.gymanager.test.constants.Constantes.TIPO_EJERCICIO;
 import static org.gymanager.test.constants.Constantes.VIDEO_EJERCICIO;
 import static org.mockito.ArgumentMatchers.any;
@@ -193,6 +195,46 @@ class EjercicioServiceImplTest {
                 .hasMessageContaining(NOMBRE_EJERCICIO)
                 .hasMessageContaining(TIPO_EJERCICIO)
                 .extracting("status").isEqualTo(HttpStatus.BAD_REQUEST);
+    }
 
+    @Test
+    public void updateEjercicioById_WhenOk_ThenUpdateEjercicio(){
+        var nombreEjercicioCambiado = NOMBRE_EJERCICIO.concat(" Cambiado");
+
+        var ejercicioDtoRequest = new EjercicioDtoRequest();
+        ejercicioDtoRequest.setNombre(nombreEjercicioCambiado);
+        ejercicioDtoRequest.setTipoEjercicio(TIPO_EJERCICIO);
+        ejercicioDtoRequest.setIdHerramientaList(List.of(ID_HERRAMIENTA));
+        ejercicioDtoRequest.setPasos(List.of(new PasoDto()));
+        ejercicioDtoRequest.setVideo(VIDEO_EJERCICIO);
+
+        var tipoEjercicio = new TipoEjercicio();
+        tipoEjercicio.setIdTipoEjercicio(ID_TIPO_EJERCICIO);
+
+        var ejercicio = new Ejercicio();
+        ejercicio.setNombre(NOMBRE_EJERCICIO);
+        ejercicio.setTipoEjercicio(new TipoEjercicio());
+
+        var herramienta = new Herramienta();
+        herramienta.setIdHerramienta(ID_HERRAMIENTA);
+
+        when(ejercicioRepository.findById(ID_EJERCICIO)).thenReturn(Optional.of(ejercicio));
+        when(tipoEjercicioService.getTipoEjercicioByNombre(TIPO_EJERCICIO)).thenReturn(tipoEjercicio);
+        when(ejercicioRepository.findByTipoEjercicioAndNombre(tipoEjercicio, nombreEjercicioCambiado))
+                .thenReturn(Optional.empty());
+        when(herramientaService.getHerramientasByIds(ejercicioDtoRequest.getIdHerramientaList()))
+                .thenReturn(List.of(herramienta));
+
+        ejercicioService.updateEjercicioById(ID_EJERCICIO, ejercicioDtoRequest);
+
+        verify(pasoService).actualizarPasosEjercicio(ejercicioDtoRequest.getPasos(), ejercicio);
+        verify(ejercicioRepository).save(ejercicioArgumentCaptor.capture());
+
+        var ejercicioCapturado = ejercicioArgumentCaptor.getValue();
+
+        assertThat(ejercicioCapturado.getNombre()).isEqualTo(nombreEjercicioCambiado);
+        assertThat(ejercicioCapturado.getTipoEjercicio()).isEqualTo(tipoEjercicio);
+        assertThat(ejercicioCapturado.getVideo()).isEqualTo(VIDEO_EJERCICIO);
+        assertThat(ejercicioCapturado.getHerramientas()).containsExactly(herramienta);
     }
 }

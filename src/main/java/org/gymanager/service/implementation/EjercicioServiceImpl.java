@@ -6,9 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.EjercicioEntityToDtoConverter;
 import org.gymanager.model.client.EjercicioDto;
 import org.gymanager.model.client.EjercicioDtoRequest;
-import org.gymanager.model.client.PasoDto;
 import org.gymanager.model.domain.Ejercicio;
-import org.gymanager.model.domain.Paso;
 import org.gymanager.model.domain.TipoEjercicio;
 import org.gymanager.model.enums.EjercicioSortBy;
 import org.gymanager.model.page.GyManagerPage;
@@ -25,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service

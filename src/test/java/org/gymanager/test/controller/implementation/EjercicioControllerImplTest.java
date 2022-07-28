@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.gymanager.test.constants.Constantes.ID_EJERCICIO;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -76,5 +77,14 @@ class EjercicioControllerImplTest {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(result.getBody()).isNotNull();
         assertThat(result.getBody()).isEqualTo(ID_EJERCICIO);
+    }
+
+    @Test
+    public void updateEjercicioById_WhenOk_ThenReturnNull(){
+        var ejercicioDtoRequest = mock(EjercicioDtoRequest.class);
+
+        ejercicioController.updateEjercicioById(ID_EJERCICIO, ejercicioDtoRequest);
+
+        verify(ejercicioService).updateEjercicioById(ID_EJERCICIO, ejercicioDtoRequest);
     }
 }
