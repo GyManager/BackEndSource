@@ -8,6 +8,8 @@ import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.repository.filters.ClienteSpecification;
 import org.gymanager.repository.specification.ClienteRepository;
 import org.gymanager.service.implementation.ClienteServiceImpl;
+import org.gymanager.service.specification.ObjetivoService;
+import org.gymanager.service.specification.UsuarioService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,6 +43,12 @@ class ClienteServiceImplTest {
 
     @Mock
     private ClienteEntityToDtoConverter clienteEntityToDtoConverter;
+
+    @Mock
+    private UsuarioService usuarioService;
+
+    @Mock
+    private ObjetivoService objetivoService;
 
     @Test
     public void getClientes_WhenOk_ThenReturnClientes(){

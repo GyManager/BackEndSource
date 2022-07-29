@@ -26,4 +26,20 @@ public class Constantes {
     public static final String OBSERVACIONES = "Observaciones 1";
     public static final String SEXO = "Masculino";
 
+    public static final long ID_EJERCICIO = 10L;
+    public static final long ID_TIPO_EJERCICIO = 20L;
+    public static final String TIPO_EJERCICIO = "Musculacion";
+    public static final String NOMBRE_EJERCICIO = "Press banca";
+    public static final String VIDEO_EJERCICIO = "https://youtube.com/asd";
+
+    public static final long ID_PASO = 12L;
+    public static final Integer NUMERO_PASO = 3;
+    public static final String CONTENIDO_PASO = "Hacer x cosa";
+    public static final String IMAGEN_PASO = "IMAGEN";
+
+    public static final long ID_HERRAMIENTA = 15L;
+    public static final String DESCRIPCION_HERRAMIENTA = "Herramienta algo";
+    public static final String NOMBRE_HERRAMIENTA = "Barra olimpica";
+
+
 }

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,5 +33,10 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoService {
         }
 
         return tipoDocumento.get();
+    }
+
+    @Override
+    public List<TipoDocumento> getTipoDocumentos() {
+        return tipoDocumentoRepository.findAll();
     }
 }
