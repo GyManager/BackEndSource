@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -34,4 +35,12 @@ public interface MicroPlanController {
             @RequestParam(name = "sortBy", required = false, defaultValue = "NONE") MicroPlanSortBy sortBy,
             @RequestParam(name = "direction", required = false, defaultValue = "ASC") Sort.Direction direction
     );
+
+    @Operation(summary = "Obtener un micro plan por Id", description = "Esta operación es para buscar un micro plan por Id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    @GetMapping(value = "/{idMicroPlan}", produces = { "application/json"})
+    @PreAuthorize("hasAuthority('get-micro-planes')")
+    ResponseEntity<MicroPlanDto> getMicroPlanById(@PathVariable("idMicroPlan") Long idMicroPlan);
 }

@@ -23,4 +23,9 @@ public class MicroPlanControllerImpl implements MicroPlanController {
                                                                       MicroPlanSortBy sortBy, Sort.Direction direction) {
         return ResponseEntity.ok(microPlanService.getMicroPlanes(search, page, pageSize, sortBy, direction));
     }
+
+    @Override
+    public ResponseEntity<MicroPlanDto> getMicroPlanById(Long idMicroPlan) {
+        return ResponseEntity.ok(microPlanService.getMicroPlanById(idMicroPlan));
+    }
 }
