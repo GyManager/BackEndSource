@@ -5,18 +5,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.MicroPlanEntityToDtoConverter;
 import org.gymanager.model.client.MicroPlanDto;
+import org.gymanager.model.client.MicroPlanDtoRequest;
 import org.gymanager.model.domain.MicroPlan;
 import org.gymanager.model.enums.MicroPlanSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.repository.filters.MicroPlanSpecification;
 import org.gymanager.repository.specification.MicroPlanRepository;
 import org.gymanager.service.specification.MicroPlanService;
+import org.gymanager.service.specification.RutinaService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -31,6 +34,9 @@ public class MicroPlanServiceImpl implements MicroPlanService {
 
     @NonNull
     private MicroPlanEntityToDtoConverter microPlanEntityToDtoConverter;
+
+    @NonNull
+    private RutinaService rutinaService;
 
     @Override
     public GyManagerPage<MicroPlanDto> getMicroPlanes(String search, Integer page, Integer pageSize,
@@ -60,5 +66,20 @@ public class MicroPlanServiceImpl implements MicroPlanService {
         }
 
         return microPlan.get();
+    }
+
+    @Override
+    @Transactional
+    public Long addMicroPlan(MicroPlanDtoRequest microPlanDtoRequest) {
+        var microPlan = new MicroPlan();
+
+        var rutinas = rutinaService.crearRutinas(microPlanDtoRequest.getRutinas());
+
+        microPlan.setNombre(microPlanDtoRequest.getNombre());
+        microPlan.setEsTemplate(Boolean.FALSE.equals(microPlanDtoRequest.getEsTemplate()));
+        microPlan.setRutinas(rutinas);
+        microPlan.setNumeroOrden(microPlanDtoRequest.getNumeroOrden());
+
+        return microPlanRepository.save(microPlan).getIdMicroPlan();
     }
 }

@@ -1,6 +1,7 @@
 package org.gymanager.service.specification;
 
 import org.gymanager.model.client.MicroPlanDto;
+import org.gymanager.model.client.MicroPlanDtoRequest;
 import org.gymanager.model.domain.MicroPlan;
 import org.gymanager.model.enums.MicroPlanSortBy;
 import org.gymanager.model.page.GyManagerPage;
@@ -14,4 +15,6 @@ public interface MicroPlanService {
     MicroPlanDto getMicroPlanById(Long idMicroPlan);
 
     MicroPlan getMicroPlanEntityById(Long idMicroPlan);
+
+    Long addMicroPlan(MicroPlanDtoRequest microPlanDtoRequest);
 }

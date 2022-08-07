@@ -10,7 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -35,4 +37,21 @@ public class MicroPlan {
 
     @OneToMany(mappedBy = "microPlan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rutina> rutinas;
+
+    public void setRutinas(List<Rutina> rutinas) {
+        this.rutinas = rutinas;
+        rutinas.forEach(rutina -> rutina.setMicroPlan(this));
+    }
+
+    public void addRutinas(List<Rutina> rutinas) {
+        rutinas.forEach(this::addRutina);
+    }
+
+    public void addRutina(Rutina rutina){
+        if(Objects.isNull(this.rutinas)){
+            this.rutinas = new ArrayList<>();
+        }
+        this.rutinas.add(rutina);
+        rutina.setMicroPlan(this);
+    }
 }

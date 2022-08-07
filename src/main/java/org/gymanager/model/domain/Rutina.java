@@ -12,7 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -33,4 +35,21 @@ public class Rutina {
 
     @OneToMany(mappedBy = "rutina", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EjercicioAplicado> ejercicioAplicados;
+
+    public void setEjercicioAplicados(List<EjercicioAplicado> ejercicioAplicados) {
+        this.ejercicioAplicados = ejercicioAplicados;
+        ejercicioAplicados.forEach(ejercicioAplicado -> ejercicioAplicado.setRutina(this));
+    }
+
+    public void addEjercicioAplicados(List<EjercicioAplicado> ejercicioAplicados) {
+        ejercicioAplicados.forEach(this::addEjercicioAplicado);
+    }
+
+    public void addEjercicioAplicado(EjercicioAplicado ejercicioAplicado){
+        if(Objects.isNull(this.ejercicioAplicados)){
+            this.ejercicioAplicados = new ArrayList<>();
+        }
+        this.ejercicioAplicados.add(ejercicioAplicado);
+        ejercicioAplicado.setRutina(this);
+    }
 }

@@ -12,15 +12,16 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class EjercicioAplicadoEntityToDtoConverter implements GyManagerConverter<EjercicioAplicado, EjercicioAplicadoDto> {
 
-    @NonNull
-    private EjercicioEntityToDtoConverter ejercicioEntityToDtoConverter;
-
     @Override
     public EjercicioAplicadoDto convert(EjercicioAplicado source) {
         var ejercicioAplicado = new EjercicioAplicadoDto();
         ejercicioAplicado.setIdEjercicioAplicado(source.getIdEjercicioAplicado());
-        ejercicioAplicado.setEjercicio(Objects.isNull(source.getEjercicio()) ? null :
-                ejercicioEntityToDtoConverter.convert(source.getEjercicio()));
+        if(Objects.nonNull(source.getEjercicio())){
+            ejercicioAplicado.setIdEjercicio(source.getEjercicio().getIdEjercicio());
+            ejercicioAplicado.setNombreEjercicio(source.getEjercicio().getNombre());
+            ejercicioAplicado.setTipoEjercicio(Objects.isNull(source.getEjercicio().getTipoEjercicio()) ? null :
+                    source.getEjercicio().getTipoEjercicio().getNombre());
+        }
         ejercicioAplicado.setBloque(Objects.isNull(source.getBloque()) ? null :
                 source.getBloque().getNombre());
         ejercicioAplicado.setSeries(source.getSeries());

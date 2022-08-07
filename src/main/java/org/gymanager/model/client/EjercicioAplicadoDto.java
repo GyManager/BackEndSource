@@ -3,12 +3,21 @@ package org.gymanager.model.client;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 public class EjercicioAplicadoDto {
 
     private Long idEjercicioAplicado;
-    private EjercicioDto ejercicio;
+
+    @NotNull(message = "El ejercicio aplicado debe ser de un ejercicio existente")
+    private Long idEjercicio;
+    private String nombreEjercicio;
+    private String tipoEjercicio;
+
+    @NotBlank(message = "El bloque es obligatorio.")
     private String bloque;
     private Integer series;
     private Integer repeticiones;

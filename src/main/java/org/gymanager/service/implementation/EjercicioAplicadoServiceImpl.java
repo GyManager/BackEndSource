@@ -5,12 +5,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.EjercicioAplicadoEntityToDtoConverter;
 import org.gymanager.model.client.EjercicioAplicadoDto;
+import org.gymanager.model.domain.EjercicioAplicado;
 import org.gymanager.repository.specification.EjercicioAplicadoRepository;
+import org.gymanager.service.specification.BloqueService;
 import org.gymanager.service.specification.EjercicioAplicadoService;
+import org.gymanager.service.specification.EjercicioService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +27,39 @@ public class EjercicioAplicadoServiceImpl implements EjercicioAplicadoService {
     @NonNull
     private EjercicioAplicadoEntityToDtoConverter ejercicioAplicadoEntityToDtoConverter;
 
+    @NonNull
+    private BloqueService bloqueService;
+
+    @NonNull
+    private EjercicioService ejercicioService;
+
     @Override
     @Transactional
     public List<EjercicioAplicadoDto> getEjerciciosAplicadosByIdRutina(Long idMicroPlan, Long idRutina) {
         return ejercicioAplicadoEntityToDtoConverter.convert(ejercicioAplicadoRepository.findByRutinaIdRutina(idRutina));
+    }
+
+    @Override
+    public List<EjercicioAplicado> crearEjerciciosAplicados(List<EjercicioAplicadoDto> ejerciciosAplicados) {
+        return ejerciciosAplicados.stream().map(this::crearEjercicioAplicado).collect(Collectors.toList());
+    }
+
+    private EjercicioAplicado crearEjercicioAplicado(EjercicioAplicadoDto ejercicioAplicadoDto){
+        var ejercicioAplicado = new EjercicioAplicado();
+
+        var bloque = bloqueService.getBloqueByNombre(ejercicioAplicadoDto.getBloque());
+        var ejercicio = ejercicioService.getEjercicioEntityById(ejercicioAplicadoDto.getIdEjercicio());
+
+        ejercicioAplicado.setEjercicio(ejercicio);
+        ejercicioAplicado.setBloque(bloque);
+        ejercicioAplicado.setSeries(ejercicioAplicadoDto.getSeries());
+        ejercicioAplicado.setRepeticiones(ejercicioAplicadoDto.getRepeticiones());
+        ejercicioAplicado.setPausaMicro(ejercicioAplicadoDto.getPausaMicro());
+        ejercicioAplicado.setPausaMacro(ejercicioAplicadoDto.getPausaMacro());
+        ejercicioAplicado.setCarga(ejercicioAplicadoDto.getCarga());
+        ejercicioAplicado.setTiempo(ejercicioAplicadoDto.getTiempo());
+        ejercicioAplicado.setEsTemplate(Boolean.FALSE.equals(ejercicioAplicadoDto.getEsTemplate()));
+
+        return ejercicioAplicado;
     }
 }
