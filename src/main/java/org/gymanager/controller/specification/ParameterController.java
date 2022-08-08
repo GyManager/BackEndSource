@@ -32,4 +32,9 @@ public interface ParameterController {
             description = "Esta operación es para obtener los tipos de documento disponibles")
     @GetMapping(value = "/tipo-documentos", produces = { "application/json"})
     ResponseEntity<List<String>> getTipoDocumentos();
+
+    @Operation(summary = "Obtener los bloques disponibles",
+            description = "Esta operación es para obtener los bloques disponibles")
+    @GetMapping(value = "/bloques", produces = { "application/json"})
+    ResponseEntity<List<String>> getBloques();
 }

@@ -35,4 +35,9 @@ public class ParameterControllerImpl implements ParameterController {
     public ResponseEntity<List<String>> getTipoDocumentos() {
         return ResponseEntity.ok(parameterService.getTipoDocumentos());
     }
+
+    @Override
+    public ResponseEntity<List<String>> getBloques() {
+        return ResponseEntity.ok(parameterService.getBloques());
+    }
 }

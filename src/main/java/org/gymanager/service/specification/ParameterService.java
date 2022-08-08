@@ -11,4 +11,6 @@ public interface ParameterService {
     List<String> getSexos();
 
     List<String> getTipoDocumentos();
+
+    List<String> getBloques();
 }
