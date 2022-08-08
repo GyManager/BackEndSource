@@ -1,6 +1,5 @@
 package org.gymanager.converter;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.model.client.EjercicioAplicadoDto;
 import org.gymanager.model.domain.EjercicioAplicado;
