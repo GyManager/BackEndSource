@@ -43,7 +43,7 @@ public class MicroPlan {
         rutinas.forEach(rutina -> rutina.setMicroPlan(this));
     }
 
-    public void addRutinas(List<Rutina> rutinas) {
+    public void addAllRutinas(List<Rutina> rutinas) {
         rutinas.forEach(this::addRutina);
     }
 

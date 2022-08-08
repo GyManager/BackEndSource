@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,6 +59,18 @@ public interface MicroPlanController {
     @PostMapping(produces = { "application/json"}, consumes = { "application/json"})
     @PreAuthorize("hasAuthority('post-micro-planes')")
     ResponseEntity<Long> addMicroPlan(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Micro plan request body.",
+                    content = @Content(schema = @Schema(implementation = MicroPlanDtoRequest.class)), required = true)
+            @RequestBody @Valid MicroPlanDtoRequest microPlanDtoRequest);
+
+    @Operation(summary = "Actualizar un micro plan", description = "Esta operación es para actualizar un micro plan")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
+    @PutMapping(value = "/{idMicroPlan}", consumes = { "application/json"})
+    @PreAuthorize("hasAuthority('put-micro-planes')")
+    ResponseEntity<Void> updateMicroPlanById(
+            @PathVariable("idMicroPlan") Long idMicroPlan,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Micro plan request body.",
                     content = @Content(schema = @Schema(implementation = MicroPlanDtoRequest.class)), required = true)
             @RequestBody @Valid MicroPlanDtoRequest microPlanDtoRequest);

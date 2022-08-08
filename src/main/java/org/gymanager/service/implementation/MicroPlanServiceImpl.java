@@ -82,4 +82,18 @@ public class MicroPlanServiceImpl implements MicroPlanService {
 
         return microPlanRepository.save(microPlan).getIdMicroPlan();
     }
+
+    @Override
+    @Transactional
+    public void updateMicroPlanById(Long idMicroPlan, MicroPlanDtoRequest microPlanDtoRequest) {
+        var microPlan = getMicroPlanEntityById(idMicroPlan);
+
+        rutinaService.actualizarRutinasMicroPlan(microPlanDtoRequest.getRutinas(), microPlan);
+
+        microPlan.setNombre(microPlanDtoRequest.getNombre());
+        microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoRequest.getEsTemplate()));
+        microPlan.setNumeroOrden(microPlanDtoRequest.getNumeroOrden());
+
+        microPlanRepository.save(microPlan);
+    }
 }

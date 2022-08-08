@@ -41,7 +41,7 @@ public class Rutina {
         ejercicioAplicados.forEach(ejercicioAplicado -> ejercicioAplicado.setRutina(this));
     }
 
-    public void addEjercicioAplicados(List<EjercicioAplicado> ejercicioAplicados) {
+    public void addAllEjercicioAplicados(List<EjercicioAplicado> ejercicioAplicados) {
         ejercicioAplicados.forEach(this::addEjercicioAplicado);
     }
 

@@ -17,4 +17,6 @@ public interface MicroPlanService {
     MicroPlan getMicroPlanEntityById(Long idMicroPlan);
 
     Long addMicroPlan(MicroPlanDtoRequest microPlanDtoRequest);
+
+    void updateMicroPlanById(Long idMicroPlan, MicroPlanDtoRequest microPlanDtoRequest);
 }

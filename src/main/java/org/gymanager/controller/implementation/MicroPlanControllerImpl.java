@@ -37,4 +37,10 @@ public class MicroPlanControllerImpl implements MicroPlanController {
                 .status(HttpStatus.CREATED)
                 .body(microPlanService.addMicroPlan(microPlanDtoRequest));
     }
+
+    @Override
+    public ResponseEntity<Void> updateMicroPlanById(Long idMicroPlan, MicroPlanDtoRequest microPlanDtoRequest) {
+        microPlanService.updateMicroPlanById(idMicroPlan, microPlanDtoRequest);
+        return ResponseEntity.noContent().build();
+    }
 }
