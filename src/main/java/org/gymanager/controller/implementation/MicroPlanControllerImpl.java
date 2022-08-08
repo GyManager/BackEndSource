@@ -43,4 +43,10 @@ public class MicroPlanControllerImpl implements MicroPlanController {
         microPlanService.updateMicroPlanById(idMicroPlan, microPlanDtoRequest);
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public ResponseEntity<Void> deleteMicroPlanById(Long idMicroPlan) {
+        microPlanService.deleteMicroPlanById(idMicroPlan);
+        return ResponseEntity.noContent().build();
+    }
 }

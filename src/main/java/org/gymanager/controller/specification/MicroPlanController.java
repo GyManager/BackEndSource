@@ -14,6 +14,7 @@ import org.gymanager.model.page.GyManagerPage;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,4 +75,12 @@ public interface MicroPlanController {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Micro plan request body.",
                     content = @Content(schema = @Schema(implementation = MicroPlanDtoRequest.class)), required = true)
             @RequestBody @Valid MicroPlanDtoRequest microPlanDtoRequest);
+
+    @Operation(summary = "Borrar un micro plan", description = "Esta operación es para borrar un micro plan")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
+    @DeleteMapping("/{idMicroPlan}")
+    @PreAuthorize("hasAuthority('delete-micro-planes')")
+    ResponseEntity<Void> deleteMicroPlanById(@PathVariable("idMicroPlan") Long idMicroPlan);
 }

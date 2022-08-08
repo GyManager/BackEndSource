@@ -96,4 +96,11 @@ public class MicroPlanServiceImpl implements MicroPlanService {
 
         microPlanRepository.save(microPlan);
     }
+
+    @Override
+    public void deleteMicroPlanById(Long idMicroPlan) {
+        var microPlan = getMicroPlanEntityById(idMicroPlan);
+
+        microPlanRepository.delete(microPlan);
+    }
 }
