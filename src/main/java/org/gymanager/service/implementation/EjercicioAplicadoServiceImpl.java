@@ -58,7 +58,7 @@ public class EjercicioAplicadoServiceImpl implements EjercicioAplicadoService {
         ejercicioAplicado.setPausaMacro(ejercicioAplicadoDto.getPausaMacro());
         ejercicioAplicado.setCarga(ejercicioAplicadoDto.getCarga());
         ejercicioAplicado.setTiempo(ejercicioAplicadoDto.getTiempo());
-        ejercicioAplicado.setEsTemplate(Boolean.FALSE.equals(ejercicioAplicadoDto.getEsTemplate()));
+        ejercicioAplicado.setEsTemplate(Boolean.TRUE.equals(ejercicioAplicadoDto.getEsTemplate()));
 
         return ejercicioAplicado;
     }

@@ -76,7 +76,7 @@ public class MicroPlanServiceImpl implements MicroPlanService {
         var rutinas = rutinaService.crearRutinas(microPlanDtoRequest.getRutinas());
 
         microPlan.setNombre(microPlanDtoRequest.getNombre());
-        microPlan.setEsTemplate(Boolean.FALSE.equals(microPlanDtoRequest.getEsTemplate()));
+        microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoRequest.getEsTemplate()));
         microPlan.setRutinas(rutinas);
         microPlan.setNumeroOrden(microPlanDtoRequest.getNumeroOrden());
 
