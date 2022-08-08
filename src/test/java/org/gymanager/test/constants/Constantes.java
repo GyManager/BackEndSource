@@ -41,5 +41,6 @@ public class Constantes {
     public static final String DESCRIPCION_HERRAMIENTA = "Herramienta algo";
     public static final String NOMBRE_HERRAMIENTA = "Barra olimpica";
 
-
+    public static final long ID_MICRO_PLAN = 25L;
+    public static final long ID_RUTINA = 30L;
 }
