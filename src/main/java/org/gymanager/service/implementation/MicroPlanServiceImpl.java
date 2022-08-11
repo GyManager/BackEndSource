@@ -4,8 +4,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.MicroPlanEntityToDtoConverter;
+import org.gymanager.converter.MicroPlanEntityToDtoDetailsConverter;
 import org.gymanager.model.client.MicroPlanDto;
-import org.gymanager.model.client.MicroPlanDtoRequest;
+import org.gymanager.model.client.MicroPlanDtoDetails;
 import org.gymanager.model.domain.MicroPlan;
 import org.gymanager.model.enums.MicroPlanSortBy;
 import org.gymanager.model.page.GyManagerPage;
@@ -36,6 +37,9 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     private MicroPlanEntityToDtoConverter microPlanEntityToDtoConverter;
 
     @NonNull
+    private MicroPlanEntityToDtoDetailsConverter microPlanEntityToDtoDetailsConverter;
+
+    @NonNull
     private RutinaService rutinaService;
 
     @Override
@@ -52,8 +56,8 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     }
 
     @Override
-    public MicroPlanDto getMicroPlanById(Long idMicroPlan) {
-        return microPlanEntityToDtoConverter.convert(getMicroPlanEntityById(idMicroPlan));
+    public MicroPlanDtoDetails getMicroPlanById(Long idMicroPlan) {
+        return microPlanEntityToDtoDetailsConverter.convert(getMicroPlanEntityById(idMicroPlan));
     }
 
     @Override
@@ -70,29 +74,29 @@ public class MicroPlanServiceImpl implements MicroPlanService {
 
     @Override
     @Transactional
-    public Long addMicroPlan(MicroPlanDtoRequest microPlanDtoRequest) {
+    public Long addMicroPlan(MicroPlanDtoDetails microPlanDtoDetails) {
         var microPlan = new MicroPlan();
 
-        var rutinas = rutinaService.crearRutinas(microPlanDtoRequest.getRutinas());
+        var rutinas = rutinaService.crearRutinas(microPlanDtoDetails.getRutinas());
 
-        microPlan.setNombre(microPlanDtoRequest.getNombre());
-        microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoRequest.getEsTemplate()));
+        microPlan.setNombre(microPlanDtoDetails.getNombre());
+        microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoDetails.getEsTemplate()));
         microPlan.setRutinas(rutinas);
-        microPlan.setNumeroOrden(microPlanDtoRequest.getNumeroOrden());
+        microPlan.setNumeroOrden(microPlanDtoDetails.getNumeroOrden());
 
         return microPlanRepository.save(microPlan).getIdMicroPlan();
     }
 
     @Override
     @Transactional
-    public void updateMicroPlanById(Long idMicroPlan, MicroPlanDtoRequest microPlanDtoRequest) {
+    public void updateMicroPlanById(Long idMicroPlan, MicroPlanDtoDetails microPlanDtoDetails) {
         var microPlan = getMicroPlanEntityById(idMicroPlan);
 
-        rutinaService.actualizarRutinasMicroPlan(microPlanDtoRequest.getRutinas(), microPlan);
+        rutinaService.actualizarRutinasMicroPlan(microPlanDtoDetails.getRutinas(), microPlan);
 
-        microPlan.setNombre(microPlanDtoRequest.getNombre());
-        microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoRequest.getEsTemplate()));
-        microPlan.setNumeroOrden(microPlanDtoRequest.getNumeroOrden());
+        microPlan.setNombre(microPlanDtoDetails.getNombre());
+        microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoDetails.getEsTemplate()));
+        microPlan.setNumeroOrden(microPlanDtoDetails.getNumeroOrden());
 
         microPlanRepository.save(microPlan);
     }

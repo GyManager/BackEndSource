@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.gymanager.model.client.MicroPlanDto;
-import org.gymanager.model.client.MicroPlanDtoRequest;
+import org.gymanager.model.client.MicroPlanDtoDetails;
 import org.gymanager.model.enums.MicroPlanSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.springframework.data.domain.Sort;
@@ -51,7 +51,7 @@ public interface MicroPlanController {
     })
     @GetMapping(value = "/{idMicroPlan}", produces = { "application/json"})
     @PreAuthorize("hasAuthority('get-micro-planes')")
-    ResponseEntity<MicroPlanDto> getMicroPlanById(@PathVariable("idMicroPlan") Long idMicroPlan);
+    ResponseEntity<MicroPlanDtoDetails> getMicroPlanById(@PathVariable("idMicroPlan") Long idMicroPlan);
 
     @Operation(summary = "Agregar micro plan", description = "Esta operación es para agregar un micro plan")
     @ApiResponses(value = {
@@ -61,8 +61,8 @@ public interface MicroPlanController {
     @PreAuthorize("hasAuthority('post-micro-planes')")
     ResponseEntity<Long> addMicroPlan(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Micro plan request body.",
-                    content = @Content(schema = @Schema(implementation = MicroPlanDtoRequest.class)), required = true)
-            @RequestBody @Valid MicroPlanDtoRequest microPlanDtoRequest);
+                    content = @Content(schema = @Schema(implementation = MicroPlanDtoDetails.class)), required = true)
+            @RequestBody @Valid MicroPlanDtoDetails microPlanDtoDetails);
 
     @Operation(summary = "Actualizar un micro plan", description = "Esta operación es para actualizar un micro plan")
     @ApiResponses(value = {
@@ -73,8 +73,8 @@ public interface MicroPlanController {
     ResponseEntity<Void> updateMicroPlanById(
             @PathVariable("idMicroPlan") Long idMicroPlan,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Micro plan request body.",
-                    content = @Content(schema = @Schema(implementation = MicroPlanDtoRequest.class)), required = true)
-            @RequestBody @Valid MicroPlanDtoRequest microPlanDtoRequest);
+                    content = @Content(schema = @Schema(implementation = MicroPlanDtoDetails.class)), required = true)
+            @RequestBody @Valid MicroPlanDtoDetails microPlanDtoDetails);
 
     @Operation(summary = "Borrar un micro plan", description = "Esta operación es para borrar un micro plan")
     @ApiResponses(value = {

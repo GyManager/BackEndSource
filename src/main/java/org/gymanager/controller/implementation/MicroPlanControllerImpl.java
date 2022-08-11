@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.MicroPlanController;
 import org.gymanager.model.client.MicroPlanDto;
-import org.gymanager.model.client.MicroPlanDtoRequest;
+import org.gymanager.model.client.MicroPlanDtoDetails;
 import org.gymanager.model.enums.MicroPlanSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.MicroPlanService;
@@ -27,20 +27,20 @@ public class MicroPlanControllerImpl implements MicroPlanController {
     }
 
     @Override
-    public ResponseEntity<MicroPlanDto> getMicroPlanById(Long idMicroPlan) {
+    public ResponseEntity<MicroPlanDtoDetails> getMicroPlanById(Long idMicroPlan) {
         return ResponseEntity.ok(microPlanService.getMicroPlanById(idMicroPlan));
     }
 
     @Override
-    public ResponseEntity<Long> addMicroPlan(MicroPlanDtoRequest microPlanDtoRequest) {
+    public ResponseEntity<Long> addMicroPlan(MicroPlanDtoDetails microPlanDtoDetails) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(microPlanService.addMicroPlan(microPlanDtoRequest));
+                .body(microPlanService.addMicroPlan(microPlanDtoDetails));
     }
 
     @Override
-    public ResponseEntity<Void> updateMicroPlanById(Long idMicroPlan, MicroPlanDtoRequest microPlanDtoRequest) {
-        microPlanService.updateMicroPlanById(idMicroPlan, microPlanDtoRequest);
+    public ResponseEntity<Void> updateMicroPlanById(Long idMicroPlan, MicroPlanDtoDetails microPlanDtoDetails) {
+        microPlanService.updateMicroPlanById(idMicroPlan, microPlanDtoDetails);
         return ResponseEntity.noContent().build();
     }
 

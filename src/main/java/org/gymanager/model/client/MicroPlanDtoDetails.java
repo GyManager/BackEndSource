@@ -8,8 +8,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class MicroPlanDtoRequest extends MicroPlanDto{
+public class MicroPlanDtoDetails extends MicroPlanDto{
 
     @NotEmpty(message = "El micro plan debe tener al menos una rutina")
-    private List<RutinaDtoRequest> rutinas;
+    private List<RutinaDtoDetails> rutinas;
 }

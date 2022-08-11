@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class RutinaDtoRequest extends RutinaDto {
+public class RutinaDtoDetails extends RutinaDto {
 
     @NotEmpty(message = "La rutina debe tener al menos un ejercicio")
     private List<EjercicioAplicadoDto> ejerciciosAplicados;

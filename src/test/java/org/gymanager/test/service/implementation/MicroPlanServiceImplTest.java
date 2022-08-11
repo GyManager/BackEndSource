@@ -2,10 +2,8 @@ package org.gymanager.test.service.implementation;
 
 import org.gymanager.converter.MicroPlanEntityToDtoConverter;
 import org.gymanager.model.client.MicroPlanDto;
-import org.gymanager.model.client.MicroPlanDtoRequest;
-import org.gymanager.model.client.RutinaDto;
-import org.gymanager.model.client.RutinaDtoRequest;
-import org.gymanager.model.domain.Ejercicio;
+import org.gymanager.model.client.MicroPlanDtoDetails;
+import org.gymanager.model.client.RutinaDtoDetails;
 import org.gymanager.model.domain.MicroPlan;
 import org.gymanager.model.domain.Rutina;
 import org.gymanager.model.enums.MicroPlanSortBy;
@@ -31,11 +29,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.gymanager.test.constants.Constantes.ID_EJERCICIO;
 import static org.gymanager.test.constants.Constantes.ID_MICRO_PLAN;
-import static org.gymanager.test.constants.Constantes.NOMBRE_EJERCICIO;
 import static org.gymanager.test.constants.Constantes.NOMBRE_MICRO_PLAN;
-import static org.gymanager.test.constants.Constantes.VIDEO_EJERCICIO;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -119,9 +114,9 @@ class MicroPlanServiceImplTest {
 
     @Test
     void addMicroPlan() {
-        var rutinaDto = mock(RutinaDtoRequest.class);
+        var rutinaDto = mock(RutinaDtoDetails.class);
 
-        var microPlanDtoRequest = new MicroPlanDtoRequest();
+        var microPlanDtoRequest = new MicroPlanDtoDetails();
         microPlanDtoRequest.setNombre(NOMBRE_MICRO_PLAN);
         microPlanDtoRequest.setEsTemplate(Boolean.TRUE);
         microPlanDtoRequest.setRutinas(List.of(rutinaDto));
@@ -148,9 +143,9 @@ class MicroPlanServiceImplTest {
 
     @Test
     void updateMicroPlanById() {
-        var rutinaDto = mock(RutinaDtoRequest.class);
+        var rutinaDto = mock(RutinaDtoDetails.class);
 
-        var microPlanDtoRequest = new MicroPlanDtoRequest();
+        var microPlanDtoRequest = new MicroPlanDtoDetails();
         microPlanDtoRequest.setIdMicroPlan(ID_MICRO_PLAN);
         microPlanDtoRequest.setNombre(NOMBRE_MICRO_PLAN);
         microPlanDtoRequest.setEsTemplate(Boolean.TRUE);

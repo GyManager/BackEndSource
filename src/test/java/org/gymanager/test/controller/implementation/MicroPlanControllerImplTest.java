@@ -2,7 +2,7 @@ package org.gymanager.test.controller.implementation;
 
 import org.gymanager.controller.implementation.MicroPlanControllerImpl;
 import org.gymanager.model.client.MicroPlanDto;
-import org.gymanager.model.client.MicroPlanDtoRequest;
+import org.gymanager.model.client.MicroPlanDtoDetails;
 import org.gymanager.model.enums.MicroPlanSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.MicroPlanService;
@@ -66,7 +66,7 @@ class MicroPlanControllerImplTest {
 
     @Test
     public void addMicroPlan_WhenOk_ThenReturnIdMicroPlanNuevo(){
-        var microPlanDtoRequest = mock(MicroPlanDtoRequest.class);
+        var microPlanDtoRequest = mock(MicroPlanDtoDetails.class);
 
         when(microPlanService.addMicroPlan(microPlanDtoRequest)).thenReturn(ID_MICRO_PLAN);
 
@@ -80,7 +80,7 @@ class MicroPlanControllerImplTest {
 
     @Test
     public void updateMicroPlanById_WhenOk_ThenReturnNull(){
-        var microPlanDtoRequest = mock(MicroPlanDtoRequest.class);
+        var microPlanDtoRequest = mock(MicroPlanDtoDetails.class);
 
         var result = microPlanController.updateMicroPlanById(ID_MICRO_PLAN, microPlanDtoRequest);
 
