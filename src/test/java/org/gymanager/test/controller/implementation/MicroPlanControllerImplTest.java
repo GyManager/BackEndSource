@@ -52,16 +52,16 @@ class MicroPlanControllerImplTest {
 
     @Test
     public void getMicroPlanById_WhenOk_ThenReturnMicroPlan(){
-        var microPlanDto = mock(MicroPlanDto.class);
+        var microPlanDtoDetails = mock(MicroPlanDtoDetails.class);
 
-        when(microPlanService.getMicroPlanById(ID_MICRO_PLAN)).thenReturn(microPlanDto);
+        when(microPlanService.getMicroPlanById(ID_MICRO_PLAN)).thenReturn(microPlanDtoDetails);
 
         var result = microPlanController.getMicroPlanById(ID_MICRO_PLAN);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isNotNull();
-        assertThat(result.getBody()).isEqualTo(microPlanDto);
+        assertThat(result.getBody()).isEqualTo(microPlanDtoDetails);
     }
 
     @Test

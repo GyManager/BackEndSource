@@ -1,6 +1,7 @@
 package org.gymanager.test.service.implementation;
 
 import org.gymanager.converter.MicroPlanEntityToDtoConverter;
+import org.gymanager.converter.MicroPlanEntityToDtoDetailsConverter;
 import org.gymanager.model.client.MicroPlanDto;
 import org.gymanager.model.client.MicroPlanDtoDetails;
 import org.gymanager.model.client.RutinaDtoDetails;
@@ -49,6 +50,9 @@ class MicroPlanServiceImplTest {
     private MicroPlanEntityToDtoConverter microPlanEntityToDtoConverter;
 
     @Mock
+    private MicroPlanEntityToDtoDetailsConverter microPlanEntityToDtoDetailsConverter;
+
+    @Mock
     private RutinaService rutinaService;
 
     @Captor
@@ -78,15 +82,15 @@ class MicroPlanServiceImplTest {
     @Test
     void getMicroPlanById_WhenOk_ThenReturnMicroPlanDto() {
         var microPlan = mock(MicroPlan.class);
-        var microPlanDto = mock(MicroPlanDto.class);
+        var microPlanDtoDetails = mock(MicroPlanDtoDetails.class);
 
         when(microPlanRepository.findById(ID_MICRO_PLAN)).thenReturn(Optional.of(microPlan));
-        when(microPlanEntityToDtoConverter.convert(microPlan)).thenReturn(microPlanDto);
+        when(microPlanEntityToDtoDetailsConverter.convert(microPlan)).thenReturn(microPlanDtoDetails);
 
         var result = microPlanService.getMicroPlanById(ID_MICRO_PLAN);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(microPlanDto);
+        assertThat(result).isEqualTo(microPlanDtoDetails);
     }
 
     @Test
