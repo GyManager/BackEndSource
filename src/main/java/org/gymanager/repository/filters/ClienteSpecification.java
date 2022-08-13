@@ -11,15 +11,17 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 public class ClienteSpecification implements Specification<Cliente> {
 
     private static final Pattern NUMBER_PATTERN = Pattern.compile("\\d+");
-    private static final String PSEUDO_EMAIL_PATTERN = "@";
+    private static final Pattern NOMBRE_APELLIDO_PATTERN = Pattern.compile("([A-Za-z])+");
 
     private static final String LIKE_WILDCARD = "%";
 
@@ -37,29 +39,44 @@ public class ClienteSpecification implements Specification<Cliente> {
 
         if(!StringUtils.isEmpty(fuzzySearch)){
 
-            List<Predicate> fuzzySearchPredicateList = new ArrayList<>();
+            var parameters = Arrays.stream(fuzzySearch.split(" "))
+                    .filter(member -> !member.isBlank())
+                    .map(String::trim)
+                    .collect(Collectors.toList());
+
             var joinUsuario = root.join(TABLA_USUARIO);
 
-            if(NUMBER_PATTERN.matcher(fuzzySearch).matches()){
-                fuzzySearchPredicateList.add(builder.like(
-                        joinUsuario.get(CAMPO_NUMERO_DOCUMENTO).as(String.class),
-                        rodearConLikeWildcard(fuzzySearch)));
-            }
-            else if (fuzzySearch.contains(PSEUDO_EMAIL_PATTERN)){
-                fuzzySearchPredicateList.add(builder.like(
-                        builder.lower(joinUsuario.get(CAMPO_MAIL)),
-                        rodearConLikeWildcard(fuzzySearch.toLowerCase())));
-            }
-            else {
-                fuzzySearchPredicateList.add(builder.like(
-                        builder.lower(joinUsuario.get(CAMPO_NOMBRE)),
-                        rodearConLikeWildcard(fuzzySearch.toLowerCase())));
-                fuzzySearchPredicateList.add(builder.like(
-                        builder.lower(joinUsuario.get(CAMPO_APELLIDO)),
-                        rodearConLikeWildcard(fuzzySearch.toLowerCase())));
-            }
+            for (String member: parameters) {
 
-            predicateList.add(fuzzySearchPredicateList.stream().reduce(builder::or).get());
+                List<Predicate> fuzzySearchPredicateList = new ArrayList<>();
+
+                if(NOMBRE_APELLIDO_PATTERN.matcher(member).matches()){
+                    fuzzySearchPredicateList.add(builder.like(
+                            builder.lower(joinUsuario.get(CAMPO_NOMBRE)),
+                            rodearConLikeWildcard(member.toLowerCase())));
+                    fuzzySearchPredicateList.add(builder.like(
+                            builder.lower(joinUsuario.get(CAMPO_APELLIDO)),
+                            rodearConLikeWildcard(member.toLowerCase())));
+                    fuzzySearchPredicateList.add(builder.like(
+                            builder.lower(joinUsuario.get(CAMPO_MAIL)),
+                            rodearConLikeWildcard(member.toLowerCase())));
+                }
+                else if(NUMBER_PATTERN.matcher(member).matches()){
+                    fuzzySearchPredicateList.add(builder.like(
+                            joinUsuario.get(CAMPO_NUMERO_DOCUMENTO).as(String.class),
+                            rodearConLikeWildcard(member)));
+                    fuzzySearchPredicateList.add(builder.like(
+                            builder.lower(joinUsuario.get(CAMPO_MAIL)),
+                            rodearConLikeWildcard(member.toLowerCase())));
+                }
+                else {
+                    fuzzySearchPredicateList.add(builder.like(
+                            builder.lower(joinUsuario.get(CAMPO_MAIL)),
+                            rodearConLikeWildcard(member.toLowerCase())));
+                }
+
+                predicateList.add(fuzzySearchPredicateList.stream().reduce(builder::or).get());
+            }
         }
 
         return predicateList.stream().reduce(builder::and)
