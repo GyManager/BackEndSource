@@ -41,5 +41,20 @@ public class Constantes {
     public static final String DESCRIPCION_HERRAMIENTA = "Herramienta algo";
     public static final String NOMBRE_HERRAMIENTA = "Barra olimpica";
 
+    public static final long ID_MICRO_PLAN = 25L;
+    public static final String NOMBRE_MICRO_PLAN = "Adaptacion";
 
+    public static final long ID_RUTINA = 30L;
+    public static final String NOMBRE_RUTINA = "Piernas";
+
+    public static final long ID_BLOQUE = 35L;
+    public static final String NOMBRE_BLOQUE = "Principal";
+
+    public static final long ID_EJERCICIO_APLICADO = 40L;
+    public static final Integer SERIES = 4;
+    public static final Integer REPETICIONES = 15;
+    public static final String PAUSA_MACRO = "1'";
+    public static final String PAUSA_MICRO = "30''";
+    public static final String TIEMPO = "10'";
+    public static final String CARGA = "25Kg";
 }
