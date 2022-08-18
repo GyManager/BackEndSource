@@ -9,4 +9,5 @@ public interface TipoEjercicioService {
     TipoEjercicio getTipoEjercicioByNombre(String nombre);
 
     List<TipoEjercicio> getTipoEjercicios();
+
 }
