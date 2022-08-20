@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -106,5 +107,10 @@ public class MicroPlanServiceImpl implements MicroPlanService {
         var microPlan = getMicroPlanEntityById(idMicroPlan);
 
         microPlanRepository.delete(microPlan);
+    }
+
+    @Override
+    public List<MicroPlanDto> getMicroPlanesByIdPlan(Long idPlan) {
+        return microPlanEntityToDtoConverter.convert(microPlanRepository.findByPlanIdPlan(idPlan));
     }
 }

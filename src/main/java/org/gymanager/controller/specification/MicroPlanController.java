@@ -24,8 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.List;
 
-@RequestMapping("/api/micro-planes")
+@RequestMapping("/api")
 @Tag(name = "Micro Planes", description = "Gestion de micro planes")
 public interface MicroPlanController {
 
@@ -33,7 +34,7 @@ public interface MicroPlanController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK")
     })
-    @GetMapping(produces = { "application/json"})
+    @GetMapping(value = "/micro-planes", produces = { "application/json"})
     @PreAuthorize("hasAuthority('get-micro-planes')")
     ResponseEntity<GyManagerPage<MicroPlanDto>> getMicroPlanes(
             @Parameter(name = "search",
@@ -49,7 +50,7 @@ public interface MicroPlanController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK")
     })
-    @GetMapping(value = "/{idMicroPlan}", produces = { "application/json"})
+    @GetMapping(value = "/micro-planes/{idMicroPlan}", produces = { "application/json"})
     @PreAuthorize("hasAuthority('get-micro-planes')")
     ResponseEntity<MicroPlanDtoDetails> getMicroPlanById(@PathVariable("idMicroPlan") Long idMicroPlan);
 
@@ -57,7 +58,7 @@ public interface MicroPlanController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK")
     })
-    @PostMapping(produces = { "application/json"}, consumes = { "application/json"})
+    @PostMapping(value = "/micro-planes", produces = { "application/json"}, consumes = { "application/json"})
     @PreAuthorize("hasAuthority('post-micro-planes')")
     ResponseEntity<Long> addMicroPlan(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Micro plan request body.",
@@ -68,7 +69,7 @@ public interface MicroPlanController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "NO CONTENT")
     })
-    @PutMapping(value = "/{idMicroPlan}", consumes = { "application/json"})
+    @PutMapping(value = "/micro-planes/{idMicroPlan}", consumes = { "application/json"})
     @PreAuthorize("hasAuthority('put-micro-planes')")
     ResponseEntity<Void> updateMicroPlanById(
             @PathVariable("idMicroPlan") Long idMicroPlan,
@@ -80,7 +81,16 @@ public interface MicroPlanController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "NO CONTENT")
     })
-    @DeleteMapping("/{idMicroPlan}")
+    @DeleteMapping("/micro-planes/{idMicroPlan}")
     @PreAuthorize("hasAuthority('delete-micro-planes')")
     ResponseEntity<Void> deleteMicroPlanById(@PathVariable("idMicroPlan") Long idMicroPlan);
+
+    @Operation(summary = "Obtener los micro planes de un plan por el id de plan", tags = "Planes",
+            description = "Esta operación es para obtener los micro planes de un plan por el id de plan")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    @GetMapping(value = "/planes/{idPlan}/micro-planes", produces = { "application/json"})
+    @PreAuthorize("hasAuthority('get-planes')")
+    ResponseEntity<List<MicroPlanDto>> getMicroPlanesByIdPlan(@PathVariable("idPlan") Long idPlan);
 }

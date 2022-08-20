@@ -6,6 +6,9 @@ import org.gymanager.model.domain.MicroPlan;
 import org.gymanager.model.enums.MicroPlanSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface MicroPlanService {
 
@@ -21,4 +24,6 @@ public interface MicroPlanService {
     void updateMicroPlanById(Long idMicroPlan, MicroPlanDtoDetails microPlanDtoDetails);
 
     void deleteMicroPlanById(Long idMicroPlan);
+
+    List<MicroPlanDto> getMicroPlanesByIdPlan(Long idPlan);
 }
