@@ -12,4 +12,6 @@ public class MicroPlanDtoDetails extends MicroPlanDto{
 
     @NotEmpty(message = "El micro plan debe tener al menos una rutina")
     private List<RutinaDtoDetails> rutinas;
+
+    private List<ObservacionDto> observaciones;
 }

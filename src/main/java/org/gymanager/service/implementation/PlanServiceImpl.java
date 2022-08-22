@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.PlanEntityToDtoConverter;
+import org.gymanager.converter.PlanEntityToDtoDetailsConverter;
 import org.gymanager.model.client.PlanDto;
 import org.gymanager.model.domain.Plan;
 import org.gymanager.repository.specification.PlanRepository;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,14 +30,18 @@ public class PlanServiceImpl implements PlanService {
     @NonNull
     private PlanEntityToDtoConverter planEntityToDtoConverter;
 
+    @NonNull
+    private PlanEntityToDtoDetailsConverter planEntityToDtoDetailsConverter;
+
     @Override
     public List<PlanDto> getPlansByClientId(Long idCliente) {
         return planEntityToDtoConverter.convert(planRepository.findByClienteIdCliente(idCliente));
     }
 
     @Override
+    @Transactional
     public PlanDto getPlanById(Long idPlan) {
-        return planEntityToDtoConverter.convert(getPlanEntityById(idPlan));
+        return planEntityToDtoDetailsConverter.convert(getPlanEntityById(idPlan));
     }
 
     @Override
