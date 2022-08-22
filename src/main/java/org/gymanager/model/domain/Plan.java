@@ -3,6 +3,7 @@ package org.gymanager.model.domain;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,7 +39,7 @@ public class Plan {
     @JoinColumn(name = "id_objetivo")
     private Objetivo objetivo;
 
-    @OneToMany(mappedBy = "plan")
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MicroPlan> microPlans;
 
     private LocalDate fechaDesde;
