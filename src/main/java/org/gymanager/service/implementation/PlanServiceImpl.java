@@ -6,9 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.PlanEntityToDtoConverter;
 import org.gymanager.converter.PlanEntityToDtoDetailsConverter;
 import org.gymanager.model.client.PlanDto;
+import org.gymanager.model.client.PlanDtoDetails;
 import org.gymanager.model.domain.Plan;
 import org.gymanager.repository.specification.PlanRepository;
+import org.gymanager.service.specification.ClienteService;
+import org.gymanager.service.specification.MicroPlanService;
+import org.gymanager.service.specification.ObjetivoService;
 import org.gymanager.service.specification.PlanService;
+import org.gymanager.service.specification.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -33,6 +38,18 @@ public class PlanServiceImpl implements PlanService {
     @NonNull
     private PlanEntityToDtoDetailsConverter planEntityToDtoDetailsConverter;
 
+    @NonNull
+    private MicroPlanService microPlanService;
+
+    @NonNull
+    private ObjetivoService objetivoService;
+
+    @NonNull
+    private ClienteService clienteService;
+
+    @NonNull
+    private UsuarioService usuarioService;
+
     @Override
     public List<PlanDto> getPlansByClientId(Long idCliente) {
         return planEntityToDtoConverter.convert(planRepository.findByClienteIdCliente(idCliente));
@@ -54,5 +71,46 @@ public class PlanServiceImpl implements PlanService {
         }
 
         return plan.get();
+    }
+
+    @Override
+    @Transactional
+    public Long addPlan(PlanDtoDetails planDtoDetails) {
+        var plan = new Plan();
+
+        var microPlanes = microPlanService.crearMicroPlanes(planDtoDetails.getMicroPlans());
+        var objetivo = objetivoService.getObjetivoByObjetivo(planDtoDetails.getObjetivo());
+        var usuario = usuarioService.getUsuarioEntityById(planDtoDetails.getIdUsuarioProfesor());
+        var cliente = clienteService.getClienteEntityById(planDtoDetails.getIdCliente());
+
+        plan.setDescripcion(planDtoDetails.getDescripcion());
+        plan.setFechaDesde(planDtoDetails.getFechaDesde());
+        plan.setFechaHasta(planDtoDetails.getFechaHasta());
+        plan.setObjetivo(objetivo);
+        plan.setCliente(cliente);
+        plan.setUsuarioProfesor(usuario);
+        plan.setMicroPlans(microPlanes);
+
+        return planRepository.save(plan).getIdPlan();
+    }
+
+    @Override
+    @Transactional
+    public void updatePlanById(Long idPlan, PlanDtoDetails planDtoDetails) {
+        var plan = getPlanEntityById(idPlan);
+
+        microPlanService.actualizarMicroPlanesPlan(planDtoDetails.getMicroPlans(), plan);
+        var objetivo = objetivoService.getObjetivoByObjetivo(planDtoDetails.getObjetivo());
+        var usuario = usuarioService.getUsuarioEntityById(planDtoDetails.getIdUsuarioProfesor());
+        var cliente = clienteService.getClienteEntityById(planDtoDetails.getIdCliente());
+
+        plan.setDescripcion(planDtoDetails.getDescripcion());
+        plan.setFechaDesde(planDtoDetails.getFechaDesde());
+        plan.setFechaHasta(planDtoDetails.getFechaHasta());
+        plan.setObjetivo(objetivo);
+        plan.setCliente(cliente);
+        plan.setUsuarioProfesor(usuario);
+
+        planRepository.save(plan);
     }
 }

@@ -12,7 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -42,4 +44,21 @@ public class Plan {
     private LocalDate fechaDesde;
     private LocalDate fechaHasta;
     private String descripcion;
+
+    public void setMicroPlans(List<MicroPlan> microPlans) {
+        this.microPlans = microPlans;
+        microPlans.forEach(microPlan -> microPlan.setPlan(this));
+    }
+
+    public void addAllMicroPlans(List<MicroPlan> microPlans) {
+        microPlans.forEach(this::addMicroPlan);
+    }
+
+    public void addMicroPlan(MicroPlan microPlan){
+        if(Objects.isNull(this.microPlans)){
+            this.microPlans = new ArrayList<>();
+        }
+        this.microPlans.add(microPlan);
+        microPlan.setPlan(this);
+    }
 }

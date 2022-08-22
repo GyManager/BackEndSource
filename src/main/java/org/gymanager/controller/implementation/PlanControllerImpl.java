@@ -4,8 +4,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.PlanController;
 import org.gymanager.model.client.PlanDto;
-import org.gymanager.model.domain.Plan;
+import org.gymanager.model.client.PlanDtoDetails;
 import org.gymanager.service.specification.PlanService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,5 +27,18 @@ public class PlanControllerImpl implements PlanController {
     @Override
     public ResponseEntity<PlanDto> getPlanById(Long idPlan) {
         return ResponseEntity.ok(planService.getPlanById(idPlan));
+    }
+
+    @Override
+    public ResponseEntity<Long> addPlan(PlanDtoDetails planDtoDetails) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(planService.addPlan(planDtoDetails));
+    }
+
+    @Override
+    public ResponseEntity<Void> updatePlanById(Long idCliente, Long idPlan, PlanDtoDetails planDtoDetails) {
+        planService.updatePlanById(idPlan, planDtoDetails);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -8,6 +8,7 @@ import org.gymanager.converter.MicroPlanEntityToDtoDetailsConverter;
 import org.gymanager.model.client.MicroPlanDto;
 import org.gymanager.model.client.MicroPlanDtoDetails;
 import org.gymanager.model.domain.MicroPlan;
+import org.gymanager.model.domain.Plan;
 import org.gymanager.model.enums.MicroPlanSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.repository.filters.MicroPlanSpecification;
@@ -22,7 +23,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -74,18 +78,14 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     }
 
     @Override
+    public List<MicroPlan> crearMicroPlanes(List<MicroPlanDtoDetails> microPlans) {
+        return microPlans.stream().map(this::crearMicroPlan).collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public Long addMicroPlan(MicroPlanDtoDetails microPlanDtoDetails) {
-        var microPlan = new MicroPlan();
-
-        var rutinas = rutinaService.crearRutinas(microPlanDtoDetails.getRutinas());
-
-        microPlan.setNombre(microPlanDtoDetails.getNombre());
-        microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoDetails.getEsTemplate()));
-        microPlan.setRutinas(rutinas);
-        microPlan.setNumeroOrden(microPlanDtoDetails.getNumeroOrden());
-
-        return microPlanRepository.save(microPlan).getIdMicroPlan();
+        return crearMicroPlan(microPlanDtoDetails).getIdMicroPlan();
     }
 
     @Override
@@ -112,5 +112,46 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     @Override
     public List<MicroPlanDto> getMicroPlanesByIdPlan(Long idPlan) {
         return microPlanEntityToDtoConverter.convert(microPlanRepository.findByPlanIdPlan(idPlan));
+    }
+
+    @Override
+    public void actualizarMicroPlanesPlan(List<MicroPlanDtoDetails> microPlanDtoDetailsList, Plan plan) {
+
+        final var mapMicroPlanExistenteIdMPActualizadoDto = microPlanDtoDetailsList.stream()
+                .filter(microPlanDtoDetails -> Objects.nonNull(microPlanDtoDetails.getIdMicroPlan()))
+                .collect(Collectors.toMap(MicroPlanDtoDetails::getIdMicroPlan, Function.identity()));
+
+        plan.getMicroPlans().removeIf(microPlan -> !mapMicroPlanExistenteIdMPActualizadoDto.containsKey(microPlan.getIdMicroPlan()));
+
+        plan.getMicroPlans().forEach(microPlan -> {
+            var MicroPlanDtoActualizado = mapMicroPlanExistenteIdMPActualizadoDto.get(microPlan.getIdMicroPlan());
+
+            rutinaService.actualizarRutinasMicroPlan(MicroPlanDtoActualizado.getRutinas(), microPlan);
+
+            microPlan.setNombre(MicroPlanDtoActualizado.getNombre());
+            microPlan.setEsTemplate(Boolean.TRUE.equals(MicroPlanDtoActualizado.getEsTemplate()));
+            microPlan.setNumeroOrden(MicroPlanDtoActualizado.getNumeroOrden());
+        });
+
+        plan.addAllMicroPlans(crearMicroPlanes(getMicroPlansSinId(microPlanDtoDetailsList)));
+    }
+
+    private List<MicroPlanDtoDetails> getMicroPlansSinId(List<MicroPlanDtoDetails> microPlanDtoDetailsList){
+        return microPlanDtoDetailsList.stream()
+                .filter(microPlanDtoDetails -> Objects.isNull(microPlanDtoDetails.getIdMicroPlan()))
+                .toList();
+    }
+
+    private MicroPlan crearMicroPlan(MicroPlanDtoDetails microPlanDtoDetails){
+        var microPlan = new MicroPlan();
+
+        var rutinas = rutinaService.crearRutinas(microPlanDtoDetails.getRutinas());
+
+        microPlan.setNombre(microPlanDtoDetails.getNombre());
+        microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoDetails.getEsTemplate()));
+        microPlan.setRutinas(rutinas);
+        microPlan.setNumeroOrden(microPlanDtoDetails.getNumeroOrden());
+
+        return microPlanRepository.save(microPlan);
     }
 }
