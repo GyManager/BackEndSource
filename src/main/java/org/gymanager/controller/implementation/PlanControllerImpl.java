@@ -41,4 +41,11 @@ public class PlanControllerImpl implements PlanController {
         planService.updatePlanById(idCliente, idPlan, planDtoDetails);
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public ResponseEntity<Void> deletePlanById(Long idCliente, Long idPlan) {
+        planService.deletePlanById(idCliente, idPlan);
+        return ResponseEntity.noContent().build();
+    }
+
 }

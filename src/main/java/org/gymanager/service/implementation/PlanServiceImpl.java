@@ -114,4 +114,11 @@ public class PlanServiceImpl implements PlanService {
 
         planRepository.save(plan);
     }
+
+    @Override
+    public void deletePlanById(Long idCliente, Long idPlan) {
+        var plan = getPlanEntityById(idPlan);
+
+        planRepository.delete(plan);
+    }
 }

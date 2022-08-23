@@ -17,4 +17,6 @@ public interface PlanService {
     Long addPlan(Long idCliente, PlanDtoDetails planDtoDetails);
 
     void updatePlanById(Long idCliente, Long idPlan, PlanDtoDetails planDtoDetails);
+
+    void deletePlanById(Long idCliente, Long idPlan);
 }
