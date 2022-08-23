@@ -12,8 +12,6 @@ import java.time.LocalDate;
 public class PlanDto {
 
     private Long idPlan;
-
-    @NotNull(message = "El plan debe estar asociado a un cliente. El idCliente no debe ser nulo")
     private Long idCliente;
     private Long idUsuarioProfesor;
 
