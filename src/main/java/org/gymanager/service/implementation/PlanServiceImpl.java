@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -75,13 +76,15 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional
-    public Long addPlan(PlanDtoDetails planDtoDetails) {
+    public Long addPlan(Long idCliente, PlanDtoDetails planDtoDetails) {
         var plan = new Plan();
 
         var microPlanes = microPlanService.crearMicroPlanes(planDtoDetails.getMicroPlans());
         var objetivo = objetivoService.getObjetivoByObjetivo(planDtoDetails.getObjetivo());
-        var usuario = usuarioService.getUsuarioEntityById(planDtoDetails.getIdUsuarioProfesor());
-        var cliente = clienteService.getClienteEntityById(planDtoDetails.getIdCliente());
+        var usuario = Objects.nonNull(planDtoDetails.getIdUsuarioProfesor()) ?
+                usuarioService.getUsuarioEntityById(planDtoDetails.getIdUsuarioProfesor()) :
+                usuarioService.getUsuarioEntityByMail(planDtoDetails.getUsuarioProfesor());
+        var cliente = clienteService.getClienteEntityById(idCliente);
 
         plan.setDescripcion(planDtoDetails.getDescripcion());
         plan.setFechaDesde(planDtoDetails.getFechaDesde());
@@ -96,20 +99,18 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional
-    public void updatePlanById(Long idPlan, PlanDtoDetails planDtoDetails) {
+    public void updatePlanById(Long idCliente, Long idPlan, PlanDtoDetails planDtoDetails) {
         var plan = getPlanEntityById(idPlan);
 
         microPlanService.actualizarMicroPlanesPlan(planDtoDetails.getMicroPlans(), plan);
         var objetivo = objetivoService.getObjetivoByObjetivo(planDtoDetails.getObjetivo());
-        var usuario = usuarioService.getUsuarioEntityById(planDtoDetails.getIdUsuarioProfesor());
-        var cliente = clienteService.getClienteEntityById(planDtoDetails.getIdCliente());
+        var cliente = clienteService.getClienteEntityById(idCliente);
 
         plan.setDescripcion(planDtoDetails.getDescripcion());
         plan.setFechaDesde(planDtoDetails.getFechaDesde());
         plan.setFechaHasta(planDtoDetails.getFechaHasta());
         plan.setObjetivo(objetivo);
         plan.setCliente(cliente);
-        plan.setUsuarioProfesor(usuario);
 
         planRepository.save(plan);
     }

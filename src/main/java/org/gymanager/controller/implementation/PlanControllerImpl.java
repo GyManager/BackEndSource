@@ -30,15 +30,15 @@ public class PlanControllerImpl implements PlanController {
     }
 
     @Override
-    public ResponseEntity<Long> addPlan(PlanDtoDetails planDtoDetails) {
+    public ResponseEntity<Long> addPlan(Long idCliente, PlanDtoDetails planDtoDetails) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(planService.addPlan(planDtoDetails));
+                .body(planService.addPlan(idCliente, planDtoDetails));
     }
 
     @Override
     public ResponseEntity<Void> updatePlanById(Long idCliente, Long idPlan, PlanDtoDetails planDtoDetails) {
-        planService.updatePlanById(idPlan, planDtoDetails);
+        planService.updatePlanById(idCliente, idPlan, planDtoDetails);
         return ResponseEntity.noContent().build();
     }
 }

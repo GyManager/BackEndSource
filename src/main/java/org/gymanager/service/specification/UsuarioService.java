@@ -18,4 +18,6 @@ public interface UsuarioService {
     void updateUsuarioById(Long idUsuario, UsuarioDto usuarioDto);
 
     void deleteUsuarioById(Long idUsuario);
+
+    Usuario getUsuarioEntityByMail(String mail);
 }

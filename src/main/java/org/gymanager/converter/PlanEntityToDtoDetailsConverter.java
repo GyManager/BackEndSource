@@ -21,6 +21,7 @@ public class PlanEntityToDtoDetailsConverter implements GyManagerConverter<Plan,
         planDtoDetails.setIdPlan(source.getIdPlan());
         planDtoDetails.setIdCliente(Objects.isNull(source.getCliente()) ? null : source.getCliente().getIdCliente());
         planDtoDetails.setIdUsuarioProfesor(Objects.isNull(source.getUsuarioProfesor()) ? null : source.getUsuarioProfesor().getIdUsuario());
+        planDtoDetails.setUsuarioProfesor(Objects.isNull(source.getUsuarioProfesor()) ? null : source.getUsuarioProfesor().getMail());
         planDtoDetails.setObjetivo(Objects.isNull(source.getObjetivo()) ? null : source.getObjetivo().getObjetivo());
         planDtoDetails.setFechaDesde(source.getFechaDesde());
         planDtoDetails.setFechaHasta(source.getFechaHasta());

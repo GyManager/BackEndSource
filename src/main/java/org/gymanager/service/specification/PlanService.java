@@ -14,7 +14,7 @@ public interface PlanService {
 
     Plan getPlanEntityById(Long idPlan);
 
-    Long addPlan(PlanDtoDetails planDtoDetails);
+    Long addPlan(Long idCliente, PlanDtoDetails planDtoDetails);
 
-    void updatePlanById(Long idPlan, PlanDtoDetails planDtoDetails);
+    void updatePlanById(Long idCliente, Long idPlan, PlanDtoDetails planDtoDetails);
 }

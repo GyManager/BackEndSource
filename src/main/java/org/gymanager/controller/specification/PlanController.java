@@ -49,6 +49,7 @@ public interface PlanController {
     @PostMapping(value = "/clientes/{idCliente}/planes", produces = { "application/json"}, consumes = { "application/json"})
     @PreAuthorize("hasAuthority('post-planes')")
     ResponseEntity<Long> addPlan(
+            @PathVariable("idCliente") Long idCliente,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Plan request body.",
                     content = @Content(schema = @Schema(implementation = PlanDtoDetails.class)), required = true)
             @RequestBody @Valid PlanDtoDetails planDtoDetails);
