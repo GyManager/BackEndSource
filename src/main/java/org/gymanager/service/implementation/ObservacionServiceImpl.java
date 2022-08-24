@@ -11,6 +11,7 @@ import org.gymanager.repository.specification.ObservacionRepository;
 import org.gymanager.service.specification.ObservacionService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -34,12 +35,17 @@ public class ObservacionServiceImpl implements ObservacionService {
 
     @Override
     public List<Observacion> crearObservaciones(List<ObservacionDto> observaciones) {
+        if(Objects.isNull(observaciones)){
+            return Collections.emptyList();
+        }
         return observaciones.stream().map(this::crearObservacion).collect(Collectors.toList());
     }
 
     @Override
     public void actualizarObservacionesMicroPlan(List<ObservacionDto> observacionesDtos, MicroPlan microPlan) {
-
+        if(Objects.isNull(observacionesDtos)){
+            return;
+        }
         final var mapObservacionExistenteIdObservacionActualizada = observacionesDtos.stream()
                 .filter(observacionDto -> Objects.nonNull(observacionDto.getIdObservacion()))
                 .collect(Collectors.toMap(ObservacionDto::getIdObservacion, Function.identity()));
