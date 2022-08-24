@@ -14,6 +14,7 @@ import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.repository.filters.MicroPlanSpecification;
 import org.gymanager.repository.specification.MicroPlanRepository;
 import org.gymanager.service.specification.MicroPlanService;
+import org.gymanager.service.specification.ObservacionService;
 import org.gymanager.service.specification.RutinaService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -46,6 +47,9 @@ public class MicroPlanServiceImpl implements MicroPlanService {
 
     @NonNull
     private RutinaService rutinaService;
+
+    @NonNull
+    private ObservacionService observacionService;
 
     @Override
     public GyManagerPage<MicroPlanDto> getMicroPlanes(String search, Integer page, Integer pageSize,
@@ -94,6 +98,7 @@ public class MicroPlanServiceImpl implements MicroPlanService {
         var microPlan = getMicroPlanEntityById(idMicroPlan);
 
         rutinaService.actualizarRutinasMicroPlan(microPlanDtoDetails.getRutinas(), microPlan);
+        observacionService.actualizarObservacionesMicroPlan(microPlanDtoDetails.getObservaciones(), microPlan);
 
         microPlan.setNombre(microPlanDtoDetails.getNombre());
         microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoDetails.getEsTemplate()));
@@ -127,6 +132,7 @@ public class MicroPlanServiceImpl implements MicroPlanService {
             var MicroPlanDtoActualizado = mapMicroPlanExistenteIdMPActualizadoDto.get(microPlan.getIdMicroPlan());
 
             rutinaService.actualizarRutinasMicroPlan(MicroPlanDtoActualizado.getRutinas(), microPlan);
+            observacionService.actualizarObservacionesMicroPlan(MicroPlanDtoActualizado.getObservaciones(), microPlan);
 
             microPlan.setNombre(MicroPlanDtoActualizado.getNombre());
             microPlan.setEsTemplate(Boolean.TRUE.equals(MicroPlanDtoActualizado.getEsTemplate()));
@@ -146,10 +152,12 @@ public class MicroPlanServiceImpl implements MicroPlanService {
         var microPlan = new MicroPlan();
 
         var rutinas = rutinaService.crearRutinas(microPlanDtoDetails.getRutinas());
+        var observaciones = observacionService.crearObservaciones(microPlanDtoDetails.getObservaciones());
 
         microPlan.setNombre(microPlanDtoDetails.getNombre());
         microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoDetails.getEsTemplate()));
         microPlan.setRutinas(rutinas);
+        microPlan.setObservaciones(observaciones);
         microPlan.setNumeroOrden(microPlanDtoDetails.getNumeroOrden());
 
         return microPlanRepository.save(microPlan);

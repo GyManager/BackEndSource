@@ -56,4 +56,21 @@ public class MicroPlan {
         this.rutinas.add(rutina);
         rutina.setMicroPlan(this);
     }
+
+    public void setObservaciones(List<Observacion> observaciones) {
+        this.observaciones = observaciones;
+        observaciones.forEach(observacion -> observacion.setMicroPlan(this));
+    }
+
+    public void addAllObservaciones(List<Observacion> observaciones) {
+        observaciones.forEach(this::addObservacion);
+    }
+
+    public void addObservacion(Observacion observacion){
+        if(Objects.isNull(this.observaciones)){
+            this.observaciones = new ArrayList<>();
+        }
+        this.observaciones.add(observacion);
+        observacion.setMicroPlan(this);
+    }
 }
