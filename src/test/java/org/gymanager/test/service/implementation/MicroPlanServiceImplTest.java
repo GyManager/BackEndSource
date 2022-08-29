@@ -61,6 +61,7 @@ class MicroPlanServiceImplTest {
     @Test
     void getMicroPlanes_WhenOk_ThenReturnMicroPlanes() {
         var search = "filter";
+        var esTemplate = Boolean.TRUE;
         var page = 0;
         var pageSize = 20;
         var sortBy = MicroPlanSortBy.NONE;
@@ -73,7 +74,7 @@ class MicroPlanServiceImplTest {
                 .thenReturn(new PageImpl<>(List.of(microPlan)));
         when(microPlanEntityToDtoConverter.convert(microPlan)).thenReturn(microPlanDto);
 
-        var result = microPlanService.getMicroPlanes(search, page, pageSize, sortBy, direction);
+        var result = microPlanService.getMicroPlanes(search, esTemplate, page, pageSize, sortBy, direction);
 
         assertThat(result).isNotNull();
         assertThat(result.getContent()).containsExactly(microPlanDto);

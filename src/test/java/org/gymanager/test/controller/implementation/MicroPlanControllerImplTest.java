@@ -32,6 +32,7 @@ class MicroPlanControllerImplTest {
     @Test
     void getMicroPlanes_WhenOk_ThenReturnMicroPlanes() {
         var search = "filter";
+        var esTemplate = Boolean.TRUE;
         var page = 0;
         var pageSize = 20;
         var sortBy = MicroPlanSortBy.NONE;
@@ -39,10 +40,10 @@ class MicroPlanControllerImplTest {
 
         var microPlanDto = mock(MicroPlanDto.class);
 
-        when(microPlanService.getMicroPlanes(search, page, pageSize, sortBy, direction))
+        when(microPlanService.getMicroPlanes(search, esTemplate, page, pageSize, sortBy, direction))
                 .thenReturn(new GyManagerPage<>(microPlanDto));
 
-        var result = microPlanController.getMicroPlanes(search, page, pageSize, sortBy, direction);
+        var result = microPlanController.getMicroPlanes(search, esTemplate, page, pageSize, sortBy, direction);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);

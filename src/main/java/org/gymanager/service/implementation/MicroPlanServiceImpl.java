@@ -52,10 +52,11 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     private ObservacionService observacionService;
 
     @Override
-    public GyManagerPage<MicroPlanDto> getMicroPlanes(String search, Integer page, Integer pageSize,
+    public GyManagerPage<MicroPlanDto> getMicroPlanes(String search, Boolean esTemplate, Integer page, Integer pageSize,
                                                                       MicroPlanSortBy sortBy, Sort.Direction direction) {
         var microPlanSpecification = new MicroPlanSpecification();
         microPlanSpecification.setSearch(search);
+        microPlanSpecification.setEsTemplate(esTemplate);
 
         Sort sort = sortBy.equals(MicroPlanSortBy.NONE) ? Sort.unsorted() : Sort.by(direction, sortBy.getField());
         PageRequest pageable = PageRequest.of(page, pageSize, sort);

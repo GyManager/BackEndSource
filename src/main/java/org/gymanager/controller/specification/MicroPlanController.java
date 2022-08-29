@@ -37,9 +37,9 @@ public interface MicroPlanController {
     @GetMapping(value = "/micro-planes", produces = { "application/json"})
     @PreAuthorize("hasAuthority('get-micro-planes')")
     ResponseEntity<GyManagerPage<MicroPlanDto>> getMicroPlanes(
-            @Parameter(name = "search",
-                    description = "busca por [nombre]")
+            @Parameter(name = "search", description = "busca por [nombre]")
             @RequestParam(name = "search", required = false, defaultValue = "") String search,
+            @RequestParam(name = "esTemplate", required = false, defaultValue = "true") Boolean esTemplate,
             @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
             @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
             @RequestParam(name = "sortBy", required = false, defaultValue = "NONE") MicroPlanSortBy sortBy,

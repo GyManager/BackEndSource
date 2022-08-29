@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface MicroPlanService {
 
-    GyManagerPage<MicroPlanDto> getMicroPlanes(String search, Integer page, Integer pageSize,
+    GyManagerPage<MicroPlanDto> getMicroPlanes(String search, Boolean esTemplate, Integer page, Integer pageSize,
                                                                MicroPlanSortBy sortBy, Sort.Direction direction);
 
     MicroPlanDtoDetails getMicroPlanById(Long idMicroPlan);

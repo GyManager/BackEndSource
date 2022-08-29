@@ -23,9 +23,9 @@ public class MicroPlanControllerImpl implements MicroPlanController {
     private MicroPlanService microPlanService;
 
     @Override
-    public ResponseEntity<GyManagerPage<MicroPlanDto>> getMicroPlanes(String search, Integer page, Integer pageSize,
+    public ResponseEntity<GyManagerPage<MicroPlanDto>> getMicroPlanes(String search, Boolean esTemplate, Integer page, Integer pageSize,
                                                                       MicroPlanSortBy sortBy, Sort.Direction direction) {
-        return ResponseEntity.ok(microPlanService.getMicroPlanes(search, page, pageSize, sortBy, direction));
+        return ResponseEntity.ok(microPlanService.getMicroPlanes(search, esTemplate, page, pageSize, sortBy, direction));
     }
 
     @Override
