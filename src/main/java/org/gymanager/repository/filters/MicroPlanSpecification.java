@@ -22,9 +22,11 @@ public class MicroPlanSpecification implements Specification<MicroPlan> {
 
     private static final String CAMPO_NOMBRE = "nombre";
     private static final String CAMPO_ES_TEMPLATE = "esTemplate";
+    private static final String CAMPO_CANTIDAD_RUTINAS = "cantidadRutinas";
 
     private String search;
     private Boolean esTemplate;
+    private Integer cantidadRutinas;
 
     @Override
     public Predicate toPredicate(Root<MicroPlan> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
@@ -38,6 +40,10 @@ public class MicroPlanSpecification implements Specification<MicroPlan> {
         if(Objects.nonNull(esTemplate)){
             predicateList.add(esTemplate ? builder.isTrue(root.get(CAMPO_ES_TEMPLATE)) :
                     builder.isFalse(root.get(CAMPO_ES_TEMPLATE)));
+        }
+
+        if(Objects.nonNull(cantidadRutinas)){
+            predicateList.add(builder.equal(root.get(CAMPO_CANTIDAD_RUTINAS), cantidadRutinas));
         }
 
         return predicateList.stream().reduce(builder::and)

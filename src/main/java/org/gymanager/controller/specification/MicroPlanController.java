@@ -40,6 +40,7 @@ public interface MicroPlanController {
             @Parameter(name = "search", description = "busca por [nombre]")
             @RequestParam(name = "search", required = false, defaultValue = "") String search,
             @RequestParam(name = "esTemplate", required = false, defaultValue = "true") Boolean esTemplate,
+            @RequestParam(name = "cantidadRutinas", required = false, defaultValue = "") Integer cantidadRutinas,
             @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
             @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
             @RequestParam(name = "sortBy", required = false, defaultValue = "NONE") MicroPlanSortBy sortBy,
