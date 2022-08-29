@@ -15,4 +15,5 @@ public class MicroPlanDto {
     private String nombre;
     private Boolean esTemplate;
     private Integer numeroOrden;
+    private Integer cantidadRutinas;
 }

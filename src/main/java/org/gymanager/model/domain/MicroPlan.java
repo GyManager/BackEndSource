@@ -2,6 +2,7 @@ package org.gymanager.model.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -39,6 +40,9 @@ public class MicroPlan {
 
     @OneToMany(mappedBy = "microPlan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rutina> rutinas;
+
+    @Formula(value = "(SELECT COUNT(r.id_rutina) FROM {h-schema}rutina r WHERE r.id_micro_plan = id_micro_plan)")
+    private Integer cantidadRutinas;
 
     public void setRutinas(List<Rutina> rutinas) {
         this.rutinas = rutinas;

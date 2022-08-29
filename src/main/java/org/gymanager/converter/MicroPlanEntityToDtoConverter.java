@@ -16,6 +16,7 @@ public class MicroPlanEntityToDtoConverter implements GyManagerConverter<MicroPl
         microPlanDto.setNombre(source.getNombre());
         microPlanDto.setEsTemplate(source.getEsTemplate());
         microPlanDto.setNumeroOrden(source.getNumeroOrden());
+        microPlanDto.setCantidadRutinas(source.getCantidadRutinas());
         return microPlanDto;
     }
 }

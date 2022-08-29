@@ -25,6 +25,7 @@ public class MicroPlanEntityToDtoDetailsConverter implements GyManagerConverter<
         microPlanDtoDetails.setNombre(source.getNombre());
         microPlanDtoDetails.setEsTemplate(source.getEsTemplate());
         microPlanDtoDetails.setNumeroOrden(source.getNumeroOrden());
+        microPlanDtoDetails.setCantidadRutinas(source.getCantidadRutinas());
         microPlanDtoDetails.setRutinas(Objects.isNull(source.getRutinas()) ? null :
                 rutinaEntityToDtoDetailsConverter.convert(source.getRutinas()));
         microPlanDtoDetails.setObservaciones(Objects.isNull(source.getObservaciones()) ? null :
