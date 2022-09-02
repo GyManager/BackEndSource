@@ -9,4 +9,6 @@ import java.util.List;
 public interface MicroPlanRepository extends JpaRepository<MicroPlan, Long>, JpaSpecificationExecutor<MicroPlan> {
 
     List<MicroPlan> findByPlanIdPlan(Long idPlan);
+
+    List<MicroPlan> findByNombreAndEsTemplate(String name, Boolean esTemplate);
 }

@@ -35,6 +35,8 @@ import java.util.stream.Collectors;
 public class MicroPlanServiceImpl implements MicroPlanService {
 
     private static final String MICRO_PLAN_NO_ENCONTRADO = "Micro plan no encontrado";
+    private static final String MICRO_PLAN_TEMPLATE_CON_NOMBRE_YA_EXISTE = "Ya existe un micro plan plantilla con el " +
+            "nombre (%s) ingresado";
 
     @NonNull
     private MicroPlanRepository microPlanRepository;
@@ -91,6 +93,9 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     @Override
     @Transactional
     public Long addMicroPlan(MicroPlanDtoDetails microPlanDtoDetails) {
+        if(microPlanDtoDetails.getEsTemplate()){
+            validarMicroPlanConNombreYTemplateNoExiste(microPlanDtoDetails.getNombre(), microPlanDtoDetails.getEsTemplate());
+        }
         return crearMicroPlan(microPlanDtoDetails).getIdMicroPlan();
     }
 
@@ -102,7 +107,12 @@ public class MicroPlanServiceImpl implements MicroPlanService {
         rutinaService.actualizarRutinasMicroPlan(microPlanDtoDetails.getRutinas(), microPlan);
         observacionService.actualizarObservacionesMicroPlan(microPlanDtoDetails.getObservaciones(), microPlan);
 
-        microPlan.setNombre(microPlanDtoDetails.getNombre().trim());
+        if(!microPlan.getNombre().equals(microPlanDtoDetails.getNombre().trim())){
+            if(microPlanDtoDetails.getEsTemplate()) {
+                validarMicroPlanConNombreYTemplateNoExiste(microPlanDtoDetails.getNombre(), microPlanDtoDetails.getEsTemplate());
+            }
+            microPlan.setNombre(microPlanDtoDetails.getNombre().trim());
+        }
         microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoDetails.getEsTemplate()));
         microPlan.setNumeroOrden(microPlanDtoDetails.getNumeroOrden());
 
@@ -163,5 +173,12 @@ public class MicroPlanServiceImpl implements MicroPlanService {
         microPlan.setNumeroOrden(microPlanDtoDetails.getNumeroOrden());
 
         return microPlanRepository.save(microPlan);
+    }
+
+    private void validarMicroPlanConNombreYTemplateNoExiste(String nombre, Boolean esTemplate){
+        if(!microPlanRepository.findByNombreAndEsTemplate(nombre, esTemplate).isEmpty()){
+            log.error(String.format(MICRO_PLAN_TEMPLATE_CON_NOMBRE_YA_EXISTE, nombre));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(MICRO_PLAN_TEMPLATE_CON_NOMBRE_YA_EXISTE, nombre));
+        }
     }
 }
