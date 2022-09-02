@@ -86,7 +86,7 @@ public class PlanServiceImpl implements PlanService {
                 usuarioService.getUsuarioEntityByMail(planDtoDetails.getUsuarioProfesor());
         var cliente = clienteService.getClienteEntityById(idCliente);
 
-        plan.setDescripcion(planDtoDetails.getDescripcion());
+        plan.setDescripcion(planDtoDetails.getDescripcion().trim());
         plan.setFechaDesde(planDtoDetails.getFechaDesde());
         plan.setFechaHasta(planDtoDetails.getFechaHasta());
         plan.setObjetivo(objetivo);
@@ -106,7 +106,7 @@ public class PlanServiceImpl implements PlanService {
         var objetivo = objetivoService.getObjetivoByObjetivo(planDtoDetails.getObjetivo());
         var cliente = clienteService.getClienteEntityById(idCliente);
 
-        plan.setDescripcion(planDtoDetails.getDescripcion());
+        plan.setDescripcion(planDtoDetails.getDescripcion().trim());
         plan.setFechaDesde(planDtoDetails.getFechaDesde());
         plan.setFechaHasta(planDtoDetails.getFechaHasta());
         plan.setObjetivo(objetivo);
