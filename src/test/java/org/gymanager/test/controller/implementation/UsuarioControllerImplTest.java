@@ -2,6 +2,7 @@ package org.gymanager.test.controller.implementation;
 
 import org.gymanager.controller.implementation.UsuarioControllerImpl;
 import org.gymanager.model.client.UsuarioDto;
+import org.gymanager.model.client.UsuarioDtoDetails;
 import org.gymanager.service.specification.UsuarioService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +30,7 @@ class UsuarioControllerImplTest {
 
     @Test
     public void addUsuario_WhenOk_ThenCreated(){
-        UsuarioDto usuarioDto = new UsuarioDto();
+        UsuarioDtoDetails usuarioDto = new UsuarioDtoDetails();
 
         when(usuarioService.addUsuario(usuarioDto)).thenReturn(ID_USUARIO);
 
@@ -59,11 +60,11 @@ class UsuarioControllerImplTest {
 
     @Test
     public void getUsuarioById_WhenOk_ThenReturnUsuario(){
-        UsuarioDto usuarioDto = new UsuarioDto();
+        UsuarioDtoDetails usuarioDto = new UsuarioDtoDetails();
 
         when(usuarioService.getUsuarioById(ID_USUARIO)).thenReturn(usuarioDto);
 
-        ResponseEntity<UsuarioDto> resultado = usuarioController.getUsuarioById(ID_USUARIO);
+        ResponseEntity<UsuarioDtoDetails> resultado = usuarioController.getUsuarioById(ID_USUARIO);
 
         assertThat(resultado).isNotNull();
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -74,14 +75,14 @@ class UsuarioControllerImplTest {
 
     @Test
     public void updateUsuarioById_WhenOk_ThenReturnNoContent(){
-        UsuarioDto usuarioDto = new UsuarioDto();
+        var usuarioDtoDetails = new UsuarioDtoDetails();
 
-        ResponseEntity<Void> resultado = usuarioController.updateUsuarioById(ID_USUARIO, usuarioDto);
+        ResponseEntity<Void> resultado = usuarioController.updateUsuarioById(ID_USUARIO, usuarioDtoDetails);
 
         assertThat(resultado).isNotNull();
         assertThat(resultado.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-        verify(usuarioService).updateUsuarioById(ID_USUARIO, usuarioDto);
+        verify(usuarioService).updateUsuarioById(ID_USUARIO, usuarioDtoDetails);
     }
 
     @Test

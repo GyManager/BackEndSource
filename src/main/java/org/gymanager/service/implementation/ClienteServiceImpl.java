@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -30,6 +31,7 @@ import java.util.Optional;
 public class ClienteServiceImpl implements ClienteService {
 
     private static final String CLIENTE_NO_ENCONTRADO = "Cliente no encontrado";
+    private static final String ROL_CLIENTE = "CLIENTE";
 
     @NonNull
     private ClienteRepository clienteRepository;
@@ -80,7 +82,7 @@ public class ClienteServiceImpl implements ClienteService {
     public Long addCliente(ClienteDto clienteDto) {
         Cliente cliente = new Cliente();
 
-        Long idUsuario = usuarioService.addUsuario(clienteDto.getUsuario());
+        Long idUsuario = usuarioService.addUsuario(clienteDto.getUsuario(), Collections.singletonList(ROL_CLIENTE));
         Usuario usuario = usuarioService.getUsuarioEntityById(idUsuario);
         Objetivo objetivo = objetivoService.getObjetivoByObjetivo(clienteDto.getObjetivo());
 
@@ -99,7 +101,7 @@ public class ClienteServiceImpl implements ClienteService {
         Cliente cliente = getClienteEntityById(idCliente);
 
         Long idUsuario = cliente.getUsuario().getIdUsuario();
-        usuarioService.updateUsuarioById(idUsuario, clienteDto.getUsuario());
+        usuarioService.updateUsuarioById(idUsuario, clienteDto.getUsuario(), Collections.emptyList(), Boolean.FALSE);
         Usuario usuario = usuarioService.getUsuarioEntityById(idUsuario);
         Objetivo objetivo = objetivoService.getObjetivoByObjetivo(clienteDto.getObjetivo());
 

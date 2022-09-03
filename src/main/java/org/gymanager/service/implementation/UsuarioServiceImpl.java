@@ -5,13 +5,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.gymanager.converter.UsuarioEntityToDtoConverter;
+import org.gymanager.converter.UsuarioEntityToDtoDetailsConverter;
 import org.gymanager.model.client.UsuarioDto;
+import org.gymanager.model.client.UsuarioDtoDetails;
 import org.gymanager.model.domain.Permiso;
 import org.gymanager.model.domain.Rol;
 import org.gymanager.model.domain.Sexo;
 import org.gymanager.model.domain.TipoDocumento;
 import org.gymanager.model.domain.Usuario;
 import org.gymanager.repository.specification.UsuarioRepository;
+import org.gymanager.service.specification.RolService;
 import org.gymanager.service.specification.SexoService;
 import org.gymanager.service.specification.TipoDocumentoService;
 import org.gymanager.service.specification.UsuarioService;
@@ -53,10 +56,16 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     private final UsuarioEntityToDtoConverter usuarioEntityToDtoConverter;
 
     @NonNull
+    private final UsuarioEntityToDtoDetailsConverter usuarioEntityToDtoDetailsConverter;
+
+    @NonNull
     private final TipoDocumentoService tipoDocumentoService;
 
     @NonNull
     private final SexoService sexoService;
+
+    @NonNull
+    private final RolService rolService;
 
     @NonNull
     private final PasswordEncoder passwordEncoder;
@@ -98,8 +107,8 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     @Override
-    public UsuarioDto getUsuarioById(Long idUsuario) {
-        return usuarioEntityToDtoConverter.convert(getUsuarioEntityById(idUsuario));
+    public UsuarioDtoDetails getUsuarioById(Long idUsuario) {
+        return usuarioEntityToDtoDetailsConverter.convert(getUsuarioEntityById(idUsuario));
     }
 
     @Override
@@ -115,13 +124,19 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     @Override
-    public Long addUsuario(UsuarioDto usuarioDto) {
+    public Long addUsuario(UsuarioDtoDetails usuarioDtoDetails) {
+        return addUsuario(usuarioDtoDetails, usuarioDtoDetails.getRoles());
+    }
+
+    @Override
+    public Long addUsuario(UsuarioDto usuarioDto, List<String> roles) {
         validarUsuarioConMailNoExiste(usuarioDto.getMail());
 
-        TipoDocumento tipoDocumento = tipoDocumentoService.getTipoDocumentoByTipo(usuarioDto.getTipoDocumento());
+        var tipoDocumento = tipoDocumentoService.getTipoDocumentoByTipo(usuarioDto.getTipoDocumento());
         validarUsuarioConNroYTipoDocumentoNoExiste(tipoDocumento, usuarioDto.getNumeroDocumento());
 
-        Sexo sexo = buscarSexoByName(usuarioDto.getSexo());
+        var sexo = buscarSexoByName(usuarioDto.getSexo());
+        var rolEntities = rolService.getRolEntitiesByRolNames(roles);
 
         Usuario usuario = new Usuario();
         usuario.setNumeroDocumento(usuarioDto.getNumeroDocumento());
@@ -132,6 +147,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuario.setMail(usuarioDto.getMail());
         usuario.setCelular(usuarioDto.getCelular());
         usuario.setFechaAlta(LocalDate.now());
+        usuario.setRoles(rolEntities);
 
         usuario.setPass(passwordEncoder.encode(usuarioDto.getNumeroDocumento().toString()));
 
@@ -139,20 +155,25 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     @Override
-    public void updateUsuarioById(Long idUsuario, UsuarioDto usuarioDto) {
-        Usuario usuario = getUsuarioEntityById(idUsuario);
+    public void updateUsuarioById(Long idUsuario, UsuarioDtoDetails usuarioDtoDetails) {
+        updateUsuarioById(idUsuario, usuarioDtoDetails, usuarioDtoDetails.getRoles(), Boolean.TRUE);
+    }
+
+    @Override
+    public void updateUsuarioById(Long idUsuario, UsuarioDto usuarioDto, List<String> roles, Boolean updateRoles) {
+        var usuario = getUsuarioEntityById(idUsuario);
 
         if(!usuarioDto.getMail().equals(usuario.getMail())){
             validarUsuarioConMailNoExiste(usuarioDto.getMail());
         }
 
-        TipoDocumento tipoDocumento = tipoDocumentoService.getTipoDocumentoByTipo(usuarioDto.getTipoDocumento());
+        var tipoDocumento = tipoDocumentoService.getTipoDocumentoByTipo(usuarioDto.getTipoDocumento());
         if(!usuarioDto.getNumeroDocumento().equals(usuario.getNumeroDocumento())
                 || !usuarioDto.getTipoDocumento().equals(usuario.getTipoDocumento().getTipo())){
             validarUsuarioConNroYTipoDocumentoNoExiste(tipoDocumento, usuarioDto.getNumeroDocumento());
         }
 
-        Sexo sexo = buscarSexoByName(usuarioDto.getSexo());
+        var sexo = buscarSexoByName(usuarioDto.getSexo());
 
         usuario.setNumeroDocumento(usuarioDto.getNumeroDocumento());
         usuario.setTipoDocumento(tipoDocumento);
@@ -161,6 +182,10 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuario.setSexo(sexo);
         usuario.setMail(usuarioDto.getMail());
         usuario.setCelular(usuarioDto.getCelular());
+        if(updateRoles) {
+            var rolEntities = rolService.getRolEntitiesByRolNames(roles);
+            usuario.setRoles(rolEntities);
+        }
 
         usuarioRepository.save(usuario);
     }

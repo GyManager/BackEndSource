@@ -1,12 +1,15 @@
 package org.gymanager.test.service.implementation;
 
 import org.gymanager.converter.UsuarioEntityToDtoConverter;
+import org.gymanager.converter.UsuarioEntityToDtoDetailsConverter;
 import org.gymanager.model.client.UsuarioDto;
+import org.gymanager.model.client.UsuarioDtoDetails;
 import org.gymanager.model.domain.Permiso;
 import org.gymanager.model.domain.Rol;
 import org.gymanager.model.domain.Usuario;
 import org.gymanager.repository.specification.UsuarioRepository;
 import org.gymanager.service.implementation.UsuarioServiceImpl;
+import org.gymanager.service.specification.RolService;
 import org.gymanager.service.specification.SexoService;
 import org.gymanager.service.specification.TipoDocumentoService;
 import org.junit.jupiter.api.Test;
@@ -49,10 +52,16 @@ class UsuarioServiceImplTest {
     private UsuarioEntityToDtoConverter usuarioEntityToDtoConverter;
 
     @Mock
+    private UsuarioEntityToDtoDetailsConverter usuarioEntityToDtoDetailsConverter;
+
+    @Mock
     private TipoDocumentoService tipoDocumentoService;
 
     @Mock
     private SexoService sexoService;
+
+    @Mock
+    private RolService rolService;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -124,17 +133,17 @@ class UsuarioServiceImplTest {
     @Test
     public void getUsuarioById_WhenOk_ThenReturnUsuario() {
         Usuario usuario = mock(Usuario.class);
-        UsuarioDto usuarioDto = mock(UsuarioDto.class);
+        var usuarioDtoDetails = mock(UsuarioDtoDetails.class);
 
         when(usuarioRepository.findById(ID_USUARIO)).thenReturn(Optional.of(usuario));
-        when(usuarioEntityToDtoConverter.convert(usuario)).thenReturn(usuarioDto);
+        when(usuarioEntityToDtoDetailsConverter.convert(usuario)).thenReturn(usuarioDtoDetails);
 
         UsuarioDto resultado = usuarioService.getUsuarioById(ID_USUARIO);
 
-        assertThat(resultado).isEqualTo(usuarioDto);
+        assertThat(resultado).isEqualTo(usuarioDtoDetails);
 
         verify(usuarioRepository).findById(ID_USUARIO);
-        verify(usuarioEntityToDtoConverter).convert(usuario);
+        verify(usuarioEntityToDtoDetailsConverter).convert(usuario);
     }
 
     @Test
