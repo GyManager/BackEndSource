@@ -7,4 +7,6 @@ import java.util.List;
 public interface MatriculaService {
 
     List<MatriculaDto> getMatriculasByIdCliente(Long idCliente, Boolean last);
+
+    Long addMatricula(Long idCliente, MatriculaDto matriculaDto);
 }
