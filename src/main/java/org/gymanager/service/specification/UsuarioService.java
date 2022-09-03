@@ -3,12 +3,15 @@ package org.gymanager.service.specification;
 import org.gymanager.model.client.UsuarioDto;
 import org.gymanager.model.client.UsuarioDtoDetails;
 import org.gymanager.model.domain.Usuario;
+import org.gymanager.model.enums.UsuarioSortBy;
+import org.gymanager.model.page.GyManagerPage;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
 public interface UsuarioService {
 
-    List<UsuarioDto> getUsuarios();
+    GyManagerPage<UsuarioDto> getUsuarios(String search, Integer page, Integer pageSize, UsuarioSortBy sortBy, Sort.Direction direction);
 
     UsuarioDtoDetails getUsuarioById(Long idUsuario);
 

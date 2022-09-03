@@ -7,6 +7,9 @@ import org.gymanager.model.client.UsuarioDtoDetails;
 import org.gymanager.model.domain.Permiso;
 import org.gymanager.model.domain.Rol;
 import org.gymanager.model.domain.Usuario;
+import org.gymanager.model.enums.UsuarioSortBy;
+import org.gymanager.model.page.GyManagerPage;
+import org.gymanager.repository.filters.UsuarioSpecification;
 import org.gymanager.repository.specification.UsuarioRepository;
 import org.gymanager.service.implementation.UsuarioServiceImpl;
 import org.gymanager.service.specification.RolService;
@@ -17,6 +20,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,6 +41,7 @@ import static org.gymanager.test.constants.Constantes.MAIL;
 import static org.gymanager.test.constants.Constantes.PASS;
 import static org.gymanager.test.constants.Constantes.PERMISO_DOS;
 import static org.gymanager.test.constants.Constantes.PERMISO_UNO;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -116,18 +123,24 @@ class UsuarioServiceImplTest {
 
     @Test
     public void getUsuarios_WhenOk_ThenReturnUsuarios() {
-        List<Usuario> usuarioList = List.of(mock(Usuario.class));
-        List<UsuarioDto> usuarioDtoList = List.of(mock(UsuarioDto.class));
+        var search = "";
+        var page = 1;
+        var size = 10;
+        var sortBy = UsuarioSortBy.NONE;
+        var direction = Sort.Direction.ASC;
+        var usuario = mock(Usuario.class);
+        var usuarioDto = mock(UsuarioDto.class);
 
-        when(usuarioRepository.findAll()).thenReturn(usuarioList);
-        when(usuarioEntityToDtoConverter.convert(usuarioList)).thenReturn(usuarioDtoList);
+        when(usuarioRepository.findAll(any(UsuarioSpecification.class), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(usuario)));
+        when(usuarioEntityToDtoConverter.convert(usuario)).thenReturn(usuarioDto);
 
-        List<UsuarioDto> resultado = usuarioService.getUsuarios();
+        GyManagerPage<UsuarioDto> resultado = usuarioService.getUsuarios(search, page, size, sortBy, direction);
 
-        assertThat(resultado).isEqualTo(usuarioDtoList);
+        assertThat(resultado.getContent().get(0)).isEqualTo(usuarioDto);
 
-        verify(usuarioRepository).findAll();
-        verify(usuarioEntityToDtoConverter).convert(usuarioList);
+        verify(usuarioRepository).findAll(any(UsuarioSpecification.class), any(Pageable.class));
+        verify(usuarioEntityToDtoConverter).convert(usuario);
     }
 
     @Test

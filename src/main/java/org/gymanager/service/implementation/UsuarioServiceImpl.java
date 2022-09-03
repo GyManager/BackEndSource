@@ -13,11 +13,16 @@ import org.gymanager.model.domain.Rol;
 import org.gymanager.model.domain.Sexo;
 import org.gymanager.model.domain.TipoDocumento;
 import org.gymanager.model.domain.Usuario;
+import org.gymanager.model.enums.UsuarioSortBy;
+import org.gymanager.model.page.GyManagerPage;
+import org.gymanager.repository.filters.UsuarioSpecification;
 import org.gymanager.repository.specification.UsuarioRepository;
 import org.gymanager.service.specification.RolService;
 import org.gymanager.service.specification.SexoService;
 import org.gymanager.service.specification.TipoDocumentoService;
 import org.gymanager.service.specification.UsuarioService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -102,8 +107,16 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     @Override
-    public List<UsuarioDto> getUsuarios() {
-        return usuarioEntityToDtoConverter.convert(usuarioRepository.findAll());
+    public GyManagerPage<UsuarioDto> getUsuarios(String search, Integer page, Integer pageSize, UsuarioSortBy sortBy,
+                                        Sort.Direction direction) {
+        var usuarioSpecification = new UsuarioSpecification();
+        usuarioSpecification.setFuzzySearch(search);
+
+        Sort sort = sortBy.equals(UsuarioSortBy.NONE) ? Sort.unsorted() : Sort.by(direction, sortBy.getField());
+        PageRequest pageable = PageRequest.of(page, pageSize, sort);
+
+        return new GyManagerPage<>(usuarioRepository.findAll(usuarioSpecification, pageable))
+                .map(usuarioEntityToDtoConverter::convert);
     }
 
     @Override

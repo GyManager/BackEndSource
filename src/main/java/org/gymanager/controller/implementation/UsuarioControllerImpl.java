@@ -5,12 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.UsuarioController;
 import org.gymanager.model.client.UsuarioDto;
 import org.gymanager.model.client.UsuarioDtoDetails;
+import org.gymanager.model.enums.UsuarioSortBy;
+import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.UsuarioService;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,8 +21,9 @@ public class UsuarioControllerImpl implements UsuarioController {
     private UsuarioService usuarioService;
 
     @Override
-    public ResponseEntity<List<UsuarioDto>> getUsuarios() {
-        return ResponseEntity.ok(usuarioService.getUsuarios());
+    public ResponseEntity<GyManagerPage<UsuarioDto>> getUsuarios(String search, Integer page, Integer pageSize,
+                                                                 UsuarioSortBy sortBy, Sort.Direction direction) {
+        return ResponseEntity.ok(usuarioService.getUsuarios(search, page, pageSize, sortBy, direction));
     }
 
     @Override
