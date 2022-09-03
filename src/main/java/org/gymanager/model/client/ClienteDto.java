@@ -2,6 +2,7 @@ package org.gymanager.model.client;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.gymanager.model.enums.ClienteEstado;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -29,4 +30,6 @@ public class ClienteDto {
     private Date fechaNacimiento;
 
     private String observaciones;
+    private Integer diasHastaVencimientoMatricula;
+    private ClienteEstado clienteEstado;
 }

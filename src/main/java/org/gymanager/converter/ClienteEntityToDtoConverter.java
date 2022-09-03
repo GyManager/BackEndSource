@@ -26,6 +26,8 @@ public class ClienteEntityToDtoConverter implements GyManagerConverter<Cliente, 
         clienteDto.setDireccion(source.getDireccion());
         clienteDto.setFechaNacimiento(source.getFechaNacimiento());
         clienteDto.setObservaciones(source.getObservaciones());
+        clienteDto.setDiasHastaVencimientoMatricula(source.getDiasHastaVencimientoMatricula());
+        clienteDto.setClienteEstado(source.getClienteEstado());
         return clienteDto;
     }
 }
