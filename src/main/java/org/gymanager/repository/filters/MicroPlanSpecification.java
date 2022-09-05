@@ -12,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -20,8 +21,12 @@ public class MicroPlanSpecification implements Specification<MicroPlan> {
     private static final String LIKE_WILDCARD = "%";
 
     private static final String CAMPO_NOMBRE = "nombre";
+    private static final String CAMPO_ES_TEMPLATE = "esTemplate";
+    private static final String CAMPO_CANTIDAD_RUTINAS = "cantidadRutinas";
 
     private String search;
+    private Boolean esTemplate;
+    private Integer cantidadRutinas;
 
     @Override
     public Predicate toPredicate(Root<MicroPlan> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
@@ -30,6 +35,15 @@ public class MicroPlanSpecification implements Specification<MicroPlan> {
         if(!StringUtils.isEmpty(search)){
             predicateList.add(builder.like(builder.lower(root.get(CAMPO_NOMBRE)),
                     rodearConLikeWildcard(search.toLowerCase())));
+        }
+
+        if(Objects.nonNull(esTemplate)){
+            predicateList.add(esTemplate ? builder.isTrue(root.get(CAMPO_ES_TEMPLATE)) :
+                    builder.isFalse(root.get(CAMPO_ES_TEMPLATE)));
+        }
+
+        if(Objects.nonNull(cantidadRutinas)){
+            predicateList.add(builder.equal(root.get(CAMPO_CANTIDAD_RUTINAS), cantidadRutinas));
         }
 
         return predicateList.stream().reduce(builder::and)

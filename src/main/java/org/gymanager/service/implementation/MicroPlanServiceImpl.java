@@ -8,11 +8,13 @@ import org.gymanager.converter.MicroPlanEntityToDtoDetailsConverter;
 import org.gymanager.model.client.MicroPlanDto;
 import org.gymanager.model.client.MicroPlanDtoDetails;
 import org.gymanager.model.domain.MicroPlan;
+import org.gymanager.model.domain.Plan;
 import org.gymanager.model.enums.MicroPlanSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.repository.filters.MicroPlanSpecification;
 import org.gymanager.repository.specification.MicroPlanRepository;
 import org.gymanager.service.specification.MicroPlanService;
+import org.gymanager.service.specification.ObservacionService;
 import org.gymanager.service.specification.RutinaService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -21,7 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +35,8 @@ import java.util.Optional;
 public class MicroPlanServiceImpl implements MicroPlanService {
 
     private static final String MICRO_PLAN_NO_ENCONTRADO = "Micro plan no encontrado";
+    private static final String MICRO_PLAN_TEMPLATE_CON_NOMBRE_YA_EXISTE = "Ya existe un micro plan plantilla con el " +
+            "nombre (%s) ingresado";
 
     @NonNull
     private MicroPlanRepository microPlanRepository;
@@ -42,11 +50,16 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     @NonNull
     private RutinaService rutinaService;
 
+    @NonNull
+    private ObservacionService observacionService;
+
     @Override
-    public GyManagerPage<MicroPlanDto> getMicroPlanes(String search, Integer page, Integer pageSize,
-                                                                      MicroPlanSortBy sortBy, Sort.Direction direction) {
+    public GyManagerPage<MicroPlanDto> getMicroPlanes(String search, Boolean esTemplate, Integer cantidadRutinas,
+                                                      Integer page, Integer pageSize, MicroPlanSortBy sortBy, Sort.Direction direction) {
         var microPlanSpecification = new MicroPlanSpecification();
         microPlanSpecification.setSearch(search);
+        microPlanSpecification.setEsTemplate(esTemplate);
+        microPlanSpecification.setCantidadRutinas(cantidadRutinas);
 
         Sort sort = sortBy.equals(MicroPlanSortBy.NONE) ? Sort.unsorted() : Sort.by(direction, sortBy.getField());
         PageRequest pageable = PageRequest.of(page, pageSize, sort);
@@ -73,18 +86,17 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     }
 
     @Override
+    public List<MicroPlan> crearMicroPlanes(List<MicroPlanDtoDetails> microPlans) {
+        return microPlans.stream().map(this::crearMicroPlan).collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public Long addMicroPlan(MicroPlanDtoDetails microPlanDtoDetails) {
-        var microPlan = new MicroPlan();
-
-        var rutinas = rutinaService.crearRutinas(microPlanDtoDetails.getRutinas());
-
-        microPlan.setNombre(microPlanDtoDetails.getNombre());
-        microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoDetails.getEsTemplate()));
-        microPlan.setRutinas(rutinas);
-        microPlan.setNumeroOrden(microPlanDtoDetails.getNumeroOrden());
-
-        return microPlanRepository.save(microPlan).getIdMicroPlan();
+        if(microPlanDtoDetails.getEsTemplate()){
+            validarMicroPlanConNombreYTemplateNoExiste(microPlanDtoDetails.getNombre(), microPlanDtoDetails.getEsTemplate());
+        }
+        return crearMicroPlan(microPlanDtoDetails).getIdMicroPlan();
     }
 
     @Override
@@ -93,8 +105,14 @@ public class MicroPlanServiceImpl implements MicroPlanService {
         var microPlan = getMicroPlanEntityById(idMicroPlan);
 
         rutinaService.actualizarRutinasMicroPlan(microPlanDtoDetails.getRutinas(), microPlan);
+        observacionService.actualizarObservacionesMicroPlan(microPlanDtoDetails.getObservaciones(), microPlan);
 
-        microPlan.setNombre(microPlanDtoDetails.getNombre());
+        if(!microPlan.getNombre().equals(microPlanDtoDetails.getNombre().trim())){
+            if(microPlanDtoDetails.getEsTemplate()) {
+                validarMicroPlanConNombreYTemplateNoExiste(microPlanDtoDetails.getNombre(), microPlanDtoDetails.getEsTemplate());
+            }
+            microPlan.setNombre(microPlanDtoDetails.getNombre().trim());
+        }
         microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoDetails.getEsTemplate()));
         microPlan.setNumeroOrden(microPlanDtoDetails.getNumeroOrden());
 
@@ -106,5 +124,61 @@ public class MicroPlanServiceImpl implements MicroPlanService {
         var microPlan = getMicroPlanEntityById(idMicroPlan);
 
         microPlanRepository.delete(microPlan);
+    }
+
+    @Override
+    public List<MicroPlanDto> getMicroPlanesByIdPlan(Long idPlan) {
+        return microPlanEntityToDtoConverter.convert(microPlanRepository.findByPlanIdPlan(idPlan));
+    }
+
+    @Override
+    public void actualizarMicroPlanesPlan(List<MicroPlanDtoDetails> microPlanDtoDetailsList, Plan plan) {
+
+        final var mapMicroPlanExistenteIdMPActualizadoDto = microPlanDtoDetailsList.stream()
+                .filter(microPlanDtoDetails -> Objects.nonNull(microPlanDtoDetails.getIdMicroPlan()))
+                .collect(Collectors.toMap(MicroPlanDtoDetails::getIdMicroPlan, Function.identity()));
+
+        plan.getMicroPlans().removeIf(microPlan -> !mapMicroPlanExistenteIdMPActualizadoDto.containsKey(microPlan.getIdMicroPlan()));
+
+        plan.getMicroPlans().forEach(microPlan -> {
+            var MicroPlanDtoActualizado = mapMicroPlanExistenteIdMPActualizadoDto.get(microPlan.getIdMicroPlan());
+
+            rutinaService.actualizarRutinasMicroPlan(MicroPlanDtoActualizado.getRutinas(), microPlan);
+            observacionService.actualizarObservacionesMicroPlan(MicroPlanDtoActualizado.getObservaciones(), microPlan);
+
+            microPlan.setNombre(MicroPlanDtoActualizado.getNombre().trim());
+            microPlan.setEsTemplate(Boolean.TRUE.equals(MicroPlanDtoActualizado.getEsTemplate()));
+            microPlan.setNumeroOrden(MicroPlanDtoActualizado.getNumeroOrden());
+        });
+
+        plan.addAllMicroPlans(crearMicroPlanes(getMicroPlansSinId(microPlanDtoDetailsList)));
+    }
+
+    private List<MicroPlanDtoDetails> getMicroPlansSinId(List<MicroPlanDtoDetails> microPlanDtoDetailsList){
+        return microPlanDtoDetailsList.stream()
+                .filter(microPlanDtoDetails -> Objects.isNull(microPlanDtoDetails.getIdMicroPlan()))
+                .toList();
+    }
+
+    private MicroPlan crearMicroPlan(MicroPlanDtoDetails microPlanDtoDetails){
+        var microPlan = new MicroPlan();
+
+        var rutinas = rutinaService.crearRutinas(microPlanDtoDetails.getRutinas());
+        var observaciones = observacionService.crearObservaciones(microPlanDtoDetails.getObservaciones());
+
+        microPlan.setNombre(microPlanDtoDetails.getNombre().trim());
+        microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoDetails.getEsTemplate()));
+        microPlan.setRutinas(rutinas);
+        microPlan.setObservaciones(observaciones);
+        microPlan.setNumeroOrden(microPlanDtoDetails.getNumeroOrden());
+
+        return microPlanRepository.save(microPlan);
+    }
+
+    private void validarMicroPlanConNombreYTemplateNoExiste(String nombre, Boolean esTemplate){
+        if(!microPlanRepository.findByNombreAndEsTemplate(nombre, esTemplate).isEmpty()){
+            log.error(String.format(MICRO_PLAN_TEMPLATE_CON_NOMBRE_YA_EXISTE, nombre));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(MICRO_PLAN_TEMPLATE_CON_NOMBRE_YA_EXISTE, nombre));
+        }
     }
 }

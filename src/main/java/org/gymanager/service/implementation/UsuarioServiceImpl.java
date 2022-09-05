@@ -172,6 +172,18 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuarioRepository.delete(usuario);
     }
 
+    @Override
+    public Usuario getUsuarioEntityByMail(String mail) {
+        Optional<Usuario> usuario = usuarioRepository.findByMail(mail);
+
+        if (usuario.isEmpty()) {
+            log.error(String.format(USUARIO_CON_MAIL_NO_ENCONTRADO, mail));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(USUARIO_CON_MAIL_NO_ENCONTRADO, mail));
+        }
+
+        return usuario.get();
+    }
+
     private void validarUsuarioConMailNoExiste(String mail){
         if(usuarioRepository.findByMail(mail).isPresent()){
             log.error(String.format(MAIL_EN_USO, mail));

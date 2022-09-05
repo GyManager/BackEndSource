@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class MicroPlanControllerImpl implements MicroPlanController {
@@ -21,9 +23,10 @@ public class MicroPlanControllerImpl implements MicroPlanController {
     private MicroPlanService microPlanService;
 
     @Override
-    public ResponseEntity<GyManagerPage<MicroPlanDto>> getMicroPlanes(String search, Integer page, Integer pageSize,
+    public ResponseEntity<GyManagerPage<MicroPlanDto>> getMicroPlanes(String search, Boolean esTemplate, Integer cantidadRutinas,
+                                                                      Integer page, Integer pageSize,
                                                                       MicroPlanSortBy sortBy, Sort.Direction direction) {
-        return ResponseEntity.ok(microPlanService.getMicroPlanes(search, page, pageSize, sortBy, direction));
+        return ResponseEntity.ok(microPlanService.getMicroPlanes(search, esTemplate, cantidadRutinas, page, pageSize, sortBy, direction));
     }
 
     @Override
@@ -48,5 +51,10 @@ public class MicroPlanControllerImpl implements MicroPlanController {
     public ResponseEntity<Void> deleteMicroPlanById(Long idMicroPlan) {
         microPlanService.deleteMicroPlanById(idMicroPlan);
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<List<MicroPlanDto>> getMicroPlanesByIdPlan(Long idPlan) {
+        return ResponseEntity.ok(microPlanService.getMicroPlanesByIdPlan(idPlan));
     }
 }
