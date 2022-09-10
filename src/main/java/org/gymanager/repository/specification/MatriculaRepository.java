@@ -4,17 +4,18 @@ import org.gymanager.model.domain.Matricula;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Date;
 import java.util.List;
 
 public interface MatriculaRepository extends JpaRepository<Matricula, Long> {
 
     List<Matricula> findAllByClienteIdCliente(Long idCliente);
 
+    List<Matricula> findAllByClienteIdClienteAndFechaVencimientoAfter(Long idCliente, Date date);
+
     @Query(nativeQuery = true, value = """
-            SELECT m1.* FROM {h-schema}matricula m1 
+            SELECT m1.* FROM {h-schema}matricula m1
             WHERE m1.id_cliente = :idCliente
-            AND m1.fecha_pago = (SELECT MAX(m2.fecha_inicio) 
-                FROM {h-schema}matricula m2 
-                WHERE m2.id_cliente = :idCliente)""")
-    List<Matricula> findAllByClienteIdClienteAndFechaInicioLast(Long idCliente);
+            AND CURRENT_TIMESTAMP BETWEEN m1.fecha_inicio AND m1.fecha_vencimiento""")
+    List<Matricula> findAllByClienteIdClienteAndCurrent(Long idCliente);
 }

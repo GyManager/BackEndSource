@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.gymanager.model.client.MatriculaDto;
+import org.gymanager.model.enums.MatriculasFilter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,17 +30,17 @@ public interface MatriculaController {
             @ApiResponse(responseCode = "200", description = "OK")
     })
     @GetMapping(produces = { "application/json"})
-    @PreAuthorize("hasAuthority('get-clientes')")
+    @PreAuthorize("hasAuthority('get-matriculas')")
     ResponseEntity<List<MatriculaDto>> getMatriculasByIdCliente(
             @PathVariable("idCliente") Long idCliente,
-            @RequestParam(name = "last", required = false, defaultValue = "false") Boolean last);
+            @RequestParam(name = "matriculasFilter", required = false, defaultValue = "TODAS") MatriculasFilter matriculasFilter);
 
     @Operation(summary = "Cargar matricula del cliente", description = "Esta operación es para cargar la matricula del cliente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK")
     })
     @PostMapping(produces = { "application/json"}, consumes = { "application/json"})
-    @PreAuthorize("hasAuthority('post-clientes')")
+    @PreAuthorize("hasAuthority('post-matriculas')")
     ResponseEntity<Long> addMatricula(
             @PathVariable("idCliente") Long idCliente,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Matricula request body.",

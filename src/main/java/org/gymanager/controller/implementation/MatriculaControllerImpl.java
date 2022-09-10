@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.gymanager.controller.specification.MatriculaController;
 import org.gymanager.model.client.MatriculaDto;
+import org.gymanager.model.enums.MatriculasFilter;
 import org.gymanager.service.specification.MatriculaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public class MatriculaControllerImpl implements MatriculaController {
     private MatriculaService matriculaService;
 
     @Override
-    public ResponseEntity<List<MatriculaDto>> getMatriculasByIdCliente(Long idCliente, Boolean last) {
-        return ResponseEntity.ok(matriculaService.getMatriculasByIdCliente(idCliente, last));
+    public ResponseEntity<List<MatriculaDto>> getMatriculasByIdCliente(Long idCliente, MatriculasFilter matriculasFilter) {
+        return ResponseEntity.ok(matriculaService.getMatriculasByIdCliente(idCliente, matriculasFilter));
     }
 
     @Override
