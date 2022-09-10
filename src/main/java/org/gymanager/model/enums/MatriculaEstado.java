@@ -3,15 +3,15 @@ package org.gymanager.model.enums;
 import lombok.Getter;
 
 @Getter
-public enum ClienteEstado {
-    NO_MATRICULADO("NO MATRICULADO"),
+public enum MatriculaEstado {
+    NO_INICIADA("NO INICIADA"),
+    ACTIVA("ACTIVA"),
     PRONTO_A_VENCER("PRONTO A VENCER"),
-    MATRICULADO("MATRICULADO");
+    VENCIDA("VENCIDA");
 
     private final String estado;
 
-    ClienteEstado(String estado) {
+    MatriculaEstado(String estado) {
         this.estado = estado;
     }
-
 }

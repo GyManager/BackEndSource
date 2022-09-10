@@ -17,7 +17,6 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
-import static java.time.LocalTime.now;
 import static org.gymanager.model.enums.MatriculasFilter.NO_VENCIDAS;
 
 @Service
@@ -49,7 +48,7 @@ public class MatriculaServiceImpl implements MatriculaService {
     @Transactional
     public Long addMatricula(Long idCliente, MatriculaDto matriculaDto) {
         var cliente = clienteService.getClienteEntityById(idCliente);
-        var matriculasExistentes = getMatriculasByIdCliente(idCliente, NO_VENCIDAS);
+        var matriculasExistentes = getMatriculasByIdCliente(idCliente, NO_VENCIDAS); // TODO:
 
         var matricula = new Matricula();
         matricula.setCliente(cliente);

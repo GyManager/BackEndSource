@@ -21,6 +21,7 @@ public class MatriculaEntityToDtoConverter implements GyManagerConverter<Matricu
         matriculaDto.setFechaVencimiento(source.getFechaVencimiento());
         matriculaDto.setCantidadMeses(source.getCantidadMeses());
         matriculaDto.setCantidadDiasSemana(source.getCantidadDiasSemana());
+        matriculaDto.setMatriculaEstado(source.getMatriculaEstado().toString());
         return matriculaDto;
     }
 }

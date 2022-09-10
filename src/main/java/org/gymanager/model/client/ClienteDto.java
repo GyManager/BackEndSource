@@ -30,6 +30,5 @@ public class ClienteDto {
     private Date fechaNacimiento;
 
     private String observaciones;
-    private Integer diasHastaVencimientoMatricula;
     private ClienteEstado clienteEstado;
 }
