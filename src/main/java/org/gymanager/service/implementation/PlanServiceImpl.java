@@ -19,9 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static java.time.LocalDate.now;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,10 @@ import java.util.Optional;
 public class PlanServiceImpl implements PlanService {
 
     private static final String PLAN_NO_ENCONTRADO = "Plan no encontrado";
+    private static final String FECHA_HASTA_INVALIDA = """
+            La fecha de fin / fecha hasta del plan no puede ser anterior a la fecha de hoy""";
+    private static final String FECHA_HASTA_ACTUALIZADA_INVALIDA = """
+            Si actualiza la fecha de fin / fecha hasta del plan, la misma no puede ser anterior a la fecha de hoy""";
 
     @NonNull
     private PlanRepository planRepository;
@@ -79,6 +86,7 @@ public class PlanServiceImpl implements PlanService {
     public Long addPlan(Long idCliente, PlanDtoDetails planDtoDetails) {
         var plan = new Plan();
 
+        validarFechaNoPasada(planDtoDetails.getFechaHasta(), FECHA_HASTA_INVALIDA);
         var microPlanes = microPlanService.crearMicroPlanes(planDtoDetails.getMicroPlans());
         var objetivo = objetivoService.getObjetivoByObjetivo(planDtoDetails.getObjetivo());
         var usuario = Objects.nonNull(planDtoDetails.getIdUsuarioProfesor()) ?
@@ -102,13 +110,16 @@ public class PlanServiceImpl implements PlanService {
     public void updatePlanById(Long idCliente, Long idPlan, PlanDtoDetails planDtoDetails) {
         var plan = getPlanEntityById(idPlan);
 
+        if(!planDtoDetails.getFechaHasta().isEqual(plan.getFechaHasta())){
+            validarFechaNoPasada(planDtoDetails.getFechaHasta(), FECHA_HASTA_ACTUALIZADA_INVALIDA);
+            plan.setFechaHasta(planDtoDetails.getFechaHasta());
+        }
         microPlanService.actualizarMicroPlanesPlan(planDtoDetails.getMicroPlans(), plan);
         var objetivo = objetivoService.getObjetivoByObjetivo(planDtoDetails.getObjetivo());
         var cliente = clienteService.getClienteEntityById(idCliente);
 
         plan.setDescripcion(planDtoDetails.getDescripcion().trim());
         plan.setFechaDesde(planDtoDetails.getFechaDesde());
-        plan.setFechaHasta(planDtoDetails.getFechaHasta());
         plan.setObjetivo(objetivo);
         plan.setCliente(cliente);
 
@@ -120,5 +131,12 @@ public class PlanServiceImpl implements PlanService {
         var plan = getPlanEntityById(idPlan);
 
         planRepository.delete(plan);
+    }
+
+    private void validarFechaNoPasada(LocalDate fecha, String error){
+        if(fecha.isBefore(now())){
+            log.error(error);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error);
+        }
     }
 }
