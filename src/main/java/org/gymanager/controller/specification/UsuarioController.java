@@ -1,13 +1,17 @@
 package org.gymanager.controller.specification;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.gymanager.model.client.ClienteDto;
 import org.gymanager.model.client.UsuarioDto;
+import org.gymanager.model.client.UsuarioDtoDetails;
+import org.gymanager.model.enums.UsuarioSortBy;
+import org.gymanager.model.page.GyManagerPage;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,9 +21,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RequestMapping("/api/usuarios")
 @Tag(name = "Usuarios", description = "Gestion de usuarios")
@@ -31,7 +35,15 @@ public interface UsuarioController {
     })
     @GetMapping(produces = { "application/json"})
     @PreAuthorize("hasAuthority('get-usuarios')")
-    ResponseEntity<List<UsuarioDto>> getUsuarios();
+    ResponseEntity<GyManagerPage<UsuarioDto>> getUsuarios(
+            @Parameter(name = "search",
+                    description = "busca por [nombre, apellido, numero_documento, email] segun el valor enviado")
+            @RequestParam(name = "search", required = false, defaultValue = "") String search,
+            @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "NONE") UsuarioSortBy sortBy,
+            @RequestParam(name = "direction", required = false, defaultValue = "ASC") Sort.Direction direction
+    );
 
     @Operation(summary = "Obtener un usuario por Id", description = "Esta operación es para buscar un usuario por Id")
     @ApiResponses(value = {
@@ -39,7 +51,7 @@ public interface UsuarioController {
     })
     @GetMapping(value = "/{idUsuario}", produces = { "application/json"})
     @PreAuthorize("hasAuthority('get-usuarios')")
-    ResponseEntity<UsuarioDto> getUsuarioById(@PathVariable("idUsuario") Long idUsuario);
+    ResponseEntity<UsuarioDtoDetails> getUsuarioById(@PathVariable("idUsuario") Long idUsuario);
 
     @Operation(summary = "Agregar usuario", description = "Esta operación es para agregar un usuario. Se valida \n" +
             "* El nombre del usuario es obligatorio \n" +
@@ -54,8 +66,8 @@ public interface UsuarioController {
     @PreAuthorize("hasAuthority('post-usuarios')")
     ResponseEntity<Long> addUsuario(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario request body.",
-                    content = @Content(schema = @Schema(implementation = UsuarioDto.class)), required = true)
-            @RequestBody @Valid UsuarioDto usuarioDto);
+                    content = @Content(schema = @Schema(implementation = UsuarioDtoDetails.class)), required = true)
+            @RequestBody @Valid UsuarioDtoDetails usuarioDtoDetails);
 
     @Operation(summary = "Actualizar un usuario", description = "Esta operación es para actualizar un usuario")
     @ApiResponses(value = {
@@ -66,8 +78,8 @@ public interface UsuarioController {
     ResponseEntity<Void> updateUsuarioById(
             @PathVariable("idUsuario") Long idUsuario,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario request body.",
-                    content = @Content(schema = @Schema(implementation = UsuarioDto.class)), required = true)
-            @RequestBody @Valid UsuarioDto usuarioDto);
+                    content = @Content(schema = @Schema(implementation = UsuarioDtoDetails.class)), required = true)
+            @RequestBody @Valid UsuarioDtoDetails usuarioDtoDetails);
 
     @Operation(summary = "Borrar un usuario", description = "Esta operación es para borrar un usuario")
     @ApiResponses(value = {

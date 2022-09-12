@@ -2,7 +2,13 @@ package org.gymanager.model.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.gymanager.model.enums.ClienteEstado;
+import org.gymanager.model.enums.MatriculaEstado;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.Where;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,9 +16,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -37,4 +46,30 @@ public class Cliente {
     @Column(nullable = false)
     private Date fechaNacimiento;
     private String observaciones;
+
+    @OneToMany
+    @JoinColumn(updatable = false, insertable = false, referencedColumnName = "idCliente", name = "id_cliente")
+    @Where(clause = "CURRENT_TIMESTAMP BETWEEN fecha_inicio AND fecha_vencimiento")
+    private List<Matricula> matriculasActivas;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Matricula> matriculas;
+
+    public ClienteEstado getClienteEstado() {
+        var matriculaActiva = matriculasActivas.stream().findFirst();
+        if(matriculaActiva.isEmpty()){
+            return ClienteEstado.NO_MATRICULADO;
+        }
+        if(matriculaActiva.get().getMatriculaEstado().equals(MatriculaEstado.ACTIVA)) {
+            return ClienteEstado.MATRICULADO;
+        }
+
+        var proximaMatricula = matriculas.stream()
+                .filter(matricula -> matricula.getFechaInicio().isAfter(matriculaActiva.get().getFechaVencimiento()))
+                .min(Comparator.comparing(Matricula::getFechaInicio));
+        if(proximaMatricula.isPresent()){
+            return ClienteEstado.MATRICULADO;
+        }
+        return ClienteEstado.PRONTO_A_VENCER;
+    }
 }
