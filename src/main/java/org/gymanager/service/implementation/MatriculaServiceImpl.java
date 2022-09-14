@@ -34,6 +34,7 @@ public class MatriculaServiceImpl implements MatriculaService {
     private static final String FECHA_VENCIMIENTO_INVALIDA = """
             La fecha de vencimiento de la matricula no puede ser anterior a la fecha de hoy""";
 
+
     @NonNull
     private MatriculaRepository matriculaRepository;
 
