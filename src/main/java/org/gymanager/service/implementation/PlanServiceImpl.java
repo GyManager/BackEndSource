@@ -103,7 +103,7 @@ public class PlanServiceImpl implements PlanService {
 
         validarFechaNoPasada(planDtoDetails.getFechaHasta(), FECHA_HASTA_INVALIDA);
 
-        actualizarOtrosPlanes(idCliente, planDtoDetails);
+        actualizarOtrosPlanes(idCliente, planDtoDetails, Boolean.FALSE);
 
         var microPlanes = microPlanService.crearMicroPlanes(planDtoDetails.getMicroPlans());
         var objetivo = objetivoService.getObjetivoByObjetivo(planDtoDetails.getObjetivo());
@@ -128,7 +128,7 @@ public class PlanServiceImpl implements PlanService {
     public void updatePlanById(Long idCliente, Long idPlan, PlanDtoDetails planDtoDetails) {
         var plan = getPlanEntityById(idPlan);
 
-        actualizarOtrosPlanes(idCliente, planDtoDetails);
+        actualizarOtrosPlanes(idCliente, planDtoDetails, Boolean.TRUE);
 
         if(!planDtoDetails.getFechaHasta().isEqual(plan.getFechaHasta())){
             validarFechaNoPasada(planDtoDetails.getFechaHasta(), FECHA_HASTA_ACTUALIZADA_INVALIDA);
@@ -160,14 +160,14 @@ public class PlanServiceImpl implements PlanService {
         }
     }
 
-    private void actualizarOtrosPlanes(Long idCliente, PlanDtoDetails planDtoDetails){
+    private void actualizarOtrosPlanes(Long idCliente, PlanDtoDetails planDtoDetails, Boolean esActualizacion){
         var planesActivos = getPlansEntitiesByIdCliente(idCliente, PlanesFilter.ACTIVOS)
                 .stream().filter(plan -> !plan.getIdPlan().equals(planDtoDetails.getIdPlan())).toList();
         var planesFuturos = getPlansEntitiesByIdCliente(idCliente, PlanesFilter.FUTUROS)
                 .stream().filter(plan -> !plan.getIdPlan().equals(planDtoDetails.getIdPlan())).toList();
 
         var now = now();
-        if(!planesActivos.isEmpty() &&
+        if(!planesActivos.isEmpty() && !esActualizacion &&
                 (planDtoDetails.getFechaDesde().isBefore(now) || planDtoDetails.getFechaDesde().isEqual(now))){
             log.error(String.format(YA_EXISTE_UN_PLAN_EN_ESE_ESTADO_PARA_EL_CLIENTE, "activo"));
             throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(YA_EXISTE_UN_PLAN_EN_ESE_ESTADO_PARA_EL_CLIENTE, "activo"));
