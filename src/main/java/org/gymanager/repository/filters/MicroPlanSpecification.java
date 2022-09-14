@@ -53,4 +53,8 @@ public class MicroPlanSpecification implements Specification<MicroPlan> {
     private String rodearConLikeWildcard(String valor){
         return LIKE_WILDCARD + valor + LIKE_WILDCARD;
     }
+
+    public void setSearch(String search) {
+        this.search = search.trim();
+    }
 }

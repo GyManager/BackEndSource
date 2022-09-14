@@ -11,7 +11,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -31,17 +33,27 @@ public class EjercicioSpecification implements Specification<Ejercicio> {
 
         if(!StringUtils.isEmpty(nombreEjercicioOrTipoEjercicio)){
 
-            List<Predicate> orPredicateList = new ArrayList<>();
+            var parameters = Arrays.stream(nombreEjercicioOrTipoEjercicio.split(" "))
+                    .filter(member -> !member.isBlank())
+                    .map(String::trim)
+                    .toList();
+
             var joinTipoEjercicio = root.join(TABLA_TIPO_EJERCICIO);
 
-            orPredicateList.add(builder.like(
-                    builder.lower(joinTipoEjercicio.get(CAMPO_NOMBRE_TIPO_EJERCICIO)),
-                    rodearConLikeWildcard(nombreEjercicioOrTipoEjercicio.toLowerCase())));
+            List<Predicate> orPredicateList = new ArrayList<>();
+            for (String member: parameters) {
 
-            orPredicateList.add(builder.like(
-                    builder.lower(root.get(CAMPO_NOMBRE)),
-                    rodearConLikeWildcard(nombreEjercicioOrTipoEjercicio.toLowerCase())));
 
+
+                orPredicateList.add(builder.like(
+                        builder.lower(joinTipoEjercicio.get(CAMPO_NOMBRE_TIPO_EJERCICIO)),
+                        rodearConLikeWildcard(member.toLowerCase())));
+
+                orPredicateList.add(builder.like(
+                        builder.lower(root.get(CAMPO_NOMBRE)),
+                        rodearConLikeWildcard(member.toLowerCase())));
+
+            }
             predicateList.add(orPredicateList.stream().reduce(builder::or).get());
         }
 
