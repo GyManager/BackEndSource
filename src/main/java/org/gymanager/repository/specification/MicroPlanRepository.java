@@ -10,5 +10,5 @@ public interface MicroPlanRepository extends JpaRepository<MicroPlan, Long>, Jpa
 
     List<MicroPlan> findByPlanIdPlan(Long idPlan);
 
-    List<MicroPlan> findByNombreAndEsTemplate(String name, Boolean esTemplate);
+    List<MicroPlan> findByNombreIgnoreCaseAndEsTemplate(String name, Boolean esTemplate);
 }
