@@ -27,4 +27,8 @@ public class PlanDto {
 
     @NotBlank(message = "El plan debe tener una descripcion")
     private String descripcion;
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion.trim();
+    }
 }
