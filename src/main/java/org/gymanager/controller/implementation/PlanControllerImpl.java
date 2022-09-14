@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.PlanController;
 import org.gymanager.model.client.PlanDto;
 import org.gymanager.model.client.PlanDtoDetails;
+import org.gymanager.model.enums.PlanesFilter;
 import org.gymanager.service.specification.PlanService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public class PlanControllerImpl implements PlanController {
     private PlanService planService;
 
     @Override
-    public ResponseEntity<List<PlanDto>> getPlansByClientId(Long idCliente) {
-        return ResponseEntity.ok(planService.getPlansByClientId(idCliente));
+    public ResponseEntity<List<PlanDto>> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter) {
+        return ResponseEntity.ok(planService.getPlansByIdCliente(idCliente, planesFilter));
     }
 
     @Override

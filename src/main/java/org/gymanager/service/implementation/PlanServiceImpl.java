@@ -8,6 +8,7 @@ import org.gymanager.converter.PlanEntityToDtoDetailsConverter;
 import org.gymanager.model.client.PlanDto;
 import org.gymanager.model.client.PlanDtoDetails;
 import org.gymanager.model.domain.Plan;
+import org.gymanager.model.enums.PlanesFilter;
 import org.gymanager.repository.specification.PlanRepository;
 import org.gymanager.service.specification.ClienteService;
 import org.gymanager.service.specification.MicroPlanService;
@@ -59,8 +60,19 @@ public class PlanServiceImpl implements PlanService {
     private UsuarioService usuarioService;
 
     @Override
-    public List<PlanDto> getPlansByClientId(Long idCliente) {
-        return planEntityToDtoConverter.convert(planRepository.findByClienteIdCliente(idCliente));
+    public List<PlanDto> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter) {
+        return planEntityToDtoConverter.convert(getPlansEntitiesByIdCliente(idCliente, planesFilter));
+    }
+
+    @Override
+    public List<Plan> getPlansEntitiesByIdCliente(Long idCliente, PlanesFilter planesFilter) {
+        var now = now();
+        return switch (planesFilter) {
+            case TODOS -> planRepository.findByClienteIdCliente(idCliente);
+            case ACTIVOS -> planRepository.findAllByClienteIdClienteAndFechaHastaAfterAndFechaDesdeBefore(idCliente, now, now);
+            case VENCIDOS -> planRepository.findAllByClienteIdClienteAndFechaHastaBefore(idCliente, now);
+            case FUTUROS -> planRepository.findAllByClienteIdClienteAndFechaDesdeAfter(idCliente, now);
+        };
     }
 
     @Override
