@@ -12,7 +12,7 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     List<Plan> findAllByClienteIdClienteAndFechaDesdeAfter(Long idCliente, LocalDate date);
 
-    List<Plan> findAllByClienteIdClienteAndFechaHastaBefore(Long idCliente, LocalDate date);
+    List<Plan> findAllByClienteIdClienteAndFechaHastaLessThanEqual(Long idCliente, LocalDate date);
 
-    List<Plan> findAllByClienteIdClienteAndFechaHastaAfterAndFechaDesdeBefore(Long idCliente, LocalDate hasta, LocalDate desde);
+    List<Plan> findAllByClienteIdClienteAndFechaHastaGreaterThanAndFechaDesdeLessThanEqual(Long idCliente, LocalDate hasta, LocalDate desde);
 }
