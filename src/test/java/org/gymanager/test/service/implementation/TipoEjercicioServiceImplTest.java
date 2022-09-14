@@ -31,7 +31,7 @@ class TipoEjercicioServiceImplTest {
     public void getTipoEjercicioByNombre_WhenOk_ThenReturnTipoEjercicio(){
         var tipoEjercicio = new TipoEjercicio();
 
-        when(tipoEjercicioRepository.findByNombre(TIPO_EJERCICIO)).thenReturn(Optional.of(tipoEjercicio));
+        when(tipoEjercicioRepository.findByNombreIgnoreCase(TIPO_EJERCICIO)).thenReturn(Optional.of(tipoEjercicio));
 
         var result = tipoEjercicioService.getTipoEjercicioByNombre(TIPO_EJERCICIO);
 
@@ -40,7 +40,7 @@ class TipoEjercicioServiceImplTest {
 
     @Test
     public void getTipoEjercicioByNombre_WhenNotExists_ThenThrowNotFound(){
-        when(tipoEjercicioRepository.findByNombre(TIPO_EJERCICIO)).thenReturn(Optional.empty());
+        when(tipoEjercicioRepository.findByNombreIgnoreCase(TIPO_EJERCICIO)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> tipoEjercicioService.getTipoEjercicioByNombre(TIPO_EJERCICIO))
                 .isInstanceOf(ResponseStatusException.class)

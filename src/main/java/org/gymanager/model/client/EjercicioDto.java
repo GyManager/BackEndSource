@@ -14,4 +14,12 @@ public class EjercicioDto {
     private String tipoEjercicio;
 
     private String video;
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre.trim();
+    }
+
+    public void setVideo(String video) {
+        this.video = video.trim();
+    }
 }

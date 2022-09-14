@@ -132,7 +132,7 @@ public class EjercicioServiceImpl implements EjercicioService {
     }
 
     private void validarEjercicioConTipoYNombreNoExiste(TipoEjercicio tipoEjercicio, String nombre){
-        if(ejercicioRepository.findByTipoEjercicioAndNombre(tipoEjercicio, nombre).isPresent()){
+        if(ejercicioRepository.findByTipoEjercicioAndNombreIgnoreCase(tipoEjercicio, nombre).isPresent()){
             log.error(String.format(NOMBRE_TIPO_EJERCICIO_EN_USO, nombre, tipoEjercicio.getNombre()));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     String.format(NOMBRE_TIPO_EJERCICIO_EN_USO, nombre, tipoEjercicio.getNombre()));

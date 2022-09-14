@@ -17,4 +17,8 @@ public class PasoDto {
     private String contenido;
 
     private String imagen;
+
+    public void setContenido(String contenido) {
+        this.contenido = contenido.trim();
+    }
 }

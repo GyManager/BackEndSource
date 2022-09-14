@@ -23,4 +23,12 @@ public class EjercicioDtoRequest {
     private List<PasoDto> pasos;
 
     private List<Long> idHerramientaList;
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre.trim();
+    }
+
+    public void setVideo(String video) {
+        this.video = video.trim();
+    }
 }
