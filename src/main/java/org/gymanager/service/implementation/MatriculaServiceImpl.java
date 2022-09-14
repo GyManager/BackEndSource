@@ -31,8 +31,8 @@ public class MatriculaServiceImpl implements MatriculaService {
             y fecha de vencimiento (%s).""";
     private static final String FECHAS_INVALIDAS = """
             La fecha de inicio de la matricula no puede ser posterior a la fecha de vencimiento""";
-    private static final String FECHA_INICIO_INVALIDA = """
-            La fecha de inicio de la matricula no puede ser anterior a la fecha de hoy""";
+    private static final String FECHA_VENCIMIENTO_INVALIDA = """
+            La fecha de vencimiento de la matricula no puede ser anterior a la fecha de hoy""";
 
     @NonNull
     private MatriculaRepository matriculaRepository;
@@ -62,7 +62,7 @@ public class MatriculaServiceImpl implements MatriculaService {
     public Long addMatricula(Long idCliente, MatriculaDto matriculaDto) {
         var cliente = clienteService.getClienteEntityById(idCliente);
 
-        validarFechaInicioNoPasada(matriculaDto.getFechaInicio());
+        validarFechaVencimientoNoPasada(matriculaDto.getFechaVencimiento());
         validarFechasNoInvertidas(matriculaDto);
         validarMatriculaNoSeSuperponeConMatriculasExistentes(matriculaDto, idCliente);
 
@@ -77,10 +77,10 @@ public class MatriculaServiceImpl implements MatriculaService {
         return matriculaRepository.save(matricula).getIdMatricula();
     }
 
-    private void validarFechaInicioNoPasada(LocalDate fechaInicio){
-        if(fechaInicio.isBefore(now())){
-            log.error(FECHA_INICIO_INVALIDA);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, FECHA_INICIO_INVALIDA);
+    private void validarFechaVencimientoNoPasada(LocalDate fechaVencimiento){
+        if(fechaVencimiento.isBefore(now())){
+            log.error(FECHA_VENCIMIENTO_INVALIDA);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, FECHA_VENCIMIENTO_INVALIDA);
         }
     }
 

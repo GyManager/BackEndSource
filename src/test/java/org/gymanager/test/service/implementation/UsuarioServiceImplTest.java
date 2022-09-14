@@ -90,7 +90,7 @@ class UsuarioServiceImplTest {
         usuario.setPass(PASS);
         usuario.setRoles(List.of(rolUno, rolDos));
 
-        when(usuarioRepository.findByMail(MAIL)).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByMailIgnoreCase(MAIL)).thenReturn(Optional.of(usuario));
 
         UserDetails resultado = usuarioService.loadUserByUsername(MAIL);
 
@@ -100,7 +100,7 @@ class UsuarioServiceImplTest {
                 .containsExactlyInAnyOrder(PERMISO_UNO, PERMISO_DOS);
         assertThat(resultado.getPassword()).isEqualTo(PASS);
 
-        verify(usuarioRepository).findByMail(MAIL);
+        verify(usuarioRepository).findByMailIgnoreCase(MAIL);
     }
 
     @Test
@@ -112,7 +112,7 @@ class UsuarioServiceImplTest {
 
     @Test
     public void loadUserByUsername_WhenUsuarioNoExiste_ThenThrowException(){
-        when(usuarioRepository.findByMail(MAIL)).thenReturn(Optional.empty());
+        when(usuarioRepository.findByMailIgnoreCase(MAIL)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> usuarioService.loadUserByUsername(MAIL))
                 .isInstanceOf(UsernameNotFoundException.class)

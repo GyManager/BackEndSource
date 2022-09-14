@@ -166,7 +166,7 @@ public class MicroPlanServiceImpl implements MicroPlanService {
         var rutinas = rutinaService.crearRutinas(microPlanDtoDetails.getRutinas());
         var observaciones = observacionService.crearObservaciones(microPlanDtoDetails.getObservaciones());
 
-        microPlan.setNombre(microPlanDtoDetails.getNombre().trim());
+        microPlan.setNombre(microPlanDtoDetails.getNombre());
         microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoDetails.getEsTemplate()));
         microPlan.setRutinas(rutinas);
         microPlan.setObservaciones(observaciones);
@@ -176,7 +176,7 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     }
 
     private void validarMicroPlanConNombreYTemplateNoExiste(String nombre, Boolean esTemplate){
-        if(!microPlanRepository.findByNombreAndEsTemplate(nombre, esTemplate).isEmpty()){
+        if(!microPlanRepository.findByNombreIgnoreCaseAndEsTemplate(nombre, esTemplate).isEmpty()){
             log.error(String.format(MICRO_PLAN_TEMPLATE_CON_NOMBRE_YA_EXISTE, nombre));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(MICRO_PLAN_TEMPLATE_CON_NOMBRE_YA_EXISTE, nombre));
         }

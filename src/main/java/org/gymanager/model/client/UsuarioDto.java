@@ -37,4 +37,16 @@ public class UsuarioDto {
     private Long celular;
     private LocalDate fechaAlta;
     private LocalDate fechaBaja;
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre.trim();
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido.trim();
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail.trim();
+    }
 }

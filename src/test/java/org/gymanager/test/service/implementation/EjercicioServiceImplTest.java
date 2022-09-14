@@ -153,7 +153,7 @@ class EjercicioServiceImplTest {
         ejercicio.setIdEjercicio(ID_EJERCICIO);
 
         when(tipoEjercicioService.getTipoEjercicioByNombre(TIPO_EJERCICIO)).thenReturn(tipoEjercicio);
-        when(ejercicioRepository.findByTipoEjercicioAndNombre(tipoEjercicio, NOMBRE_EJERCICIO))
+        when(ejercicioRepository.findByTipoEjercicioAndNombreIgnoreCase(tipoEjercicio, NOMBRE_EJERCICIO))
                 .thenReturn(Optional.empty());
         when(herramientaService.getHerramientasByIds(List.of(ID_HERRAMIENTA))).thenReturn(List.of(herramienta));
         when(pasoService.crearPasos(List.of(pasoDto))).thenReturn(List.of(paso));
@@ -185,7 +185,7 @@ class EjercicioServiceImplTest {
         var ejercicio = new Ejercicio();
 
         when(tipoEjercicioService.getTipoEjercicioByNombre(TIPO_EJERCICIO)).thenReturn(tipoEjercicio);
-        when(ejercicioRepository.findByTipoEjercicioAndNombre(tipoEjercicio, NOMBRE_EJERCICIO))
+        when(ejercicioRepository.findByTipoEjercicioAndNombreIgnoreCase(tipoEjercicio, NOMBRE_EJERCICIO))
                 .thenReturn(Optional.of(ejercicio));
 
         assertThatThrownBy(() -> ejercicioService.addEjercicio(ejercicioDtoRequest))
@@ -220,7 +220,7 @@ class EjercicioServiceImplTest {
 
         when(ejercicioRepository.findById(ID_EJERCICIO)).thenReturn(Optional.of(ejercicio));
         when(tipoEjercicioService.getTipoEjercicioByNombre(TIPO_EJERCICIO)).thenReturn(tipoEjercicio);
-        when(ejercicioRepository.findByTipoEjercicioAndNombre(tipoEjercicio, nombreEjercicioCambiado))
+        when(ejercicioRepository.findByTipoEjercicioAndNombreIgnoreCase(tipoEjercicio, nombreEjercicioCambiado))
                 .thenReturn(Optional.empty());
         when(herramientaService.getHerramientasByIds(ejercicioDtoRequest.getIdHerramientaList()))
                 .thenReturn(List.of(herramienta));

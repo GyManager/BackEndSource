@@ -16,4 +16,8 @@ public class MicroPlanDto {
     private Boolean esTemplate;
     private Integer numeroOrden;
     private Integer cantidadRutinas;
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre.trim();
+    }
 }

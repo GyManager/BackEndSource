@@ -25,7 +25,7 @@ public class TipoEjercicioServiceImpl implements TipoEjercicioService {
 
     @Override
     public TipoEjercicio getTipoEjercicioByNombre(String nombre) {
-        Optional<TipoEjercicio> tipoEjercicio = tipoEjercicioRepository.findByNombre(nombre);
+        Optional<TipoEjercicio> tipoEjercicio = tipoEjercicioRepository.findByNombreIgnoreCase(nombre);
 
         if(tipoEjercicio.isEmpty()){
             log.error(TIPO_EJERCICIO_NO_ENCONTRADO);

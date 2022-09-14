@@ -14,4 +14,8 @@ public class RutinaDto {
     @NotBlank(message = "La rutina debe tener un nombre .")
     private String nombre;
     private Boolean esTemplate;
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre.trim();
+    }
 }
