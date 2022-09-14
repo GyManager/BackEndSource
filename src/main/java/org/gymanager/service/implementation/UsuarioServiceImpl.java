@@ -81,12 +81,12 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
-        if(Objects.isNull(mail)){
+        if(StringUtils.isBlank(mail)){
             log.error(String.format(MAIL_VACIO));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(MAIL_VACIO));
         }
 
-        Optional<Usuario> usuario = usuarioRepository.findByMail(mail);
+        Optional<Usuario> usuario = usuarioRepository.findByMailIgnoreCase(mail.trim());
 
         if(usuario.isEmpty()){
             log.error(String.format(USUARIO_CON_MAIL_NO_ENCONTRADO, mail));
@@ -212,7 +212,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public Usuario getUsuarioEntityByMail(String mail) {
-        Optional<Usuario> usuario = usuarioRepository.findByMail(mail);
+        Optional<Usuario> usuario = usuarioRepository.findByMailIgnoreCase(mail);
 
         if (usuario.isEmpty()) {
             log.error(String.format(USUARIO_CON_MAIL_NO_ENCONTRADO, mail));
@@ -223,7 +223,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     private void validarUsuarioConMailNoExiste(String mail){
-        if(usuarioRepository.findByMail(mail).isPresent()){
+        if(usuarioRepository.findByMailIgnoreCase(mail).isPresent()){
             log.error(String.format(MAIL_EN_USO, mail));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(MAIL_EN_USO, mail));
         }

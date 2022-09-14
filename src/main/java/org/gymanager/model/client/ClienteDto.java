@@ -31,4 +31,12 @@ public class ClienteDto {
 
     private String observaciones;
     private ClienteEstado clienteEstado;
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion.trim();
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones.trim();
+    }
 }

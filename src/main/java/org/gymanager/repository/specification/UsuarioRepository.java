@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>, JpaSpecificationExecutor<Usuario> {
 
-    Optional<Usuario> findByMail(String mail);
+    Optional<Usuario> findByMailIgnoreCase(String mail);
 
     Optional<Usuario> findByTipoDocumentoAndNumeroDocumento(TipoDocumento tipoDocumento, Long numeroDocumento);
 }
