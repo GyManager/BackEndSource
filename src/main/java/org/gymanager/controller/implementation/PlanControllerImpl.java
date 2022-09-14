@@ -3,6 +3,7 @@ package org.gymanager.controller.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.PlanController;
+import org.gymanager.model.client.ClientePlanResumenDto;
 import org.gymanager.model.client.PlanDto;
 import org.gymanager.model.client.PlanDtoDetails;
 import org.gymanager.model.enums.PlanesFilter;
@@ -47,6 +48,12 @@ public class PlanControllerImpl implements PlanController {
     public ResponseEntity<Void> deletePlanById(Long idCliente, Long idPlan) {
         planService.deletePlanById(idCliente, idPlan);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @Override
+    public ResponseEntity<ClientePlanResumenDto> getResumenPlanesClienteById(Long idCliente) {
+        return ResponseEntity.ok(planService.getResumenPlanesClienteById(idCliente));
     }
 
 }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.gymanager.model.client.ClientePlanResumenDto;
 import org.gymanager.model.client.PlanDto;
 import org.gymanager.model.client.PlanDtoDetails;
 import org.gymanager.model.enums.PlanesFilter;
@@ -79,4 +80,13 @@ public interface PlanController {
     @DeleteMapping("/clientes/{idCliente}/planes/{idPlan}")
     @PreAuthorize("hasAuthority('delete-planes')")
     ResponseEntity<Void> deletePlanById(@PathVariable("idCliente") Long idCliente, @PathVariable("idPlan") Long idPlan);
+
+    @Operation(summary = "Obtener el resumen de matricula y plan del cliente",
+            description = "Esta operación es para obtener el resumen de matricula y plan del cliente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    @GetMapping(value = "/clientes/{idCliente}/planes-resumen", produces = { "application/json"})
+    @PreAuthorize("hasAuthority('get-clientes')")
+    ResponseEntity<ClientePlanResumenDto> getResumenPlanesClienteById(@PathVariable("idCliente") Long idCliente);
 }

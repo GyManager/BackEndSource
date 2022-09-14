@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.PlanEntityToDtoConverter;
 import org.gymanager.converter.PlanEntityToDtoDetailsConverter;
+import org.gymanager.model.client.ClientePlanResumenDto;
 import org.gymanager.model.client.PlanDto;
 import org.gymanager.model.client.PlanDtoDetails;
+import org.gymanager.model.domain.Matricula;
 import org.gymanager.model.domain.Plan;
 import org.gymanager.model.enums.PlanesFilter;
 import org.gymanager.repository.specification.PlanRepository;
@@ -151,6 +153,23 @@ public class PlanServiceImpl implements PlanService {
         var plan = getPlanEntityById(idPlan);
 
         planRepository.delete(plan);
+    }
+
+    @Override
+    public ClientePlanResumenDto getResumenPlanesClienteById(Long idCliente) {
+        var cliente = clienteService.getClienteEntityById(idCliente);
+        var planVigente = getPlansEntitiesByIdCliente(idCliente, PlanesFilter.ACTIVOS)
+                .stream().findFirst();
+        var matriculaVigente = cliente.getMatriculasActivas().stream().findFirst();
+
+        return new ClientePlanResumenDto(
+                cliente.getIdCliente(),
+                Objects.isNull(cliente.getObjetivo()) ? null : cliente.getObjetivo().getObjetivo(),
+                cliente.getObservaciones(),
+                planVigente.map(Plan::getFechaHasta).orElse(null),
+                planVigente.map(Plan::getIdPlan).orElse(null),
+                matriculaVigente.map(Matricula::getCantidadDiasSemana).orElse(null)
+        );
     }
 
     private void validarFechaNoPasada(LocalDate fecha, String error){

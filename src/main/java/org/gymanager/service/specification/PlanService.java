@@ -1,5 +1,6 @@
 package org.gymanager.service.specification;
 
+import org.gymanager.model.client.ClientePlanResumenDto;
 import org.gymanager.model.client.PlanDto;
 import org.gymanager.model.client.PlanDtoDetails;
 import org.gymanager.model.domain.Plan;
@@ -22,4 +23,6 @@ public interface PlanService {
     void updatePlanById(Long idCliente, Long idPlan, PlanDtoDetails planDtoDetails);
 
     void deletePlanById(Long idCliente, Long idPlan);
+
+    ClientePlanResumenDto getResumenPlanesClienteById(Long idCliente);
 }
