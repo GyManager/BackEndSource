@@ -107,11 +107,11 @@ public class MicroPlanServiceImpl implements MicroPlanService {
         rutinaService.actualizarRutinasMicroPlan(microPlanDtoDetails.getRutinas(), microPlan);
         observacionService.actualizarObservacionesMicroPlan(microPlanDtoDetails.getObservaciones(), microPlan);
 
-        if(!microPlan.getNombre().equals(microPlanDtoDetails.getNombre().trim())){
+        if(!microPlan.getNombre().equals(microPlanDtoDetails.getNombre())){
             if(microPlanDtoDetails.getEsTemplate()) {
                 validarMicroPlanConNombreYTemplateNoExiste(microPlanDtoDetails.getNombre(), microPlanDtoDetails.getEsTemplate());
             }
-            microPlan.setNombre(microPlanDtoDetails.getNombre().trim());
+            microPlan.setNombre(microPlanDtoDetails.getNombre());
         }
         microPlan.setEsTemplate(Boolean.TRUE.equals(microPlanDtoDetails.getEsTemplate()));
         microPlan.setNumeroOrden(microPlanDtoDetails.getNumeroOrden());
@@ -146,7 +146,7 @@ public class MicroPlanServiceImpl implements MicroPlanService {
             rutinaService.actualizarRutinasMicroPlan(MicroPlanDtoActualizado.getRutinas(), microPlan);
             observacionService.actualizarObservacionesMicroPlan(MicroPlanDtoActualizado.getObservaciones(), microPlan);
 
-            microPlan.setNombre(MicroPlanDtoActualizado.getNombre().trim());
+            microPlan.setNombre(MicroPlanDtoActualizado.getNombre());
             microPlan.setEsTemplate(Boolean.TRUE.equals(MicroPlanDtoActualizado.getEsTemplate()));
             microPlan.setNumeroOrden(MicroPlanDtoActualizado.getNumeroOrden());
         });

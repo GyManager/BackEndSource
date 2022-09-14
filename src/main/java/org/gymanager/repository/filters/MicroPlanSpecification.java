@@ -55,6 +55,6 @@ public class MicroPlanSpecification implements Specification<MicroPlan> {
     }
 
     public void setSearch(String search) {
-        this.search = search.trim();
+        this.search = Objects.isNull(search) ? null : search.trim();
     }
 }

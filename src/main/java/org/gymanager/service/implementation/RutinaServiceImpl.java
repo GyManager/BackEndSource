@@ -56,7 +56,7 @@ public class RutinaServiceImpl implements RutinaService {
 
             ejercicioAplicadoService.actualizarEjerciciosAplicadosRutina(rutinaDtoActualizado.getEjerciciosAplicados(), rutina);
 
-            rutina.setNombre(rutinaDtoActualizado.getNombre().trim());
+            rutina.setNombre(rutinaDtoActualizado.getNombre());
             rutina.setEsTemplate(Boolean.TRUE.equals(rutinaDtoActualizado.getEsTemplate()));
         });
 
@@ -74,7 +74,7 @@ public class RutinaServiceImpl implements RutinaService {
 
         var ejerciciosAplicados = ejercicioAplicadoService.crearEjerciciosAplicados(rutinaDtoDetails.getEjerciciosAplicados());
 
-        rutina.setNombre(rutinaDtoDetails.getNombre().trim());
+        rutina.setNombre(rutinaDtoDetails.getNombre());
         rutina.setEsTemplate(Boolean.TRUE.equals(rutinaDtoDetails.getEsTemplate()));
         rutina.setEjercicioAplicados(ejerciciosAplicados);
 

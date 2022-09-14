@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.util.Date;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -33,10 +34,10 @@ public class ClienteDto {
     private ClienteEstado clienteEstado;
 
     public void setDireccion(String direccion) {
-        this.direccion = direccion.trim();
+        this.direccion = Objects.isNull(direccion) ? null : direccion.trim();
     }
 
     public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones.trim();
+        this.observaciones = Objects.isNull(observaciones) ? null : observaciones.trim();
     }
 }

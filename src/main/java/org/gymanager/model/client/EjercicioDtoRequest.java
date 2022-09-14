@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -25,10 +26,11 @@ public class EjercicioDtoRequest {
     private List<Long> idHerramientaList;
 
     public void setNombre(String nombre) {
-        this.nombre = nombre.trim();
+        this.nombre = Objects.isNull(nombre) ? null : nombre.trim();
+
     }
 
     public void setVideo(String video) {
-        this.video = video.trim();
+        this.video = Objects.isNull(video) ? null : video.trim();
     }
 }

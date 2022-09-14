@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -19,6 +20,6 @@ public class PasoDto {
     private String imagen;
 
     public void setContenido(String contenido) {
-        this.contenido = contenido.trim();
+        this.contenido = Objects.isNull(contenido) ? null : contenido.trim();
     }
 }

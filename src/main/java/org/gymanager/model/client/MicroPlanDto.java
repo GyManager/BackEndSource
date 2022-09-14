@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -18,6 +19,6 @@ public class MicroPlanDto {
     private Integer cantidadRutinas;
 
     public void setNombre(String nombre) {
-        this.nombre = nombre.trim();
+        this.nombre = Objects.isNull(nombre) ? null : nombre.trim();
     }
 }

@@ -3,6 +3,8 @@ package org.gymanager.model.client;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 public class EjercicioDto {
@@ -16,10 +18,10 @@ public class EjercicioDto {
     private String video;
 
     public void setNombre(String nombre) {
-        this.nombre = nombre.trim();
+        this.nombre = Objects.isNull(nombre) ? null : nombre.trim();
     }
 
     public void setVideo(String video) {
-        this.video = video.trim();
+        this.video = Objects.isNull(video) ? null : video.trim();
     }
 }

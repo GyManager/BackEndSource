@@ -8,6 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -39,14 +40,14 @@ public class UsuarioDto {
     private LocalDate fechaBaja;
 
     public void setNombre(String nombre) {
-        this.nombre = nombre.trim();
+        this.nombre = Objects.isNull(nombre) ? null : nombre.trim();
     }
 
     public void setApellido(String apellido) {
-        this.apellido = apellido.trim();
+        this.apellido = Objects.isNull(apellido) ? null : apellido.trim();
     }
 
     public void setMail(String mail) {
-        this.mail = mail.trim();
+        this.mail = Objects.isNull(mail) ? null : mail.trim();
     }
 }

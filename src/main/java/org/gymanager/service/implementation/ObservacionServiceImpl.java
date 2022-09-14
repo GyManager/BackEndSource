@@ -56,7 +56,7 @@ public class ObservacionServiceImpl implements ObservacionService {
         microPlan.getObservaciones().forEach(observacion -> {
             var observacionDto = mapObservacionExistenteIdObservacionActualizada.get(observacion.getIdObservacion());
 
-            observacion.setObservacion(observacionDto.getObservacion().trim());
+            observacion.setObservacion(observacionDto.getObservacion());
             observacion.setNumeroSemana(observacionDto.getNumeroSemana());
         });
 
@@ -72,7 +72,7 @@ public class ObservacionServiceImpl implements ObservacionService {
     private Observacion crearObservacion(ObservacionDto observacionDto){
         var observacion = new Observacion();
 
-        observacion.setObservacion(observacionDto.getObservacion().trim());
+        observacion.setObservacion(observacionDto.getObservacion());
         observacion.setNumeroSemana(observacionDto.getNumeroSemana());
 
         return observacion;

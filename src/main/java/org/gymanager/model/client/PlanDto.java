@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -29,6 +30,6 @@ public class PlanDto {
     private String descripcion;
 
     public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion.trim();
+        this.descripcion = Objects.isNull(descripcion) ? null : descripcion.trim();
     }
 }
