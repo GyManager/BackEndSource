@@ -12,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,8 +42,8 @@ public class Plan {
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MicroPlan> microPlans;
 
-    private LocalDate fechaDesde;
-    private LocalDate fechaHasta;
+    private LocalDateTime fechaDesde;
+    private LocalDateTime fechaHasta;
     private String descripcion;
 
     public void setMicroPlans(List<MicroPlan> microPlans) {

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -23,8 +23,8 @@ public class PlanDto {
     private String objetivo;
 
     @NotNull(message = "El plan debe tener una fecha de inicio")
-    private LocalDate fechaDesde;
-    private LocalDate fechaHasta;
+    private LocalDateTime fechaDesde;
+    private LocalDateTime fechaHasta;
 
     @NotBlank(message = "El plan debe tener una descripcion")
     private String descripcion;

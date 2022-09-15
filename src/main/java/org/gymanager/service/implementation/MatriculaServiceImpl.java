@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static java.time.LocalDate.now;
+import static java.time.LocalDateTime.now;
 import static org.gymanager.model.enums.MatriculasFilter.NO_VENCIDAS;
 
 @Service
@@ -77,7 +77,7 @@ public class MatriculaServiceImpl implements MatriculaService {
         return matriculaRepository.save(matricula).getIdMatricula();
     }
 
-    private void validarFechaVencimientoNoPasada(LocalDate fechaVencimiento){
+    private void validarFechaVencimientoNoPasada(LocalDateTime fechaVencimiento){
         if(fechaVencimiento.isBefore(now())){
             log.error(FECHA_VENCIMIENTO_INVALIDA);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, FECHA_VENCIMIENTO_INVALIDA);
@@ -117,7 +117,7 @@ public class MatriculaServiceImpl implements MatriculaService {
                 || fechaEstaEnPeriodo(fin, inicioNuevo, finNuevo);
     }
 
-    private Boolean fechaEstaEnPeriodo(LocalDate fecha, LocalDate inicioPeriodo, LocalDate finPeriodo){
+    private Boolean fechaEstaEnPeriodo(LocalDateTime fecha, LocalDateTime inicioPeriodo, LocalDateTime finPeriodo){
         return fecha.isAfter(inicioPeriodo) && fecha.isBefore(finPeriodo);
     }
 }

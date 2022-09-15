@@ -10,10 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static java.time.LocalDate.now;
+import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.gymanager.test.constants.Constantes.APELLIDO;
 import static org.gymanager.test.constants.Constantes.CELULAR;
@@ -33,7 +33,7 @@ class UsuarioEntityToDtoConverterTest {
 
     @Test
     public void convert_WhenOk_ThenReturnUsuarioDto(){
-        LocalDate now = now();
+        LocalDateTime now = now();
 
         Sexo sexo = new Sexo();
         sexo.setSexo(SEXO);

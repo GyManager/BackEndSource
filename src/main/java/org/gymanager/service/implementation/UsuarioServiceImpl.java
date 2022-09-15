@@ -34,10 +34,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -159,7 +158,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuario.setSexo(sexo);
         usuario.setMail(usuarioDto.getMail());
         usuario.setCelular(usuarioDto.getCelular());
-        usuario.setFechaAlta(LocalDate.now());
+        usuario.setFechaAlta(LocalDateTime.now());
         usuario.setRoles(rolEntities);
 
         usuario.setPass(passwordEncoder.encode(usuarioDto.getNumeroDocumento().toString()));

@@ -1,7 +1,7 @@
 package org.gymanager.model.client;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record ClientePlanResumenDto(Long idCliente, String objetivo, String observaciones,
-                                    LocalDate fechaHastaPlanVigente, Long idPlanVigente, Integer cantidadDiasSemana){
+                                    LocalDateTime fechaHastaPlanVigente, Long idPlanVigente, Integer cantidadDiasSemana){
 }

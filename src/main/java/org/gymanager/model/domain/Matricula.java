@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 
 import static org.gymanager.model.enums.MatriculaEstado.ACTIVA;
@@ -33,19 +33,19 @@ public class Matricula {
     @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 
-    private LocalDate fechaPago;
-    private LocalDate fechaInicio;
-    private LocalDate fechaVencimiento;
+    private LocalDateTime fechaPago;
+    private LocalDateTime fechaInicio;
+    private LocalDateTime fechaVencimiento;
     private Integer cantidadMeses;
     private Integer cantidadDiasSemana;
 
     public MatriculaEstado getMatriculaEstado() {
-        var now = LocalDate.now();
+        var now = LocalDateTime.now();
         if(fechaInicio.isAfter(now)) {
             return NO_INICIADA;
         } else if(fechaVencimiento.isBefore(now)) {
             return VENCIDA;
-        } else if(Period.between(now, fechaVencimiento).getDays() < 7) {
+        } else if(Period.between(now.toLocalDate(), fechaVencimiento.toLocalDate()).getDays() < 7) {
             return PRONTO_A_VENCER;
         } else {
             return ACTIVA;

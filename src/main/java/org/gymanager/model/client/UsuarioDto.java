@@ -7,7 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -36,8 +36,8 @@ public class UsuarioDto {
     @Email(message = "El mail ingresado debe ser un mail correctamente formado.")
     private String mail;
     private Long celular;
-    private LocalDate fechaAlta;
-    private LocalDate fechaBaja;
+    private LocalDateTime fechaAlta;
+    private LocalDateTime fechaBaja;
 
     public void setNombre(String nombre) {
         this.nombre = Objects.isNull(nombre) ? null : nombre.trim();

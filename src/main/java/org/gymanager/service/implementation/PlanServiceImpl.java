@@ -22,13 +22,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static java.time.LocalDate.now;
+import static java.time.LocalDateTime.now;
 
 @Service
 @RequiredArgsConstructor
@@ -172,7 +172,7 @@ public class PlanServiceImpl implements PlanService {
         );
     }
 
-    private void validarFechaNoPasada(LocalDate fecha, String error){
+    private void validarFechaNoPasada(LocalDateTime fecha, String error){
         if(fecha.isBefore(now())){
             log.error(error);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error);
@@ -203,9 +203,12 @@ public class PlanServiceImpl implements PlanService {
         planesFuturos.stream()
                 .filter(plan -> plan.getFechaDesde().isBefore(planDtoDetails.getFechaHasta()))
                 .forEach(plan -> {
-            var pushAmount = Period.between(plan.getFechaDesde(), planDtoDetails.getFechaHasta()).getDays();
-            plan.setFechaHasta(plan.getFechaHasta().plusDays(pushAmount));
-            plan.setFechaDesde(planDtoDetails.getFechaHasta());
-        });
+                    var pushAmount = Period.between(
+                            plan.getFechaDesde().toLocalDate(),
+                                    planDtoDetails.getFechaHasta().toLocalDate())
+                            .getDays();
+                    plan.setFechaHasta(plan.getFechaHasta().plusDays(pushAmount));
+                    plan.setFechaDesde(planDtoDetails.getFechaHasta());
+                });
     }
 }

@@ -14,7 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -47,8 +47,8 @@ public class Usuario {
 
     @Column(nullable = false)
     private String pass;
-    private LocalDate fechaAlta;
-    private LocalDate fechaBaja;
+    private LocalDateTime fechaAlta;
+    private LocalDateTime fechaBaja;
 
     @Column(unique = true, nullable = false)
     private String mail;
