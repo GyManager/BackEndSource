@@ -15,6 +15,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -46,6 +47,8 @@ public class Ejercicio {
 
     @OneToMany(mappedBy = "ejercicio", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Paso> pasos;
+
+    private LocalDateTime fechaBaja;
 
     public void setPasos(List<Paso> pasos) {
         this.pasos = pasos;

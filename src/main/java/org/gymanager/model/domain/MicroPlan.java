@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +44,8 @@ public class MicroPlan {
 
     @Formula(value = "(SELECT COUNT(r.id_rutina) FROM {h-schema}rutina r WHERE r.id_micro_plan = id_micro_plan)")
     private Integer cantidadRutinas;
+
+    private LocalDateTime fechaBaja;
 
     public void setRutinas(List<Rutina> rutinas) {
         this.rutinas = rutinas;

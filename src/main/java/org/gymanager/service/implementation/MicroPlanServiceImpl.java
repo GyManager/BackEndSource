@@ -16,6 +16,7 @@ import org.gymanager.repository.specification.MicroPlanRepository;
 import org.gymanager.service.specification.MicroPlanService;
 import org.gymanager.service.specification.ObservacionService;
 import org.gymanager.service.specification.RutinaService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,6 +39,9 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     private static final String MICRO_PLAN_NO_ENCONTRADO = "Micro plan no encontrado";
     private static final String MICRO_PLAN_TEMPLATE_CON_NOMBRE_YA_EXISTE = "Ya existe un micro plan plantilla con el " +
             "nombre (%s) ingresado";
+
+    @Value("${logical-delete}")
+    private Boolean logicalDelete;
 
     @NonNull
     private MicroPlanRepository microPlanRepository;
@@ -123,7 +128,12 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     public void deleteMicroPlanById(Long idMicroPlan) {
         var microPlan = getMicroPlanEntityById(idMicroPlan);
 
-        microPlanRepository.delete(microPlan);
+        if(logicalDelete){
+            microPlan.setFechaBaja(LocalDateTime.now());
+            microPlanRepository.save(microPlan);
+        } else {
+            microPlanRepository.delete(microPlan);
+        }
     }
 
     @Override

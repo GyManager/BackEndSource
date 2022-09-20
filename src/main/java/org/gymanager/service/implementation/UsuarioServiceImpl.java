@@ -21,6 +21,7 @@ import org.gymanager.service.specification.RolService;
 import org.gymanager.service.specification.SexoService;
 import org.gymanager.service.specification.TipoDocumentoService;
 import org.gymanager.service.specification.UsuarioService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,9 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
             " y tipo (%s) de documento";
     private static final String MAIL_VACIO = "El mail de login no debe ser vacio";
     private static final String PASS_NO_COINCIDEN = "La contraseña y la confirmacion de la contraseña no coinciden";
+
+    @Value("${logical-delete}")
+    private Boolean logicalDelete;
 
     @NonNull
     private UsuarioRepository usuarioRepository;
@@ -206,7 +210,12 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     public void deleteUsuarioById(Long idUsuario) {
         Usuario usuario = getUsuarioEntityById(idUsuario);
 
-        usuarioRepository.delete(usuario);
+        if(logicalDelete){
+            usuario.setFechaBaja(LocalDateTime.now());
+            usuarioRepository.save(usuario);
+        } else {
+            usuarioRepository.delete(usuario);
+        }
     }
 
     @Override

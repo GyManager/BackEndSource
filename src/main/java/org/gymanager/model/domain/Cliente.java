@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -54,6 +55,8 @@ public class Cliente {
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Matricula> matriculas;
+
+    private LocalDateTime fechaBaja;
 
     public ClienteEstado getClienteEstado() {
         var matriculaActiva = matriculasActivas.stream().findFirst();

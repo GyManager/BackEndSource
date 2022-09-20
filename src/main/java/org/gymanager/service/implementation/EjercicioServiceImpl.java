@@ -16,6 +16,7 @@ import org.gymanager.service.specification.EjercicioService;
 import org.gymanager.service.specification.HerramientaService;
 import org.gymanager.service.specification.PasoService;
 import org.gymanager.service.specification.TipoEjercicioService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -33,6 +35,9 @@ public class EjercicioServiceImpl implements EjercicioService {
     private static final String EJERCICIO_NO_ENCONTRADO = "Ejercicio no encontrado";
     private static final String NOMBRE_TIPO_EJERCICIO_EN_USO = "Ya existe un ejercicio con el nombre (%s)" +
             " del tipo (%s)";
+
+    @Value("${logical-delete}")
+    private Boolean logicalDelete;
 
     @NonNull
     private EjercicioRepository ejercicioRepository;
@@ -128,7 +133,12 @@ public class EjercicioServiceImpl implements EjercicioService {
     public void deleteEjercicioById(Long idEjercicio) {
         var ejercicio = getEjercicioEntityById(idEjercicio);
 
-        ejercicioRepository.delete(ejercicio);
+        if(logicalDelete){
+            ejercicio.setFechaBaja(LocalDateTime.now());
+            ejercicioRepository.save(ejercicio);
+        } else {
+            ejercicioRepository.delete(ejercicio);
+        }
     }
 
     private void validarEjercicioConTipoYNombreNoExiste(TipoEjercicio tipoEjercicio, String nombre){

@@ -15,6 +15,7 @@ import org.gymanager.repository.specification.ClienteRepository;
 import org.gymanager.service.specification.ClienteService;
 import org.gymanager.service.specification.ObjetivoService;
 import org.gymanager.service.specification.UsuarioService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -32,6 +34,9 @@ public class ClienteServiceImpl implements ClienteService {
 
     private static final String CLIENTE_NO_ENCONTRADO = "Cliente no encontrado";
     private static final String ROL_CLIENTE = "CLIENTE";
+
+    @Value("${logical-delete}")
+    private Boolean logicalDelete;
 
     @NonNull
     private ClienteRepository clienteRepository;
@@ -119,7 +124,12 @@ public class ClienteServiceImpl implements ClienteService {
     public void deleteClienteById(Long idCliente) {
         Cliente cliente = getClienteEntityById(idCliente);
 
-        clienteRepository.delete(cliente);
+        if(logicalDelete){
+            cliente.setFechaBaja(LocalDateTime.now());
+            clienteRepository.save(cliente);
+        } else {
+            clienteRepository.delete(cliente);
+        }
         usuarioService.deleteUsuarioById(cliente.getUsuario().getIdUsuario());
     }
 }
