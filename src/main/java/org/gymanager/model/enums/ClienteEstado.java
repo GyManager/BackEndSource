@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum ClienteEstado {
     NO_MATRICULADO("NO MATRICULADO"),
     PRONTO_A_VENCER("PRONTO A VENCER"),
-    MATRICULADO("MATRICULADO");
+    MATRICULADO("MATRICULADO"),
+    DESACTIVADO("DESACTIVADO");
 
     private final String estado;
 

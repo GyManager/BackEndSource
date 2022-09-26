@@ -57,6 +57,9 @@ public class Cliente {
     private List<Matricula> matriculas;
 
     public ClienteEstado getClienteEstado() {
+        if(usuario.getRoles().stream().noneMatch(rol -> rol.getNombreRol().equals("CLIENTE"))){
+           return ClienteEstado.DESACTIVADO;
+        }
         var matriculaActiva = matriculasActivas.stream().findFirst();
         if(matriculaActiva.isEmpty()){
             return ClienteEstado.NO_MATRICULADO;
