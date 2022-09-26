@@ -58,10 +58,12 @@ public class EjercicioServiceImpl implements EjercicioService {
 
     @Override
     @Transactional
-    public GyManagerPage<EjercicioDto> getEjercicios(String search, Integer page, Integer pageSize,
-                                            EjercicioSortBy sortBy, Sort.Direction direction) {
+    public GyManagerPage<EjercicioDto> getEjercicios(String search, Boolean excluirEliminados,
+                                                     Integer page, Integer pageSize, EjercicioSortBy sortBy,
+                                                     Sort.Direction direction) {
         var ejercicioSpecification = new EjercicioSpecification();
         ejercicioSpecification.setNombreEjercicioOrTipoEjercicio(search);
+        ejercicioSpecification.setExcluirEliminados(excluirEliminados);
 
         Sort sort = sortBy.equals(EjercicioSortBy.NONE) ? Sort.unsorted() : Sort.by(direction, sortBy.getField());
         PageRequest pageable = PageRequest.of(page, pageSize, sort);
