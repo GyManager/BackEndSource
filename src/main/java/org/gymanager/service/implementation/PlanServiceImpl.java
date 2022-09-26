@@ -17,6 +17,7 @@ import org.gymanager.service.specification.MicroPlanService;
 import org.gymanager.service.specification.ObjetivoService;
 import org.gymanager.service.specification.PlanService;
 import org.gymanager.service.specification.UsuarioService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,6 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +44,9 @@ public class PlanServiceImpl implements PlanService {
             Si actualiza la fecha de fin / fecha hasta del plan, la misma no puede ser anterior a la fecha de hoy""";
     private static final String YA_EXISTE_UN_PLAN_EN_ESE_ESTADO_PARA_EL_CLIENTE = """
             El cliente elegido ya tiene un plan %s""";
+
+    @Value("${logical-delete}")
+    private Boolean logicalDelete;
 
     @NonNull
     private PlanRepository planRepository;
@@ -74,9 +79,10 @@ public class PlanServiceImpl implements PlanService {
         var now = now();
         return switch (planesFilter) {
             case TODOS -> planRepository.findByClienteIdCliente(idCliente);
-            case ACTIVOS -> planRepository.findAllByClienteIdClienteAndFechaHastaGreaterThanAndFechaDesdeLessThanEqual(idCliente, now, now);
-            case VENCIDOS -> planRepository.findAllByClienteIdClienteAndFechaHastaLessThanEqual(idCliente, now);
-            case FUTUROS -> planRepository.findAllByClienteIdClienteAndFechaDesdeAfter(idCliente, now);
+            case ACTIVOS -> planRepository.findAllByClienteIdClienteAndFechaHastaGreaterThanAndFechaDesdeLessThanEqualAndFechaEliminadoNull(idCliente, now, now);
+            case VENCIDOS -> planRepository.findAllByClienteIdClienteAndFechaHastaLessThanEqualAndFechaEliminadoNull(idCliente, now);
+            case FUTUROS -> planRepository.findAllByClienteIdClienteAndFechaDesdeAfterAndFechaEliminadoNull(idCliente, now);
+            case ELIMINADOS -> planRepository.findAllByClienteIdClienteAndFechaEliminadoNotNull(idCliente);
         };
     }
 
@@ -152,7 +158,12 @@ public class PlanServiceImpl implements PlanService {
     public void deletePlanById(Long idCliente, Long idPlan) {
         var plan = getPlanEntityById(idPlan);
 
-        planRepository.delete(plan);
+        if(isTrue(logicalDelete)){
+            plan.setFechaEliminado(LocalDateTime.now());
+            planRepository.save(plan);
+        } else {
+            planRepository.delete(plan);
+        }
     }
 
     @Override
