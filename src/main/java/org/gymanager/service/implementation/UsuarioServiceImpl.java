@@ -36,10 +36,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
 @RequiredArgsConstructor
@@ -208,10 +211,10 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public void deleteUsuarioById(Long idUsuario) {
-        Usuario usuario = getUsuarioEntityById(idUsuario);
+        var usuario = getUsuarioEntityById(idUsuario);
 
-        if(logicalDelete){
-            usuario.setFechaBaja(LocalDateTime.now());
+        if(isTrue(logicalDelete)){
+            usuario.setRoles(new ArrayList<>());
             usuarioRepository.save(usuario);
         } else {
             usuarioRepository.delete(usuario);
@@ -228,6 +231,15 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         }
 
         return usuario.get();
+    }
+
+    @Override
+    public void removeRolUsuarioById(Long idUsuario, List<String> roles){
+        var usuario = getUsuarioEntityById(idUsuario);
+
+        usuario.getRoles().removeIf(rol -> roles.contains(rol.getNombreRol()));
+
+        usuarioRepository.save(usuario);
     }
 
     private void validarUsuarioConMailNoExiste(String mail){

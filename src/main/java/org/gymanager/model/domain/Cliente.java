@@ -56,8 +56,6 @@ public class Cliente {
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Matricula> matriculas;
 
-    private LocalDateTime fechaBaja;
-
     public ClienteEstado getClienteEstado() {
         var matriculaActiva = matriculasActivas.stream().findFirst();
         if(matriculaActiva.isEmpty()){

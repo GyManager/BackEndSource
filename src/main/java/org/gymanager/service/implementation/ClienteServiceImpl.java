@@ -23,9 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
+
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
 @RequiredArgsConstructor
@@ -124,12 +125,12 @@ public class ClienteServiceImpl implements ClienteService {
     public void deleteClienteById(Long idCliente) {
         Cliente cliente = getClienteEntityById(idCliente);
 
-        if(logicalDelete){
-            cliente.setFechaBaja(LocalDateTime.now());
-            clienteRepository.save(cliente);
+        if(isTrue(logicalDelete)){
+            usuarioService.removeRolUsuarioById(cliente.getUsuario().getIdUsuario(),
+                    Collections.singletonList(ROL_CLIENTE));
         } else {
             clienteRepository.delete(cliente);
+            usuarioService.deleteUsuarioById(cliente.getUsuario().getIdUsuario());
         }
-        usuarioService.deleteUsuarioById(cliente.getUsuario().getIdUsuario());
     }
 }

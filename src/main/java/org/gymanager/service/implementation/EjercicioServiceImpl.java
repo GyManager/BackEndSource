@@ -27,6 +27,8 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -133,7 +135,7 @@ public class EjercicioServiceImpl implements EjercicioService {
     public void deleteEjercicioById(Long idEjercicio) {
         var ejercicio = getEjercicioEntityById(idEjercicio);
 
-        if(logicalDelete){
+        if(isTrue(logicalDelete)){
             ejercicio.setFechaBaja(LocalDateTime.now());
             ejercicioRepository.save(ejercicio);
         } else {

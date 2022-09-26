@@ -31,6 +31,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -128,7 +130,7 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     public void deleteMicroPlanById(Long idMicroPlan) {
         var microPlan = getMicroPlanEntityById(idMicroPlan);
 
-        if(logicalDelete){
+        if(isTrue(logicalDelete)){
             microPlan.setFechaBaja(LocalDateTime.now());
             microPlanRepository.save(microPlan);
         } else {
