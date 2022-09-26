@@ -2,6 +2,7 @@ package org.gymanager.repository.filters;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.gymanager.model.domain.MicroPlan;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,10 +24,12 @@ public class MicroPlanSpecification implements Specification<MicroPlan> {
     private static final String CAMPO_NOMBRE = "nombre";
     private static final String CAMPO_ES_TEMPLATE = "esTemplate";
     private static final String CAMPO_CANTIDAD_RUTINAS = "cantidadRutinas";
+    private static final String CAMPO_FECHA_BAJA = "fechaBaja";
 
     private String search;
     private Boolean esTemplate;
     private Integer cantidadRutinas;
+    private Boolean excluirEliminados;
 
     @Override
     public Predicate toPredicate(Root<MicroPlan> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
@@ -44,6 +47,10 @@ public class MicroPlanSpecification implements Specification<MicroPlan> {
 
         if(Objects.nonNull(cantidadRutinas)){
             predicateList.add(builder.equal(root.get(CAMPO_CANTIDAD_RUTINAS), cantidadRutinas));
+        }
+
+        if(BooleanUtils.isNotFalse(excluirEliminados)){
+            predicateList.add(builder.isNull(root.get(CAMPO_FECHA_BAJA)));
         }
 
         return predicateList.stream().reduce(builder::and)
