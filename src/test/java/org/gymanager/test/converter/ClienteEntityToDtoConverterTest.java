@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,6 +50,8 @@ class ClienteEntityToDtoConverterTest {
         cliente.setFechaNacimiento(FECHA_NACIMIENTO);
         cliente.setObservaciones(OBSERVACIONES);
         cliente.setObjetivo(objetivo);
+        cliente.setMatriculasActivas(Collections.emptyList());
+        cliente.setMatriculas(Collections.emptyList());
 
         when(usuarioEntityToDtoConverter.convert(usuario)).thenReturn(usuarioDto);
 

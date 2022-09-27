@@ -75,6 +75,7 @@ class EjercicioServiceImplTest {
     @Test
     public void getEjercicios_WhenOk_ThenReturnEjercicios(){
         var search = "filter";
+        var excluirEliminados = Boolean.TRUE;
         var page = 0;
         var pageSize = 20;
         var sortBy = EjercicioSortBy.NONE;
@@ -87,7 +88,7 @@ class EjercicioServiceImplTest {
                 .thenReturn(new PageImpl<>(List.of(ejercicio)));
         when(ejercicioEntityToDtoConverter.convert(ejercicio)).thenReturn(ejercicioDto);
 
-        var result = ejercicioService.getEjercicios(search, page, pageSize, sortBy, direction);
+        var result = ejercicioService.getEjercicios(search, excluirEliminados, page, pageSize, sortBy, direction);
 
         assertThat(result).isNotNull();
         assertThat(result.getContent()).containsExactly(ejercicioDto);

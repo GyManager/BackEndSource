@@ -2,6 +2,7 @@ package org.gymanager.repository.filters;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.gymanager.model.domain.Ejercicio;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,8 +25,10 @@ public class EjercicioSpecification implements Specification<Ejercicio> {
     private static final String TABLA_TIPO_EJERCICIO = "tipoEjercicio";
     private static final String CAMPO_NOMBRE = "nombre";
     private static final String CAMPO_NOMBRE_TIPO_EJERCICIO = "nombre";
+    private static final String CAMPO_FECHA_BAJA = "fechaBaja";
 
     private String nombreEjercicioOrTipoEjercicio;
+    private Boolean excluirEliminados;
 
     @Override
     public Predicate toPredicate(Root<Ejercicio> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
@@ -55,6 +58,10 @@ public class EjercicioSpecification implements Specification<Ejercicio> {
 
             }
             predicateList.add(orPredicateList.stream().reduce(builder::or).get());
+        }
+
+        if(BooleanUtils.isNotFalse(excluirEliminados)){
+            predicateList.add(builder.isNull(root.get(CAMPO_FECHA_BAJA)));
         }
 
         return predicateList.stream().reduce(builder::and)

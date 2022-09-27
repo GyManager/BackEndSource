@@ -28,4 +28,6 @@ public interface UsuarioService {
     void deleteUsuarioById(Long idUsuario);
 
     Usuario getUsuarioEntityByMail(String mail);
+
+    void removeRolUsuarioById(Long idUsuario, List<String> roles);
 }

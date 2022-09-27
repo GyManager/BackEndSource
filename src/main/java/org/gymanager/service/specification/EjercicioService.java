@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort;
 
 public interface EjercicioService {
 
-    GyManagerPage<EjercicioDto> getEjercicios(String search, Integer page, Integer pageSize,
+    GyManagerPage<EjercicioDto> getEjercicios(String search, Boolean excluirEliminados, Integer page, Integer pageSize,
                                               EjercicioSortBy sortBy, Sort.Direction direction);
 
     EjercicioDto getEjercicioById(Long idEjercicio);

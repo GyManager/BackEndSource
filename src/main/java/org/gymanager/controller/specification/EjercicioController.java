@@ -39,6 +39,7 @@ public interface EjercicioController {
             @Parameter(name = "search",
                     description = "busca por [nombre, tipo de ejercicio]")
             @RequestParam(name = "search", required = false, defaultValue = "") String search,
+            @RequestParam(name = "excluirEliminados", required = false, defaultValue = "true") Boolean excluirEliminados,
             @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
             @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
             @RequestParam(name = "sortBy", required = false, defaultValue = "NONE") EjercicioSortBy sortBy,

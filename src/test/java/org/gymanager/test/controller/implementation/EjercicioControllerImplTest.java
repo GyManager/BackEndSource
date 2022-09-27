@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.gymanager.test.constants.Constantes.ID_EJERCICIO;
@@ -32,6 +33,7 @@ class EjercicioControllerImplTest {
     @Test
     public void getEjercicios_WhenOk_ThenReturnEjercicios(){
         var search = "filter";
+        var excluirEliminados = Boolean.TRUE;
         var page = 0;
         var pageSize = 20;
         var sortBy = EjercicioSortBy.NONE;
@@ -39,10 +41,11 @@ class EjercicioControllerImplTest {
 
         var ejercicioDto = mock(EjercicioDto.class);
 
-        when(ejercicioService.getEjercicios(search, page, pageSize, sortBy, direction))
+        when(ejercicioService.getEjercicios(search, excluirEliminados, page, pageSize, sortBy, direction))
                 .thenReturn(new GyManagerPage<>(ejercicioDto));
 
-        var result = ejercicioController.getEjercicios(search, page, pageSize, sortBy, direction);
+        var result = ejercicioController.getEjercicios(search, excluirEliminados,
+                page, pageSize, sortBy, direction);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);

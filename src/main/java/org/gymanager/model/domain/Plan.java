@@ -44,6 +44,7 @@ public class Plan {
 
     private LocalDateTime fechaDesde;
     private LocalDateTime fechaHasta;
+    private LocalDateTime fechaEliminado;
     private String descripcion;
 
     public void setMicroPlans(List<MicroPlan> microPlans) {

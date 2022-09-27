@@ -10,9 +10,11 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     List<Plan> findByClienteIdCliente(Long idCliente);
 
-    List<Plan> findAllByClienteIdClienteAndFechaDesdeAfter(Long idCliente, LocalDateTime date);
+    List<Plan> findAllByClienteIdClienteAndFechaDesdeAfterAndFechaEliminadoNull(Long idCliente, LocalDateTime date);
 
-    List<Plan> findAllByClienteIdClienteAndFechaHastaLessThanEqual(Long idCliente, LocalDateTime date);
+    List<Plan> findAllByClienteIdClienteAndFechaHastaLessThanEqualAndFechaEliminadoNull(Long idCliente, LocalDateTime date);
 
-    List<Plan> findAllByClienteIdClienteAndFechaHastaGreaterThanAndFechaDesdeLessThanEqual(Long idCliente, LocalDateTime hasta, LocalDateTime desde);
+    List<Plan> findAllByClienteIdClienteAndFechaHastaGreaterThanAndFechaDesdeLessThanEqualAndFechaEliminadoNull(Long idCliente, LocalDateTime hasta, LocalDateTime desde);
+
+    List<Plan> findAllByClienteIdClienteAndFechaEliminadoNotNull(Long idCliente);
 }

@@ -34,6 +34,7 @@ class MicroPlanControllerImplTest {
         var search = "filter";
         var esTemplate = Boolean.TRUE;
         var cantidadRutinas = 0;
+        var excluirEliminados = Boolean.TRUE;
         var page = 0;
         var pageSize = 20;
         var sortBy = MicroPlanSortBy.NONE;
@@ -41,10 +42,24 @@ class MicroPlanControllerImplTest {
 
         var microPlanDto = mock(MicroPlanDto.class);
 
-        when(microPlanService.getMicroPlanes(search, esTemplate, cantidadRutinas, page, pageSize, sortBy, direction))
+        when(microPlanService.getMicroPlanes(search,
+                esTemplate,
+                cantidadRutinas,
+                excluirEliminados,
+                page,
+                pageSize,
+                sortBy,
+                direction))
                 .thenReturn(new GyManagerPage<>(microPlanDto));
 
-        var result = microPlanController.getMicroPlanes(search, esTemplate, cantidadRutinas, page, pageSize, sortBy, direction);
+        var result = microPlanController.getMicroPlanes(search,
+                esTemplate,
+                cantidadRutinas,
+                excluirEliminados,
+                page,
+                pageSize,
+                sortBy,
+                direction);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);

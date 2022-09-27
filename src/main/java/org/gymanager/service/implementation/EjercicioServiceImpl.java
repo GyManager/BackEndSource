@@ -16,6 +16,7 @@ import org.gymanager.service.specification.EjercicioService;
 import org.gymanager.service.specification.HerramientaService;
 import org.gymanager.service.specification.PasoService;
 import org.gymanager.service.specification.TipoEjercicioService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +37,9 @@ public class EjercicioServiceImpl implements EjercicioService {
     private static final String EJERCICIO_NO_ENCONTRADO = "Ejercicio no encontrado";
     private static final String NOMBRE_TIPO_EJERCICIO_EN_USO = "Ya existe un ejercicio con el nombre (%s)" +
             " del tipo (%s)";
+
+    @Value("${logical-delete}")
+    private Boolean logicalDelete;
 
     @NonNull
     private EjercicioRepository ejercicioRepository;
@@ -51,10 +58,12 @@ public class EjercicioServiceImpl implements EjercicioService {
 
     @Override
     @Transactional
-    public GyManagerPage<EjercicioDto> getEjercicios(String search, Integer page, Integer pageSize,
-                                            EjercicioSortBy sortBy, Sort.Direction direction) {
+    public GyManagerPage<EjercicioDto> getEjercicios(String search, Boolean excluirEliminados,
+                                                     Integer page, Integer pageSize, EjercicioSortBy sortBy,
+                                                     Sort.Direction direction) {
         var ejercicioSpecification = new EjercicioSpecification();
         ejercicioSpecification.setNombreEjercicioOrTipoEjercicio(search);
+        ejercicioSpecification.setExcluirEliminados(excluirEliminados);
 
         Sort sort = sortBy.equals(EjercicioSortBy.NONE) ? Sort.unsorted() : Sort.by(direction, sortBy.getField());
         PageRequest pageable = PageRequest.of(page, pageSize, sort);
@@ -128,7 +137,12 @@ public class EjercicioServiceImpl implements EjercicioService {
     public void deleteEjercicioById(Long idEjercicio) {
         var ejercicio = getEjercicioEntityById(idEjercicio);
 
-        ejercicioRepository.delete(ejercicio);
+        if(isTrue(logicalDelete)){
+            ejercicio.setFechaBaja(LocalDateTime.now());
+            ejercicioRepository.save(ejercicio);
+        } else {
+            ejercicioRepository.delete(ejercicio);
+        }
     }
 
     private void validarEjercicioConTipoYNombreNoExiste(TipoEjercicio tipoEjercicio, String nombre){

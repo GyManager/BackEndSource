@@ -21,9 +21,10 @@ public class EjercicioControllerImpl implements EjercicioController {
     private EjercicioService ejercicioService;
 
     @Override
-    public ResponseEntity<GyManagerPage<EjercicioDto>> getEjercicios(String search, Integer page, Integer pageSize,
+    public ResponseEntity<GyManagerPage<EjercicioDto>> getEjercicios(String search, Boolean excluirEliminados,
+                                                                     Integer page, Integer pageSize,
                                                                      EjercicioSortBy sortBy, Sort.Direction direction) {
-        return ResponseEntity.ok(ejercicioService.getEjercicios(search, page, pageSize, sortBy, direction));
+        return ResponseEntity.ok(ejercicioService.getEjercicios(search, excluirEliminados, page, pageSize, sortBy, direction));
     }
 
     @Override

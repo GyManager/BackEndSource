@@ -15,6 +15,7 @@ import org.gymanager.repository.specification.ClienteRepository;
 import org.gymanager.service.specification.ClienteService;
 import org.gymanager.service.specification.ObjetivoService;
 import org.gymanager.service.specification.UsuarioService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.Optional;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -32,6 +35,9 @@ public class ClienteServiceImpl implements ClienteService {
 
     private static final String CLIENTE_NO_ENCONTRADO = "Cliente no encontrado";
     private static final String ROL_CLIENTE = "CLIENTE";
+
+    @Value("${logical-delete}")
+    private Boolean logicalDelete;
 
     @NonNull
     private ClienteRepository clienteRepository;
@@ -119,7 +125,12 @@ public class ClienteServiceImpl implements ClienteService {
     public void deleteClienteById(Long idCliente) {
         Cliente cliente = getClienteEntityById(idCliente);
 
-        clienteRepository.delete(cliente);
-        usuarioService.deleteUsuarioById(cliente.getUsuario().getIdUsuario());
+        if(isTrue(logicalDelete)){
+            usuarioService.removeRolUsuarioById(cliente.getUsuario().getIdUsuario(),
+                    Collections.singletonList(ROL_CLIENTE));
+        } else {
+            clienteRepository.delete(cliente);
+            usuarioService.deleteUsuarioById(cliente.getUsuario().getIdUsuario());
+        }
     }
 }

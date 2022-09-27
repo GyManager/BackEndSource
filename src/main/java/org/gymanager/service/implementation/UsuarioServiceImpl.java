@@ -21,6 +21,7 @@ import org.gymanager.service.specification.RolService;
 import org.gymanager.service.specification.SexoService;
 import org.gymanager.service.specification.TipoDocumentoService;
 import org.gymanager.service.specification.UsuarioService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -35,10 +36,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +56,9 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
             " y tipo (%s) de documento";
     private static final String MAIL_VACIO = "El mail de login no debe ser vacio";
     private static final String PASS_NO_COINCIDEN = "La contraseña y la confirmacion de la contraseña no coinciden";
+
+    @Value("${logical-delete}")
+    private Boolean logicalDelete;
 
     @NonNull
     private UsuarioRepository usuarioRepository;
@@ -204,9 +211,14 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public void deleteUsuarioById(Long idUsuario) {
-        Usuario usuario = getUsuarioEntityById(idUsuario);
+        var usuario = getUsuarioEntityById(idUsuario);
 
-        usuarioRepository.delete(usuario);
+        if(isTrue(logicalDelete)){
+            usuario.setRoles(new ArrayList<>());
+            usuarioRepository.save(usuario);
+        } else {
+            usuarioRepository.delete(usuario);
+        }
     }
 
     @Override
@@ -219,6 +231,15 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         }
 
         return usuario.get();
+    }
+
+    @Override
+    public void removeRolUsuarioById(Long idUsuario, List<String> roles){
+        var usuario = getUsuarioEntityById(idUsuario);
+
+        usuario.getRoles().removeIf(rol -> roles.contains(rol.getNombreRol()));
+
+        usuarioRepository.save(usuario);
     }
 
     private void validarUsuarioConMailNoExiste(String mail){

@@ -31,7 +31,7 @@ public class ClienteDto {
     private Date fechaNacimiento;
 
     private String observaciones;
-    private ClienteEstado clienteEstado;
+    private String clienteEstado;
 
     public void setDireccion(String direccion) {
         this.direccion = Objects.isNull(direccion) ? null : direccion.trim();
