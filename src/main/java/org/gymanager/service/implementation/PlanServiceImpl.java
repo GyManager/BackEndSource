@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
@@ -214,10 +215,8 @@ public class PlanServiceImpl implements PlanService {
         planesFuturos.stream()
                 .filter(plan -> plan.getFechaDesde().isBefore(planDtoDetails.getFechaHasta()))
                 .forEach(plan -> {
-                    var pushAmount = Period.between(
-                            plan.getFechaDesde().toLocalDate(),
-                                    planDtoDetails.getFechaHasta().toLocalDate())
-                            .getDays();
+                    var pushAmount = DAYS.between(plan.getFechaDesde().toLocalDate(),
+                            planDtoDetails.getFechaHasta().toLocalDate());
                     plan.setFechaHasta(plan.getFechaHasta().plusDays(pushAmount));
                     plan.setFechaDesde(planDtoDetails.getFechaHasta());
                 });
