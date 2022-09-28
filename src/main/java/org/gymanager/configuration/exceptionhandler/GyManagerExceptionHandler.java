@@ -24,8 +24,8 @@ public class GyManagerExceptionHandler extends ResponseEntityExceptionHandler {
         var headers = new HttpHeaders();
         var status = HttpStatus.CONFLICT;
         var message = "La operacion que usted esta intentando hacer para este registro no esta permitida actualmente,"
-                .concat("porque el registro esta en uso. Contacte al administrador del sistema, este error puede ser")
-                .concat("porque el sistema no esta configurado en modo 'borrado logico'");
+                .concat(" porque el registro esta en uso. Contacte al administrador del sistema, este error puede ser")
+                .concat(" porque el sistema no esta configurado en modo 'borrado logico'");
         var error = status.getReasonPhrase();
         var httpStatus = status.value();
         var timestamp = Instant.now();
