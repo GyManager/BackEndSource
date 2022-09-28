@@ -104,8 +104,8 @@ public class MatriculaServiceImpl implements MatriculaService {
 
         if(matriculaSuperpuesta.isPresent()){
             var error = String.format(MATRICULA_SUPERPUESTA_CON_OTRA,
-                    matriculaSuperpuesta.get().getFechaInicio(),
-                    matriculaSuperpuesta.get().getFechaVencimiento());
+                    matriculaSuperpuesta.get().getFechaInicio().toLocalDate(),
+                    matriculaSuperpuesta.get().getFechaVencimiento().toLocalDate());
             log.error(error);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error);
         }
