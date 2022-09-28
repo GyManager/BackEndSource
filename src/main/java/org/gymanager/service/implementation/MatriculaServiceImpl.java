@@ -83,9 +83,9 @@ public class MatriculaServiceImpl implements MatriculaService {
 
     private void validarFechaVencimientoNoPasada(LocalDateTime fechaVencimiento){
         if(fechaVencimiento.isBefore(now())){
-            log.error(String.format(FECHA_VENCIMIENTO_INVALIDA, fechaVencimiento));
+            log.error(String.format(FECHA_VENCIMIENTO_INVALIDA, fechaVencimiento.toLocalDate()));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    String.format(FECHA_VENCIMIENTO_INVALIDA, fechaVencimiento));
+                    String.format(FECHA_VENCIMIENTO_INVALIDA, fechaVencimiento.toLocalDate()));
         }
     }
 
