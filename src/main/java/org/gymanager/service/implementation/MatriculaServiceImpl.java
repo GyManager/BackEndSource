@@ -123,7 +123,8 @@ public class MatriculaServiceImpl implements MatriculaService {
     }
 
     private Boolean fechaEstaEnPeriodo(LocalDateTime fecha, LocalDateTime inicioPeriodo, LocalDateTime finPeriodo){
-        return fecha.toLocalDate().isAfter(inicioPeriodo.toLocalDate())
+        return (fecha.toLocalDate().isAfter(inicioPeriodo.toLocalDate())
+                || fecha.toLocalDate().isEqual(inicioPeriodo.toLocalDate()))
                 && fecha.toLocalDate().isBefore(finPeriodo.toLocalDate());
     }
 }
