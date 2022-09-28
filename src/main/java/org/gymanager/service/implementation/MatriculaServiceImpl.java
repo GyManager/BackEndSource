@@ -62,6 +62,10 @@ public class MatriculaServiceImpl implements MatriculaService {
     public Long addMatricula(Long idCliente, MatriculaDto matriculaDto) {
         var cliente = clienteService.getClienteEntityById(idCliente);
 
+        matriculaDto.setFechaVencimiento(matriculaDto
+                .getFechaPago()
+                .plusMonths(matriculaDto.getCantidadMeses()));
+
         validarFechaVencimientoNoPasada(matriculaDto.getFechaVencimiento());
         validarFechasNoInvertidas(matriculaDto);
         validarMatriculaNoSeSuperponeConMatriculasExistentes(matriculaDto, idCliente);
