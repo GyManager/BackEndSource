@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 public class MatriculaDto {
 
     private Long idMatricula;
-    @NotNull(message = "El cliente es obligatorio")
     private Long idCliente;
 
     @NotNull(message = "La fecha de pago es obligatoria")
