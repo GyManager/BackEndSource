@@ -13,4 +13,8 @@ public interface MatriculaService {
     List<Matricula> getMatriculasEntitiesByIdCliente(Long idCliente, MatriculasFilter matriculasFilter);
 
     Long addMatricula(Long idCliente, MatriculaDto matriculaDto);
+
+    Matricula getMatriculaEntityById(Long idMatricula);
+
+    void deleteMatriculaById(Long idCliente, Long idMatricula);
 }

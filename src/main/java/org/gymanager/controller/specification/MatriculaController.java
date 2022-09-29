@@ -10,6 +10,7 @@ import org.gymanager.model.client.MatriculaDto;
 import org.gymanager.model.enums.MatriculasFilter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,4 +47,13 @@ public interface MatriculaController {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Matricula request body.",
                     content = @Content(schema = @Schema(implementation = MatriculaDto.class)), required = true)
             @RequestBody @Valid MatriculaDto matriculaDto);
+
+    @Operation(summary = "Borrar una matricula", description = "Esta operación es para borrar una matricula")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
+    @DeleteMapping("/{idMatricula}")
+    @PreAuthorize("hasAuthority('delete-matriculas')")
+    ResponseEntity<Void> deleteMatriculaById(@PathVariable("idCliente") Long idCliente,
+                                           @PathVariable("idMatricula") Long idMatricula);
 }

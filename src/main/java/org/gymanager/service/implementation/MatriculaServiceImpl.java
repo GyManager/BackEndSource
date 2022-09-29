@@ -33,6 +33,8 @@ public class MatriculaServiceImpl implements MatriculaService {
             La fecha de inicio de la matricula no puede ser posterior a la fecha de vencimiento""";
     private static final String FECHA_VENCIMIENTO_INVALIDA = """
             La fecha de vencimiento de la matricula no puede ser anterior a la fecha de hoy %s""";
+    private static final String MATRICULA_NO_ENCONTRADO = "Matricula no encontrado";
+    private static final String MATRICULA_NO_CORRESPONDE_CON_CLIENTE = "La matricula no correspondonde con el cliente";
 
     @NonNull
     private MatriculaRepository matriculaRepository;
@@ -79,6 +81,30 @@ public class MatriculaServiceImpl implements MatriculaService {
         matricula.setCantidadDiasSemana(matriculaDto.getCantidadDiasSemana());
 
         return matriculaRepository.save(matricula).getIdMatricula();
+    }
+
+    @Override
+    public Matricula getMatriculaEntityById(Long idMatricula){
+        var matricula = matriculaRepository.findById(idMatricula);
+
+        if(matricula.isEmpty()){
+            log.error(MATRICULA_NO_ENCONTRADO);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, MATRICULA_NO_ENCONTRADO);
+        }
+
+        return matricula.get();
+    }
+
+    @Override
+    public void deleteMatriculaById(Long idCliente, Long idMatricula) {
+        var matricula = getMatriculaEntityById(idMatricula);
+
+        if(!matricula.getCliente().getIdCliente().equals(idCliente)){
+            log.error(MATRICULA_NO_CORRESPONDE_CON_CLIENTE);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, MATRICULA_NO_CORRESPONDE_CON_CLIENTE);
+        }
+
+        matriculaRepository.delete(matricula);
     }
 
     private void validarFechaVencimientoNoPasada(LocalDateTime fechaVencimiento){
