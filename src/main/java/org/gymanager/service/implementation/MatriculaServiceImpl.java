@@ -32,7 +32,9 @@ public class MatriculaServiceImpl implements MatriculaService {
     private static final String FECHAS_INVALIDAS = """
             La fecha de inicio de la matricula no puede ser posterior a la fecha de vencimiento""";
     private static final String FECHA_VENCIMIENTO_INVALIDA = """
-            La fecha de vencimiento de la matricula no puede ser anterior a la fecha de hoy""";
+            La fecha de vencimiento de la matricula no puede ser anterior a la fecha de hoy %s""";
+    private static final String MATRICULA_NO_ENCONTRADO = "Matricula no encontrado";
+    private static final String MATRICULA_NO_CORRESPONDE_CON_CLIENTE = "La matricula no correspondonde con el cliente";
 
     @NonNull
     private MatriculaRepository matriculaRepository;
@@ -62,6 +64,10 @@ public class MatriculaServiceImpl implements MatriculaService {
     public Long addMatricula(Long idCliente, MatriculaDto matriculaDto) {
         var cliente = clienteService.getClienteEntityById(idCliente);
 
+        matriculaDto.setFechaVencimiento(matriculaDto
+                .getFechaInicio()
+                .plusMonths(matriculaDto.getCantidadMeses()));
+
         validarFechaVencimientoNoPasada(matriculaDto.getFechaVencimiento());
         validarFechasNoInvertidas(matriculaDto);
         validarMatriculaNoSeSuperponeConMatriculasExistentes(matriculaDto, idCliente);
@@ -77,10 +83,35 @@ public class MatriculaServiceImpl implements MatriculaService {
         return matriculaRepository.save(matricula).getIdMatricula();
     }
 
+    @Override
+    public Matricula getMatriculaEntityById(Long idMatricula){
+        var matricula = matriculaRepository.findById(idMatricula);
+
+        if(matricula.isEmpty()){
+            log.error(MATRICULA_NO_ENCONTRADO);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, MATRICULA_NO_ENCONTRADO);
+        }
+
+        return matricula.get();
+    }
+
+    @Override
+    public void deleteMatriculaById(Long idCliente, Long idMatricula) {
+        var matricula = getMatriculaEntityById(idMatricula);
+
+        if(!matricula.getCliente().getIdCliente().equals(idCliente)){
+            log.error(MATRICULA_NO_CORRESPONDE_CON_CLIENTE);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, MATRICULA_NO_CORRESPONDE_CON_CLIENTE);
+        }
+
+        matriculaRepository.delete(matricula);
+    }
+
     private void validarFechaVencimientoNoPasada(LocalDateTime fechaVencimiento){
         if(fechaVencimiento.isBefore(now())){
-            log.error(FECHA_VENCIMIENTO_INVALIDA);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, FECHA_VENCIMIENTO_INVALIDA);
+            log.error(String.format(FECHA_VENCIMIENTO_INVALIDA, fechaVencimiento.toLocalDate()));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format(FECHA_VENCIMIENTO_INVALIDA, fechaVencimiento.toLocalDate()));
         }
     }
 
@@ -99,8 +130,8 @@ public class MatriculaServiceImpl implements MatriculaService {
 
         if(matriculaSuperpuesta.isPresent()){
             var error = String.format(MATRICULA_SUPERPUESTA_CON_OTRA,
-                    matriculaSuperpuesta.get().getFechaInicio(),
-                    matriculaSuperpuesta.get().getFechaVencimiento());
+                    matriculaSuperpuesta.get().getFechaInicio().toLocalDate(),
+                    matriculaSuperpuesta.get().getFechaVencimiento().toLocalDate());
             log.error(error);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error);
         }
@@ -114,10 +145,12 @@ public class MatriculaServiceImpl implements MatriculaService {
         return fechaEstaEnPeriodo(inicioNuevo, inicio, fin)
                 || fechaEstaEnPeriodo(finNuevo, inicio, fin)
                 || fechaEstaEnPeriodo(inicio, inicioNuevo, finNuevo)
-                || fechaEstaEnPeriodo(fin, inicioNuevo, finNuevo);
+                || fechaEstaEnPeriodo(fin, inicioNuevo, finNuevo)
+                || inicioNuevo.toLocalDate().isEqual(inicio.toLocalDate());
     }
 
     private Boolean fechaEstaEnPeriodo(LocalDateTime fecha, LocalDateTime inicioPeriodo, LocalDateTime finPeriodo){
-        return fecha.isAfter(inicioPeriodo) && fecha.isBefore(finPeriodo);
+        return fecha.toLocalDate().isAfter(inicioPeriodo.toLocalDate())
+                && fecha.toLocalDate().isBefore(finPeriodo.toLocalDate());
     }
 }

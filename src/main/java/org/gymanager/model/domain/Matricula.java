@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.Period;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.gymanager.model.enums.MatriculaEstado.ACTIVA;
 import static org.gymanager.model.enums.MatriculaEstado.NO_INICIADA;
 import static org.gymanager.model.enums.MatriculaEstado.PRONTO_A_VENCER;
@@ -45,7 +46,7 @@ public class Matricula {
             return NO_INICIADA;
         } else if(fechaVencimiento.isBefore(now)) {
             return VENCIDA;
-        } else if(Period.between(now.toLocalDate(), fechaVencimiento.toLocalDate()).getDays() < 7) {
+        } else if(DAYS.between(now.toLocalDate(), fechaVencimiento.toLocalDate()) < 7) {
             return PRONTO_A_VENCER;
         } else {
             return ACTIVA;

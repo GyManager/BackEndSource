@@ -31,4 +31,10 @@ public class MatriculaControllerImpl implements MatriculaController {
                 .status(HttpStatus.CREATED)
                 .body(matriculaService.addMatricula(idCliente, matriculaDto));
     }
+
+    @Override
+    public ResponseEntity<Void> deleteMatriculaById(Long idCliente, Long idMatricula) {
+        matriculaService.deleteMatriculaById(idCliente,idMatricula);
+        return ResponseEntity.noContent().build();
+    }
 }
