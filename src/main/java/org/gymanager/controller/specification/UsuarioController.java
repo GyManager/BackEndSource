@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.gymanager.model.client.UsuarioDto;
 import org.gymanager.model.client.UsuarioDtoDetails;
+import org.gymanager.model.client.UsuarioInfoDto;
 import org.gymanager.model.enums.UsuarioSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.springframework.data.domain.Sort;
@@ -88,4 +89,12 @@ public interface UsuarioController {
     @DeleteMapping("/{idUsuario}")
     @PreAuthorize("hasAuthority('delete-usuarios')")
     ResponseEntity<Void> deleteUsuarioById(@PathVariable("idUsuario") Long idUsuario);
+
+    @Operation(summary = "Obtener un usuario por token", description = """
+            Esta operación es para buscar un usuario por token activo""")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    @GetMapping(value = "/info", produces = { "application/json"})
+    ResponseEntity<UsuarioInfoDto> getUsuarioByToken();
 }

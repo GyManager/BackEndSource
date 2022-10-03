@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.gymanager.converter.UsuarioEntityToDtoConverter;
 import org.gymanager.converter.UsuarioEntityToDtoDetailsConverter;
+import org.gymanager.converter.UsuarioEntityToInfoDtoConverter;
 import org.gymanager.model.client.UsuarioDto;
 import org.gymanager.model.client.UsuarioDtoDetails;
+import org.gymanager.model.client.UsuarioInfoDto;
 import org.gymanager.model.domain.Permiso;
 import org.gymanager.model.domain.Rol;
 import org.gymanager.model.domain.Sexo;
@@ -68,6 +70,9 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @NonNull
     private final UsuarioEntityToDtoDetailsConverter usuarioEntityToDtoDetailsConverter;
+
+    @NonNull
+    private final UsuarioEntityToInfoDtoConverter usuarioEntityToInfoDtoConverter;
 
     @NonNull
     private final TipoDocumentoService tipoDocumentoService;
@@ -240,6 +245,11 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuario.getRoles().removeIf(rol -> roles.contains(rol.getNombreRol()));
 
         usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public UsuarioInfoDto getUsuarioInfoByMail(String mail) {
+        return usuarioEntityToInfoDtoConverter.convert(getUsuarioEntityByMail(mail));
     }
 
     private void validarUsuarioConMailNoExiste(String mail){
