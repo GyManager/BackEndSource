@@ -13,6 +13,7 @@ import org.gymanager.repository.specification.MicroPlanRepository;
 import org.gymanager.service.implementation.MicroPlanServiceImpl;
 import org.gymanager.service.specification.ObservacionService;
 import org.gymanager.service.specification.RutinaService;
+import org.gymanager.service.specification.UsuarioService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -58,6 +59,9 @@ class MicroPlanServiceImplTest {
 
     @Mock
     private ObservacionService observacionService;
+
+    @Mock
+    private UsuarioService usuarioService;
 
     @Captor
     private ArgumentCaptor<MicroPlan> microPlanArgumentCaptor;
