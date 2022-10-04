@@ -101,7 +101,7 @@ class MicroPlanServiceImplTest {
         when(microPlanRepository.findById(ID_MICRO_PLAN)).thenReturn(Optional.of(microPlan));
         when(microPlanEntityToDtoDetailsConverter.convert(microPlan)).thenReturn(microPlanDtoDetails);
 
-        var result = microPlanService.getMicroPlanById(ID_MICRO_PLAN);
+        var result = microPlanService.getMicroPlanById(ID_MICRO_PLAN, Boolean.FALSE);
 
         assertThat(result).isNotNull();
         assertThat(result).isEqualTo(microPlanDtoDetails);

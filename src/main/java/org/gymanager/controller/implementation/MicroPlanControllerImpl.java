@@ -8,9 +8,12 @@ import org.gymanager.model.client.MicroPlanDtoDetails;
 import org.gymanager.model.enums.MicroPlanSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.MicroPlanService;
+import org.gymanager.utils.Permisos;
+import org.gymanager.utils.UserPermissionValidation;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -38,7 +41,11 @@ public class MicroPlanControllerImpl implements MicroPlanController {
 
     @Override
     public ResponseEntity<MicroPlanDtoDetails> getMicroPlanById(Long idMicroPlan) {
-        return ResponseEntity.ok(microPlanService.getMicroPlanById(idMicroPlan));
+        var validateUser = !UserPermissionValidation.userHasPermission(
+                SecurityContextHolder.getContext().getAuthentication(),
+                Permisos.GET_PLANES);
+
+        return ResponseEntity.ok(microPlanService.getMicroPlanById(idMicroPlan, validateUser));
     }
 
     @Override
@@ -62,6 +69,10 @@ public class MicroPlanControllerImpl implements MicroPlanController {
 
     @Override
     public ResponseEntity<List<MicroPlanDto>> getMicroPlanesByIdPlan(Long idPlan) {
-        return ResponseEntity.ok(microPlanService.getMicroPlanesByIdPlan(idPlan));
+        var validateUser = !UserPermissionValidation.userHasPermission(
+                SecurityContextHolder.getContext().getAuthentication(),
+                Permisos.GET_PLANES);
+
+        return ResponseEntity.ok(microPlanService.getMicroPlanesByIdPlan(idPlan, validateUser));
     }
 }
