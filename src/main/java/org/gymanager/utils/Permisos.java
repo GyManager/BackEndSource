@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum Permisos {
-    GET_PLANES("get-planes");
+    GET_PLANES("get-planes"),
+    GET_MICRO_PLANES("get-micro-planes");
 
     private final String name;
 

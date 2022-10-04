@@ -43,7 +43,7 @@ public class MicroPlanControllerImpl implements MicroPlanController {
     public ResponseEntity<MicroPlanDtoDetails> getMicroPlanById(Long idMicroPlan) {
         var validateUser = !UserPermissionValidation.userHasPermission(
                 SecurityContextHolder.getContext().getAuthentication(),
-                Permisos.GET_PLANES);
+                Permisos.GET_MICRO_PLANES);
 
         return ResponseEntity.ok(microPlanService.getMicroPlanById(idMicroPlan, validateUser));
     }
