@@ -23,11 +23,13 @@ import org.gymanager.service.specification.RolService;
 import org.gymanager.service.specification.SexoService;
 import org.gymanager.service.specification.TipoDocumentoService;
 import org.gymanager.service.specification.UsuarioService;
+import org.gymanager.utils.UserPermissionValidation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,6 +43,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -236,6 +239,15 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         }
 
         return usuario.get();
+    }
+
+    @Override
+    public void validarIdClienteMatchUserFromRequest(Long idCliente) {
+        var user = UserPermissionValidation.getUsername(SecurityContextHolder.getContext().getAuthentication());
+        var cliente = getUsuarioEntityByMail(user).getCliente();
+        if(Objects.isNull(cliente) || Objects.isNull(idCliente) || !cliente.getIdCliente().equals(idCliente)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "El usuario no tiene permitido ver este plan");
+        }
     }
 
     @Override

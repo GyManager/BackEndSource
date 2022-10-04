@@ -31,6 +31,8 @@ public interface UsuarioService {
 
     Usuario getUsuarioEntityByMail(String mail);
 
+    void validarIdClienteMatchUserFromRequest(Long idCliente);
+
     void removeRolUsuarioById(Long idUsuario, List<String> roles);
 
     UsuarioInfoDto getUsuarioInfoByMail(String mail);

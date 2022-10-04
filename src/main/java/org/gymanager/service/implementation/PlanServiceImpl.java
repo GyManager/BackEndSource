@@ -17,12 +17,16 @@ import org.gymanager.service.specification.MicroPlanService;
 import org.gymanager.service.specification.ObjetivoService;
 import org.gymanager.service.specification.PlanService;
 import org.gymanager.service.specification.UsuarioService;
+import org.gymanager.utils.UserPermissionValidation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
@@ -71,7 +75,10 @@ public class PlanServiceImpl implements PlanService {
     private UsuarioService usuarioService;
 
     @Override
-    public List<PlanDto> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter) {
+    public List<PlanDto> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter, Boolean validateUser) {
+        if(validateUser){
+            usuarioService.validarIdClienteMatchUserFromRequest(idCliente);
+        }
         return planEntityToDtoConverter.convert(getPlansEntitiesByIdCliente(idCliente, planesFilter));
     }
 
@@ -89,8 +96,12 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional
-    public PlanDto getPlanById(Long idPlan) {
-        return planEntityToDtoDetailsConverter.convert(getPlanEntityById(idPlan));
+    public PlanDto getPlanById(Long idPlan, Boolean validateUser) {
+        var plan = getPlanEntityById(idPlan);
+        if(validateUser){
+            usuarioService.validarIdClienteMatchUserFromRequest(plan.getCliente().getIdCliente());
+        }
+        return planEntityToDtoDetailsConverter.convert(plan);
     }
 
     @Override

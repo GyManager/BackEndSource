@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface PlanService {
 
-    List<PlanDto> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter);
+    List<PlanDto> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter, Boolean validateUser);
 
     List<Plan> getPlansEntitiesByIdCliente(Long idCliente, PlanesFilter planesFilter);
 
-    PlanDto getPlanById(Long idPlan);
+    PlanDto getPlanById(Long idPlan, Boolean validateUser);
 
     Plan getPlanEntityById(Long idPlan);
 
