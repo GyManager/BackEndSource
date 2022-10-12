@@ -96,7 +96,7 @@ public class EjercicioServiceImpl implements EjercicioService {
         var ejercicio = new Ejercicio();
 
         var tipoEjercicio = tipoEjercicioService.getTipoEjercicioByNombre(ejercicioDtoRequest.getTipoEjercicio());
-        validarEjercicioConTipoYNombreNoExiste(tipoEjercicio, ejercicioDtoRequest.getNombre());
+        validarEjercicioActivoConTipoYNombreNoExiste(tipoEjercicio, ejercicioDtoRequest.getNombre());
 
         var herramientas = herramientaService.getHerramientasByIds(ejercicioDtoRequest.getIdHerramientaList());
         var pasos = pasoService.crearPasos(ejercicioDtoRequest.getPasos());
@@ -118,7 +118,7 @@ public class EjercicioServiceImpl implements EjercicioService {
         var tipoEjercicio = tipoEjercicioService.getTipoEjercicioByNombre(ejercicioDtoRequest.getTipoEjercicio());
         if(!ejercicio.getNombre().equals(ejercicioDtoRequest.getNombre()) ||
                 !ejercicio.getTipoEjercicio().getNombre().equals(ejercicioDtoRequest.getTipoEjercicio())){
-            validarEjercicioConTipoYNombreNoExiste(tipoEjercicio, ejercicioDtoRequest.getNombre());
+            validarEjercicioActivoConTipoYNombreNoExiste(tipoEjercicio, ejercicioDtoRequest.getNombre());
         }
 
         var herramientas = herramientaService.getHerramientasByIds(ejercicioDtoRequest.getIdHerramientaList());
@@ -145,8 +145,8 @@ public class EjercicioServiceImpl implements EjercicioService {
         }
     }
 
-    private void validarEjercicioConTipoYNombreNoExiste(TipoEjercicio tipoEjercicio, String nombre){
-        if(ejercicioRepository.findByTipoEjercicioAndNombreIgnoreCase(tipoEjercicio, nombre).isPresent()){
+    private void validarEjercicioActivoConTipoYNombreNoExiste(TipoEjercicio tipoEjercicio, String nombre){
+        if(ejercicioRepository.findByTipoEjercicioAndNombreIgnoreCaseAndFechaBajaIsNull(tipoEjercicio, nombre).isPresent()){
             log.error(String.format(NOMBRE_TIPO_EJERCICIO_EN_USO, nombre, tipoEjercicio.getNombre()));
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     String.format(NOMBRE_TIPO_EJERCICIO_EN_USO, nombre, tipoEjercicio.getNombre()));
