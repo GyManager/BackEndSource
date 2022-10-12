@@ -55,6 +55,6 @@ public class Constantes {
     public static final Integer REPETICIONES = 15;
     public static final String PAUSA_MACRO = "1'";
     public static final String PAUSA_MICRO = "30''";
-    public static final String TIEMPO = "10'";
-    public static final String CARGA = "25Kg";
+    public static final Float TIEMPO = 10F;
+    public static final Float CARGA = 25F;
 }

@@ -32,7 +32,7 @@ public class SeguimientoEjercicio {
     @JoinColumn(name = "id_ejercicio_aplicado")
     private EjercicioAplicado ejercicioAplicado;
 
-    private Integer cargaReal;
-    private String tiempoReal;
+    private Float cargaReal;
+    private Float tiempoReal;
     private String observacion;
 }

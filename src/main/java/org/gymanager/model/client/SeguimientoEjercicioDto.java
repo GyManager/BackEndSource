@@ -6,7 +6,7 @@ public record SeguimientoEjercicioDto(Long idSeguimientoEjercicio,
                                       LocalDate fechaCarga,
                                       Long idPlan,
                                       Long idEjercicioAplicado,
-                                      Integer cargaReal,
-                                      String tiempoReal,
+                                      Float cargaReal,
+                                      Float tiempoReal,
                                       String observacion){
 }

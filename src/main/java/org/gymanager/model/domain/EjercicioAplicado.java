@@ -37,7 +37,7 @@ public class EjercicioAplicado {
     private Integer repeticiones;
     private String pausaMicro;
     private String pausaMacro;
-    private String carga;
-    private String tiempo;
+    private Float carga;
+    private Float tiempo;
     private Boolean esTemplate;
 }
