@@ -4,10 +4,13 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.SeguimientoEjercicioEntityToDtoConverter;
+import org.gymanager.model.client.SeguimientoEjercicioDto;
 import org.gymanager.model.client.SeguimientoEjercicioRequestDto;
 import org.gymanager.model.domain.SeguimientoEjercicio;
+import org.gymanager.model.enums.SeguimientosFilter;
 import org.gymanager.repository.specification.SeguimientoEjercicioRepository;
 import org.gymanager.service.specification.EjercicioAplicadoService;
+import org.gymanager.service.specification.PlanService;
 import org.gymanager.service.specification.SeguimientoEjercicioService;
 import org.gymanager.service.specification.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -23,6 +27,7 @@ import java.util.Objects;
 public class SeguimientoEjercicioServiceImpl implements SeguimientoEjercicioService {
 
     private static final String PLAN_NO_CORRESPONDE_AL_CLIENTE = "El plan no correspnode al cliente logeado";
+
     @NonNull
     private SeguimientoEjercicioRepository seguimientoEjercicioRepository;
 
@@ -31,6 +36,10 @@ public class SeguimientoEjercicioServiceImpl implements SeguimientoEjercicioServ
 
     @NonNull
     private EjercicioAplicadoService ejercicioAplicadoService;
+
+    @NonNull
+    private PlanService planService;
+
     @NonNull
     private UsuarioService usuarioService;
 
@@ -47,7 +56,7 @@ public class SeguimientoEjercicioServiceImpl implements SeguimientoEjercicioServ
 
         usuarioService.validarIdClienteMatchUserFromRequest(plan.getCliente().getIdCliente());
 
-        var seguimientoEjercicio =new SeguimientoEjercicio();
+        var seguimientoEjercicio = new SeguimientoEjercicio();
         seguimientoEjercicio.setFechaCarga(LocalDate.now());
         seguimientoEjercicio.setPlan(plan);
         seguimientoEjercicio.setEjercicioAplicado(ejercicioAplicado);
@@ -56,5 +65,25 @@ public class SeguimientoEjercicioServiceImpl implements SeguimientoEjercicioServ
         seguimientoEjercicio.setObservacion(seguimientoEjercicioRequestDto.observacion());
 
         return seguimientoEjercicioRepository.save(seguimientoEjercicio).getIdSeguimientoEjercicio();
+    }
+
+    @Override
+    public List<SeguimientoEjercicioDto> getSeguimientoEjercicioByIdRutina(Long idPlan,
+                                                                           Long idMicroPlan,
+                                                                           Long idRutina,
+                                                                           SeguimientosFilter seguimientosFilter) {
+
+        var plan = planService.getPlanEntityById(idPlan);
+        usuarioService.validarIdClienteMatchUserFromRequest(plan.getCliente().getIdCliente());
+
+        var seguimientos = switch (seguimientosFilter){
+            case HOY -> seguimientoEjercicioRepository.findAllByEjercicioAplicadoRutinaIdRutinaAndFechaCarga(idRutina, LocalDate.now());
+            case TODAS -> seguimientoEjercicioRepository.findAllByEjercicioAplicadoRutinaIdRutina(idRutina);
+        };
+
+        return seguimientos.stream()
+                .map(seguimientoEjercicioEntityToDtoConverter::convert)
+                .filter(Objects::nonNull)
+                .toList();
     }
 }
