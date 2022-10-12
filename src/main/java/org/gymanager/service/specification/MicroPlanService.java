@@ -15,7 +15,7 @@ public interface MicroPlanService {
     GyManagerPage<MicroPlanDto> getMicroPlanes(String search, Boolean esTemplate, Integer cantidadRutinas, Boolean excluirEliminados,
                                                Integer page, Integer pageSize, MicroPlanSortBy sortBy, Sort.Direction direction);
 
-    MicroPlanDtoDetails getMicroPlanById(Long idMicroPlan);
+    MicroPlanDtoDetails getMicroPlanById(Long idMicroPlan, Boolean validateUser);
 
     MicroPlan getMicroPlanEntityById(Long idMicroPlan);
     
@@ -27,7 +27,7 @@ public interface MicroPlanService {
 
     void deleteMicroPlanById(Long idMicroPlan);
 
-    List<MicroPlanDto> getMicroPlanesByIdPlan(Long idPlan);
+    List<MicroPlanDto> getMicroPlanesByIdPlan(Long idPlan, Boolean validateUser);
 
     void actualizarMicroPlanesPlan(List<MicroPlanDtoDetails> microPlans, Plan plan);
 }

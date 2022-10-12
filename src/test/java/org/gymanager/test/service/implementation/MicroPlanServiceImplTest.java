@@ -13,6 +13,7 @@ import org.gymanager.repository.specification.MicroPlanRepository;
 import org.gymanager.service.implementation.MicroPlanServiceImpl;
 import org.gymanager.service.specification.ObservacionService;
 import org.gymanager.service.specification.RutinaService;
+import org.gymanager.service.specification.UsuarioService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -59,6 +60,9 @@ class MicroPlanServiceImplTest {
     @Mock
     private ObservacionService observacionService;
 
+    @Mock
+    private UsuarioService usuarioService;
+
     @Captor
     private ArgumentCaptor<MicroPlan> microPlanArgumentCaptor;
 
@@ -101,7 +105,7 @@ class MicroPlanServiceImplTest {
         when(microPlanRepository.findById(ID_MICRO_PLAN)).thenReturn(Optional.of(microPlan));
         when(microPlanEntityToDtoDetailsConverter.convert(microPlan)).thenReturn(microPlanDtoDetails);
 
-        var result = microPlanService.getMicroPlanById(ID_MICRO_PLAN);
+        var result = microPlanService.getMicroPlanById(ID_MICRO_PLAN, Boolean.FALSE);
 
         assertThat(result).isNotNull();
         assertThat(result).isEqualTo(microPlanDtoDetails);

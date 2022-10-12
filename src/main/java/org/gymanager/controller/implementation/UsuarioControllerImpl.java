@@ -5,12 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.UsuarioController;
 import org.gymanager.model.client.UsuarioDto;
 import org.gymanager.model.client.UsuarioDtoDetails;
+import org.gymanager.model.client.UsuarioInfoDto;
 import org.gymanager.model.enums.UsuarioSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.UsuarioService;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -48,5 +50,11 @@ public class UsuarioControllerImpl implements UsuarioController {
     public ResponseEntity<Void> deleteUsuarioById(Long idUsuario) {
         usuarioService.deleteUsuarioById(idUsuario);
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<UsuarioInfoDto> getUsuarioByToken() {
+        var mail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(usuarioService.getUsuarioInfoByMail(mail));
     }
 }

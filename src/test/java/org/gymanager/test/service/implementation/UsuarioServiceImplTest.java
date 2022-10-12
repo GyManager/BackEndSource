@@ -2,6 +2,7 @@ package org.gymanager.test.service.implementation;
 
 import org.gymanager.converter.UsuarioEntityToDtoConverter;
 import org.gymanager.converter.UsuarioEntityToDtoDetailsConverter;
+import org.gymanager.converter.UsuarioEntityToInfoDtoConverter;
 import org.gymanager.model.client.UsuarioDto;
 import org.gymanager.model.client.UsuarioDtoDetails;
 import org.gymanager.model.domain.Permiso;
@@ -60,6 +61,9 @@ class UsuarioServiceImplTest {
 
     @Mock
     private UsuarioEntityToDtoDetailsConverter usuarioEntityToDtoDetailsConverter;
+
+    @Mock
+    private UsuarioEntityToInfoDtoConverter usuarioEntityToInfoDtoConverter;
 
     @Mock
     private TipoDocumentoService tipoDocumentoService;

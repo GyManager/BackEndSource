@@ -11,7 +11,11 @@ public interface RutinaService {
 
     List<RutinaDto> getRutinasByIdMicroPlan(Long idMicroPlan);
 
+    Rutina getRutinaEntityById(Long idRutina);
+
     List<Rutina> crearRutinas(List<RutinaDtoDetails> rutinas);
 
     void actualizarRutinasMicroPlan(List<RutinaDtoDetails> rutinas, MicroPlan microPlan);
+
+    RutinaDtoDetails getRutinasByIdRutinaAndIdMicroPlan(Long idMicroPlan, Long idRutina, Boolean validateUser);
 }

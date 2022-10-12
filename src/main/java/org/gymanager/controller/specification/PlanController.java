@@ -35,7 +35,7 @@ public interface PlanController {
             @ApiResponse(responseCode = "200", description = "OK")
     })
     @GetMapping(value= "/clientes/{idCliente}/planes", produces = { "application/json"})
-    @PreAuthorize("hasAuthority('get-planes')")
+    @PreAuthorize("hasAnyAuthority('get-planes','get-mis-planes')")
     ResponseEntity<List<PlanDto>> getPlansByIdCliente(
             @PathVariable("idCliente") Long idCliente,
             @RequestParam(name = "planesFilter", required = false, defaultValue = "TODOS") PlanesFilter planesFilter);
@@ -45,7 +45,7 @@ public interface PlanController {
             @ApiResponse(responseCode = "200", description = "OK")
     })
     @GetMapping(value = "/planes/{idPlan}", produces = { "application/json"})
-    @PreAuthorize("hasAuthority('get-planes')")
+    @PreAuthorize("hasAnyAuthority('get-planes','get-mis-planes')")
     ResponseEntity<PlanDto> getPlanById(@PathVariable("idPlan") Long idPlan);
 
     @Operation(summary = "Agregar plan", description = "Esta operación es para agregar un plan")

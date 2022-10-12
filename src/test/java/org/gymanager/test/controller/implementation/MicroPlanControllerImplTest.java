@@ -71,7 +71,7 @@ class MicroPlanControllerImplTest {
     public void getMicroPlanById_WhenOk_ThenReturnMicroPlan(){
         var microPlanDtoDetails = mock(MicroPlanDtoDetails.class);
 
-        when(microPlanService.getMicroPlanById(ID_MICRO_PLAN)).thenReturn(microPlanDtoDetails);
+        when(microPlanService.getMicroPlanById(ID_MICRO_PLAN, Boolean.FALSE)).thenReturn(microPlanDtoDetails);
 
         var result = microPlanController.getMicroPlanById(ID_MICRO_PLAN);
 
