@@ -11,4 +11,6 @@ public interface SeguimientoEjercicioRepository extends JpaRepository<Seguimient
     List<SeguimientoEjercicio> findAllByEjercicioAplicadoRutinaIdRutinaAndFechaCarga(Long idRutina, LocalDate fechaCarga);
 
     List<SeguimientoEjercicio> findAllByEjercicioAplicadoRutinaIdRutina(Long idRutina);
+
+    List<SeguimientoEjercicio> findAllByEjercicioAplicadoIdEjercicioAplicadoAndFechaCarga(Long idEjercicioAplicado, LocalDate fechaCarga);
 }

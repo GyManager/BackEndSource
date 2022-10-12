@@ -36,7 +36,6 @@ public interface SeguimientoEjercicioController {
                     content = @Content(schema = @Schema(implementation = SeguimientoEjercicioRequestDto.class)), required = true)
             @RequestBody@Valid SeguimientoEjercicioRequestDto seguimientoEjercicioRequestDto);
 
-
     @Operation(summary = "Cargar el seguimiento de un ejercicio particular en un plan")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     @GetMapping(value = "/planes/{idPlan}/micro-planes/{idMicroPlan}/rutinas/{idRutina}/seguimientos-ejercicios",

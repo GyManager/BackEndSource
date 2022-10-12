@@ -56,7 +56,9 @@ public class SeguimientoEjercicioServiceImpl implements SeguimientoEjercicioServ
 
         usuarioService.validarIdClienteMatchUserFromRequest(plan.getCliente().getIdCliente());
 
-        var seguimientoEjercicio = new SeguimientoEjercicio();
+        var seguimientosEjercicioHoy = seguimientoEjercicioRepository.findAllByEjercicioAplicadoIdEjercicioAplicadoAndFechaCarga(idEjercicioAplicado, LocalDate.now());
+
+        var seguimientoEjercicio = seguimientosEjercicioHoy.stream().findFirst().orElse(new SeguimientoEjercicio());
         seguimientoEjercicio.setFechaCarga(LocalDate.now());
         seguimientoEjercicio.setPlan(plan);
         seguimientoEjercicio.setEjercicioAplicado(ejercicioAplicado);
