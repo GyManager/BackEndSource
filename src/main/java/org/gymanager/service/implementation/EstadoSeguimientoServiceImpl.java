@@ -3,6 +3,8 @@ package org.gymanager.service.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.gymanager.converter.EstadoSeguimientoEntityToDtoConverter;
+import org.gymanager.model.client.EstadoSeguimientoDto;
 import org.gymanager.model.domain.EstadoSeguimiento;
 import org.gymanager.repository.specification.EstadoSeguimientoRepository;
 import org.gymanager.service.specification.EstadoSeguimientoService;
@@ -22,6 +24,9 @@ public class EstadoSeguimientoServiceImpl implements EstadoSeguimientoService {
     @NonNull
     private EstadoSeguimientoRepository estadoSeguimientoRepository;
 
+    @NonNull
+    private EstadoSeguimientoEntityToDtoConverter estadoSeguimientoEntityToDtoConverter;
+
     @Override
     public EstadoSeguimiento getEstadoSeguimientoById(Long idEstadoSeguimiento) {
         var estadoSeguimiento = estadoSeguimientoRepository.findById(idEstadoSeguimiento);
@@ -35,7 +40,7 @@ public class EstadoSeguimientoServiceImpl implements EstadoSeguimientoService {
     }
 
     @Override
-    public List<EstadoSeguimiento> getEstadoSeguimientos() {
-        return estadoSeguimientoRepository.findAll();
+    public List<EstadoSeguimientoDto> getEstadoSeguimientos() {
+        return estadoSeguimientoEntityToDtoConverter.convert(estadoSeguimientoRepository.findAll());
     }
 }
