@@ -6,15 +6,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.gymanager.model.client.SeguimientoEjercicioDto;
 import org.gymanager.model.client.SeguimientoFinDiaDto;
+import org.gymanager.model.client.SeguimientoFinDiaDtoDetail;
+import org.gymanager.model.enums.SeguimientosFilter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/api")
 @Tag(name = "Planes", description = "Gestion de planes")
@@ -32,4 +38,14 @@ public interface SeguimientoController {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Seguimiento request body.",
                     content = @Content(schema = @Schema(implementation = SeguimientoFinDiaDto.class)), required = true)
             @RequestBody@Valid SeguimientoFinDiaDto seguimientoFinDiaDto);
+
+    @Operation(summary = "Ver los seguimientos de las rutinas de un micro plan")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
+    @GetMapping(value = "/planes/{idPlan}/micro-planes/{idMicroPlan}/seguimientos",
+            produces = { "application/json"})
+    @PreAuthorize("hasAuthority('get-mis-feedbacks')")
+    ResponseEntity<List<SeguimientoFinDiaDtoDetail>> getSeguimientoFinDiaByIdMicroPlan(
+            @PathVariable("idPlan") Long idPlan,
+            @PathVariable("idMicroPlan") Long idMicroPlan,
+            @RequestParam(value = "seguimientosFilter", required = false, defaultValue = "TODAS") SeguimientosFilter seguimientosFilter);
 }

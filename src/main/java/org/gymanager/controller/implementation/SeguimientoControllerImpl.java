@@ -3,12 +3,9 @@ package org.gymanager.controller.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.SeguimientoController;
-import org.gymanager.controller.specification.SeguimientoEjercicioController;
-import org.gymanager.model.client.SeguimientoEjercicioDto;
-import org.gymanager.model.client.SeguimientoEjercicioRequestDto;
 import org.gymanager.model.client.SeguimientoFinDiaDto;
+import org.gymanager.model.client.SeguimientoFinDiaDtoDetail;
 import org.gymanager.model.enums.SeguimientosFilter;
-import org.gymanager.service.specification.SeguimientoEjercicioService;
 import org.gymanager.service.specification.SeguimientoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,5 +30,16 @@ public class SeguimientoControllerImpl implements SeguimientoController {
                         idRutina,
                         seguimientoFinDiaDto
                 ));
+    }
+
+    @Override
+    public ResponseEntity<List<SeguimientoFinDiaDtoDetail>> getSeguimientoFinDiaByIdMicroPlan(Long idPlan,
+                                                                                              Long idMicroPlan,
+                                                                                              SeguimientosFilter seguimientosFilter) {
+        return ResponseEntity.ok(seguimientoService.getSeguimientoFinDiaByIdMicroPlan(
+                idPlan,
+                idMicroPlan,
+                seguimientosFilter
+        ));
     }
 }
