@@ -3,6 +3,7 @@ package org.gymanager.controller.specification;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.gymanager.model.client.EstadoSeguimientoDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,4 +38,9 @@ public interface ParameterController {
             description = "Esta operación es para obtener los bloques disponibles")
     @GetMapping(value = "/bloques", produces = { "application/json"})
     ResponseEntity<List<String>> getBloques();
+
+    @Operation(summary = "Obtener los estados de seguimiento",
+            description = "Esta operación es para obtener los estados de seguimiento")
+    @GetMapping(value = "/estados-seguimiento", produces = { "application/json"})
+    ResponseEntity<List<EstadoSeguimientoDto>> getEstadoSeguimientos();
 }
