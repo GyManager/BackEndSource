@@ -274,11 +274,11 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         var usuario = getUsuarioEntityByMail(mailFromToken);
 
         if(!usuario.getIdUsuario().equals(idUsuario)){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ACTUALIZAR_PASS_USUARIO_NO_AUTORIZADO);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ACTUALIZAR_PASS_USUARIO_NO_AUTORIZADO);
         }
 
         if(!passwordEncoder.matches(usuarioPasswordDto.getPassActual(), usuario.getPass())){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ACTUALIZAR_PASS_USUARIO_PASS_ACTUAL_INCORRECTA);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ACTUALIZAR_PASS_USUARIO_PASS_ACTUAL_INCORRECTA);
         }
 
         if(!usuarioPasswordDto.passConfimacionMatches()){
