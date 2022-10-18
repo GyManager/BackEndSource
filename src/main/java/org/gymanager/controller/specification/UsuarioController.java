@@ -110,4 +110,13 @@ public interface UsuarioController {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario request body.",
                     content = @Content(schema = @Schema(implementation = UsuarioDtoDetails.class)), required = true)
             @RequestBody @Valid UsuarioPasswordDto usuarioPasswordDto);
+
+    @Operation(summary = "Reiniciar contraseña de un usuario",
+            description = "Esta operación es para reiniciar contraseña de un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
+    @PutMapping(value = "/{idUsuario}/password-reset", consumes = { "application/json"})
+    @PreAuthorize("hasAuthority('put-usuarios')")
+    ResponseEntity<Void> resetPasswordUsuarioById(@PathVariable("idUsuario") Long idUsuario);
 }

@@ -67,4 +67,10 @@ public class UsuarioControllerImpl implements UsuarioController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public ResponseEntity<Void> resetPasswordUsuarioById(Long idUsuario) {
+        usuarioService.resetPasswordUsuarioById(idUsuario);
+        return ResponseEntity.noContent().build();
+    }
 }
