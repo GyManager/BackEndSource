@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.gymanager.model.client.UsuarioDto;
 import org.gymanager.model.client.UsuarioDtoDetails;
 import org.gymanager.model.client.UsuarioInfoDto;
+import org.gymanager.model.client.UsuarioPasswordDto;
 import org.gymanager.model.enums.UsuarioSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.springframework.data.domain.Sort;
@@ -97,4 +98,25 @@ public interface UsuarioController {
     })
     @GetMapping(value = "/info", produces = { "application/json"})
     ResponseEntity<UsuarioInfoDto> getUsuarioByToken();
+
+    @Operation(summary = "Actualizar contraseña de un usuario",
+            description = "Esta operación es para actualizar contraseña de un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
+    @PutMapping(value = "/{idUsuario}/password", consumes = { "application/json"})
+    ResponseEntity<Void> updatePasswordUsuarioById(
+            @PathVariable("idUsuario") Long idUsuario,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario request body.",
+                    content = @Content(schema = @Schema(implementation = UsuarioDtoDetails.class)), required = true)
+            @RequestBody @Valid UsuarioPasswordDto usuarioPasswordDto);
+
+    @Operation(summary = "Reiniciar contraseña de un usuario",
+            description = "Esta operación es para reiniciar contraseña de un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
+    @PutMapping(value = "/{idUsuario}/password-reset", consumes = { "application/json"})
+    @PreAuthorize("hasAuthority('put-usuarios')")
+    ResponseEntity<Void> resetPasswordUsuarioById(@PathVariable("idUsuario") Long idUsuario);
 }
