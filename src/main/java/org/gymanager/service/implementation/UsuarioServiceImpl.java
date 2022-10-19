@@ -10,6 +10,7 @@ import org.gymanager.converter.UsuarioEntityToInfoDtoConverter;
 import org.gymanager.model.client.UsuarioDto;
 import org.gymanager.model.client.UsuarioDtoDetails;
 import org.gymanager.model.client.UsuarioInfoDto;
+import org.gymanager.model.client.UsuarioPasswordDto;
 import org.gymanager.model.domain.Permiso;
 import org.gymanager.model.domain.Rol;
 import org.gymanager.model.domain.Sexo;
@@ -61,6 +62,10 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
             " y tipo (%s) de documento";
     private static final String MAIL_VACIO = "El mail de login no debe ser vacio";
     private static final String PASS_NO_COINCIDEN = "La contraseña y la confirmacion de la contraseña no coinciden";
+    private static final String ACTUALIZAR_PASS_USUARIO_NO_AUTORIZADO = """
+            Esta intentando actualizar la contraseña de un usuario que no le corresponde""";
+    private static final String ACTUALIZAR_PASS_USUARIO_PASS_ACTUAL_INCORRECTA = """
+            Contraseña actual incorrecta""";
 
     @Value("${logical-delete}")
     private Boolean logicalDelete;
@@ -262,6 +267,34 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Override
     public UsuarioInfoDto getUsuarioInfoByMail(String mail) {
         return usuarioEntityToInfoDtoConverter.convert(getUsuarioEntityByMail(mail));
+    }
+
+    @Override
+    public void updatePasswordUsuarioById(Long idUsuario, String mailFromToken, UsuarioPasswordDto usuarioPasswordDto) {
+        var usuario = getUsuarioEntityByMail(mailFromToken);
+
+        if(!usuario.getIdUsuario().equals(idUsuario)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ACTUALIZAR_PASS_USUARIO_NO_AUTORIZADO);
+        }
+
+        if(!passwordEncoder.matches(usuarioPasswordDto.getPassActual(), usuario.getPass())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ACTUALIZAR_PASS_USUARIO_PASS_ACTUAL_INCORRECTA);
+        }
+
+        if(!usuarioPasswordDto.passConfimacionMatches()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PASS_NO_COINCIDEN);
+        }
+
+        usuario.setPass(passwordEncoder.encode(usuarioPasswordDto.getPass()));
+        usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public void resetPasswordUsuarioById(Long idUsuario) {
+        var usuario = getUsuarioEntityById(idUsuario);
+
+        usuario.setPass(passwordEncoder.encode(usuario.getNumeroDocumento().toString()));
+        usuarioRepository.save(usuario);
     }
 
     private void validarUsuarioConMailNoExiste(String mail){

@@ -3,6 +3,7 @@ package org.gymanager.controller.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.ParameterController;
+import org.gymanager.model.client.EstadoSeguimientoDto;
 import org.gymanager.service.specification.ParameterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,5 +40,10 @@ public class ParameterControllerImpl implements ParameterController {
     @Override
     public ResponseEntity<List<String>> getBloques() {
         return ResponseEntity.ok(parameterService.getBloques());
+    }
+    
+    @Override
+    public ResponseEntity<List<EstadoSeguimientoDto>> getEstadoSeguimientos() {
+        return ResponseEntity.ok(parameterService.getEstadoSeguimientos());
     }
 }

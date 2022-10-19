@@ -1,5 +1,7 @@
 package org.gymanager.service.specification;
 
+import org.gymanager.model.client.EstadoSeguimientoDto;
+
 import java.util.List;
 
 public interface ParameterService {
@@ -13,4 +15,6 @@ public interface ParameterService {
     List<String> getTipoDocumentos();
 
     List<String> getBloques();
+
+    List<EstadoSeguimientoDto> getEstadoSeguimientos();
 }

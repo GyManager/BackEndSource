@@ -19,4 +19,11 @@ public class UsuarioPasswordDto {
 
     @NotBlank(message = "La confirmacion de la contraseña es obligatoria")
     private String confirmacionPass;
+
+    @NotBlank(message = "La contraseña actual es necesaria para el cambio de contraseña")
+    private String passActual;
+
+    public Boolean passConfimacionMatches(){
+        return pass.equals(confirmacionPass);
+    }
 }

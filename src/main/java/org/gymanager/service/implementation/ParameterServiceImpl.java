@@ -3,12 +3,14 @@ package org.gymanager.service.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.gymanager.model.client.EstadoSeguimientoDto;
 import org.gymanager.model.domain.Bloque;
 import org.gymanager.model.domain.Objetivo;
 import org.gymanager.model.domain.Sexo;
 import org.gymanager.model.domain.TipoDocumento;
 import org.gymanager.model.domain.TipoEjercicio;
 import org.gymanager.service.specification.BloqueService;
+import org.gymanager.service.specification.EstadoSeguimientoService;
 import org.gymanager.service.specification.ObjetivoService;
 import org.gymanager.service.specification.ParameterService;
 import org.gymanager.service.specification.SexoService;
@@ -38,6 +40,8 @@ public class ParameterServiceImpl implements ParameterService {
     @NonNull
     private BloqueService bloqueService;
 
+    @NonNull
+    private EstadoSeguimientoService estadoSeguimientoService;
 
     @Override
     public List<String> getTipoEjercicios() {
@@ -62,5 +66,10 @@ public class ParameterServiceImpl implements ParameterService {
     @Override
     public List<String> getBloques() {
         return bloqueService.getBloques().stream().map(Bloque::getNombre).toList();
+    }
+
+    @Override
+    public List<EstadoSeguimientoDto> getEstadoSeguimientos() {
+        return estadoSeguimientoService.getEstadoSeguimientos();
     }
 }

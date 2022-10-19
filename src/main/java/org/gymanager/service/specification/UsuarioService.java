@@ -3,6 +3,7 @@ package org.gymanager.service.specification;
 import org.gymanager.model.client.UsuarioDto;
 import org.gymanager.model.client.UsuarioDtoDetails;
 import org.gymanager.model.client.UsuarioInfoDto;
+import org.gymanager.model.client.UsuarioPasswordDto;
 import org.gymanager.model.domain.Usuario;
 import org.gymanager.model.enums.UsuarioSortBy;
 import org.gymanager.model.page.GyManagerPage;
@@ -36,4 +37,8 @@ public interface UsuarioService {
     void removeRolUsuarioById(Long idUsuario, List<String> roles);
 
     UsuarioInfoDto getUsuarioInfoByMail(String mail);
+
+    void updatePasswordUsuarioById(Long idUsuario, String mailFromToken, UsuarioPasswordDto usuarioPasswordDto);
+
+    void resetPasswordUsuarioById(Long idUsuario);
 }

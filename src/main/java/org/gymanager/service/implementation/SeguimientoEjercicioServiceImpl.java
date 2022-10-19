@@ -81,6 +81,8 @@ public class SeguimientoEjercicioServiceImpl implements SeguimientoEjercicioServ
         var seguimientos = switch (seguimientosFilter){
             case HOY -> seguimientoEjercicioRepository.findAllByEjercicioAplicadoRutinaIdRutinaAndFechaCarga(idRutina, LocalDate.now());
             case TODAS -> seguimientoEjercicioRepository.findAllByEjercicioAplicadoRutinaIdRutina(idRutina);
+            case ESTA_SEMANA -> throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED,
+                    "Esta operacion no esta implementada para este servicio");
         };
 
         return seguimientos.stream()
