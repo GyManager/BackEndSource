@@ -15,6 +15,9 @@ public class PlanEntityToDtoDetailsConverter implements GyManagerConverter<Plan,
     @NonNull
     private MicroPlanEntityToDtoDetailsConverter microPlanEntityToDtoDetailsConverter;
 
+    @NonNull
+    private EstadoSeguimientoEntityToDtoConverter estadoSeguimientoEntityToDtoConverter;
+
     @Override
     public PlanDtoDetails convert(Plan source) {
         var planDtoDetails = new PlanDtoDetails();
@@ -26,7 +29,9 @@ public class PlanEntityToDtoDetailsConverter implements GyManagerConverter<Plan,
         planDtoDetails.setFechaDesde(source.getFechaDesde());
         planDtoDetails.setFechaHasta(source.getFechaHasta());
         planDtoDetails.setDescripcion(source.getDescripcion());
-        planDtoDetails.setDescripcion(source.getDescripcion());
+        planDtoDetails.setObservacionCliente(source.getObservacionCliente());
+        planDtoDetails.setEstadoSeguimientoDto(Objects.isNull(source.getEstadoSeguimiento()) ? null :
+                estadoSeguimientoEntityToDtoConverter.convert(source.getEstadoSeguimiento()));
         planDtoDetails.setMicroPlans(Objects.isNull(source.getMicroPlans()) ? null :
                 microPlanEntityToDtoDetailsConverter.convert(source.getMicroPlans()));
         return planDtoDetails;
