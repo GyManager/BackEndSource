@@ -8,6 +8,7 @@ import org.gymanager.converter.PlanEntityToDtoDetailsConverter;
 import org.gymanager.model.client.ClientePlanResumenDto;
 import org.gymanager.model.client.PlanDto;
 import org.gymanager.model.client.PlanDtoDetails;
+import org.gymanager.model.domain.EstadoSeguimiento;
 import org.gymanager.model.domain.Matricula;
 import org.gymanager.model.domain.Plan;
 import org.gymanager.model.enums.PlanesFilter;
@@ -17,18 +18,13 @@ import org.gymanager.service.specification.MicroPlanService;
 import org.gymanager.service.specification.ObjetivoService;
 import org.gymanager.service.specification.PlanService;
 import org.gymanager.service.specification.UsuarioService;
-import org.gymanager.utils.UserPermissionValidation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -193,6 +189,13 @@ public class PlanServiceImpl implements PlanService {
                 planVigente.map(Plan::getIdPlan).orElse(null),
                 matriculaVigente.map(Matricula::getCantidadDiasSemana).orElse(null)
         );
+    }
+
+    @Override
+    public void updatePlanSeguimientoById(Plan plan, String observacion, EstadoSeguimiento estadoSeguimiento){
+        plan.setObservacionCliente(observacion);
+        plan.setEstadoSeguimiento(estadoSeguimiento);
+        planRepository.save(plan);
     }
 
     private void validarFechaNoPasada(LocalDateTime fecha, String error){
