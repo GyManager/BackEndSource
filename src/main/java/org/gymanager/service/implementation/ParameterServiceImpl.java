@@ -43,7 +43,6 @@ public class ParameterServiceImpl implements ParameterService {
     @NonNull
     private EstadoSeguimientoService estadoSeguimientoService;
 
-
     @Override
     public List<String> getTipoEjercicios() {
         return tipoEjercicioService.getTipoEjercicios().stream().map(TipoEjercicio::getNombre).toList();
