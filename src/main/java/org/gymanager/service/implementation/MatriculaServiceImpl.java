@@ -10,6 +10,7 @@ import org.gymanager.model.enums.MatriculasFilter;
 import org.gymanager.repository.specification.MatriculaRepository;
 import org.gymanager.service.specification.ClienteService;
 import org.gymanager.service.specification.MatriculaService;
+import org.gymanager.service.specification.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -45,8 +46,14 @@ public class MatriculaServiceImpl implements MatriculaService {
     @NonNull
     private ClienteService clienteService;
 
+    @NonNull
+    private UsuarioService usuarioService;
+
     @Override
-    public List<MatriculaDto> getMatriculasByIdCliente(Long idCliente, MatriculasFilter matriculasFilter) {
+    public List<MatriculaDto> getMatriculasByIdCliente(Long idCliente, MatriculasFilter matriculasFilter, Boolean validateUser) {
+        if(validateUser){
+            usuarioService.validarIdClienteMatchUserFromRequest(idCliente);
+        }
         return matriculaEntityToDtoConverter.convert(getMatriculasEntitiesByIdCliente(idCliente, matriculasFilter));
     }
 
