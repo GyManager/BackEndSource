@@ -7,8 +7,11 @@ import org.gymanager.controller.specification.MatriculaController;
 import org.gymanager.model.client.MatriculaDto;
 import org.gymanager.model.enums.MatriculasFilter;
 import org.gymanager.service.specification.MatriculaService;
+import org.gymanager.utils.Permisos;
+import org.gymanager.utils.UserPermissionValidation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,7 +25,11 @@ public class MatriculaControllerImpl implements MatriculaController {
 
     @Override
     public ResponseEntity<List<MatriculaDto>> getMatriculasByIdCliente(Long idCliente, MatriculasFilter matriculasFilter) {
-        return ResponseEntity.ok(matriculaService.getMatriculasByIdCliente(idCliente, matriculasFilter));
+        var validateUser = !UserPermissionValidation.userHasPermission(
+                SecurityContextHolder.getContext().getAuthentication(),
+                Permisos.GET_MATRICULAS);
+
+        return ResponseEntity.ok(matriculaService.getMatriculasByIdCliente(idCliente, matriculasFilter, validateUser));
     }
 
     @Override

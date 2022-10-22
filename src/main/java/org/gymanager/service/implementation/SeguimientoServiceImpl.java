@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.SeguimientoFinDiaEntityToDtoConverter;
 import org.gymanager.model.client.SeguimientoFinDiaDto;
 import org.gymanager.model.client.SeguimientoFinDiaDtoDetail;
+import org.gymanager.model.client.SeguimientoPlanDto;
 import org.gymanager.model.domain.SeguimientoFinDia;
 import org.gymanager.model.enums.SeguimientosFilter;
 import org.gymanager.repository.specification.SeguimientoFinDiaRepository;
@@ -91,5 +92,20 @@ public class SeguimientoServiceImpl implements SeguimientoService {
                 .map(seguimientoFinDiaEntityToDtoConverter::convert)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    @Override
+    public void addSeguimientoPlan(Long idPlan, SeguimientoPlanDto seguimientoPlanDto) {
+        var plan = planService.getPlanEntityById(idPlan);
+
+        if(Objects.isNull(plan)){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, PLAN_NO_CORRESPONDE_AL_CLIENTE);
+        }
+
+        usuarioService.validarIdClienteMatchUserFromRequest(plan.getCliente().getIdCliente());
+
+        var estadoSeguimiento = estadoSeguimientoService.getEstadoSeguimientoById(seguimientoPlanDto.idEstadoSeguimiento());
+
+        planService.updatePlanSeguimientoById(plan, seguimientoPlanDto.observacion(), estadoSeguimiento);
     }
 }

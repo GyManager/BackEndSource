@@ -248,11 +248,16 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public void validarIdClienteMatchUserFromRequest(Long idCliente) {
-        var user = UserPermissionValidation.getUsername(SecurityContextHolder.getContext().getAuthentication());
-        var cliente = getUsuarioEntityByMail(user).getCliente();
+        var cliente = getUsuarioEntityFromCurrentToken().getCliente();
         if(Objects.isNull(cliente) || Objects.isNull(idCliente) || !cliente.getIdCliente().equals(idCliente)){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "El usuario no tiene permitido ver este plan");
         }
+    }
+
+    @Override
+    public Usuario getUsuarioEntityFromCurrentToken(){
+        var user = UserPermissionValidation.getUsername(SecurityContextHolder.getContext().getAuthentication());
+        return getUsuarioEntityByMail(user);
     }
 
     @Override

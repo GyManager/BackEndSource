@@ -8,6 +8,7 @@ import org.gymanager.converter.PlanEntityToDtoDetailsConverter;
 import org.gymanager.model.client.ClientePlanResumenDto;
 import org.gymanager.model.client.PlanDto;
 import org.gymanager.model.client.PlanDtoDetails;
+import org.gymanager.model.domain.EstadoSeguimiento;
 import org.gymanager.model.domain.Matricula;
 import org.gymanager.model.domain.Plan;
 import org.gymanager.model.enums.PlanesFilter;
@@ -17,21 +18,18 @@ import org.gymanager.service.specification.MicroPlanService;
 import org.gymanager.service.specification.ObjetivoService;
 import org.gymanager.service.specification.PlanService;
 import org.gymanager.service.specification.UsuarioService;
-import org.gymanager.utils.UserPermissionValidation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
-import java.math.BigInteger;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.time.LocalDateTime.now;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -75,23 +73,32 @@ public class PlanServiceImpl implements PlanService {
     private UsuarioService usuarioService;
 
     @Override
-    public List<PlanDto> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter, Boolean validateUser) {
+    public List<PlanDto> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter, LocalDate fechaDesde, Boolean validateUser) {
         if(validateUser){
             usuarioService.validarIdClienteMatchUserFromRequest(idCliente);
         }
-        return planEntityToDtoConverter.convert(getPlansEntitiesByIdCliente(idCliente, planesFilter));
+        return planEntityToDtoConverter.convert(getPlansEntitiesByIdCliente(idCliente, planesFilter, fechaDesde));
     }
 
     @Override
     public List<Plan> getPlansEntitiesByIdCliente(Long idCliente, PlanesFilter planesFilter) {
+        return getPlansEntitiesByIdCliente(idCliente, planesFilter, null);
+    }
+
+    @Override
+    public List<Plan> getPlansEntitiesByIdCliente(Long idCliente, PlanesFilter planesFilter, LocalDate fechaDesde) {
         var now = now();
-        return switch (planesFilter) {
+        var planes = switch (planesFilter) {
             case TODOS -> planRepository.findByClienteIdCliente(idCliente);
             case ACTIVOS -> planRepository.findAllByClienteIdClienteAndFechaHastaGreaterThanAndFechaDesdeLessThanEqualAndFechaEliminadoNull(idCliente, now, now);
             case VENCIDOS -> planRepository.findAllByClienteIdClienteAndFechaHastaLessThanEqualAndFechaEliminadoNull(idCliente, now);
             case FUTUROS -> planRepository.findAllByClienteIdClienteAndFechaDesdeAfterAndFechaEliminadoNull(idCliente, now);
             case ELIMINADOS -> planRepository.findAllByClienteIdClienteAndFechaEliminadoNotNull(idCliente);
         };
+        if(Objects.isNull(fechaDesde)){
+            return planes;
+        }
+        return planes.stream().filter(plan -> plan.getFechaHasta().toLocalDate().isAfter(fechaDesde)).collect(Collectors.toList());
     }
 
     @Override
@@ -193,6 +200,13 @@ public class PlanServiceImpl implements PlanService {
                 planVigente.map(Plan::getIdPlan).orElse(null),
                 matriculaVigente.map(Matricula::getCantidadDiasSemana).orElse(null)
         );
+    }
+
+    @Override
+    public void updatePlanSeguimientoById(Plan plan, String observacion, EstadoSeguimiento estadoSeguimiento){
+        plan.setObservacionCliente(observacion);
+        plan.setEstadoSeguimiento(estadoSeguimiento);
+        planRepository.save(plan);
     }
 
     private void validarFechaNoPasada(LocalDateTime fecha, String error){
