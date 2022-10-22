@@ -67,7 +67,6 @@ public interface ClienteController {
             @ApiResponse(responseCode = "204", description = "NO CONTENT")
     })
     @PutMapping(value = "/{idCliente}", consumes = { "application/json"})
-    @PreAuthorize("hasAuthority('put-clientes')")
     ResponseEntity<Void> updateClienteById(
             @PathVariable("idCliente") Long idCliente,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Cliente request body.",
