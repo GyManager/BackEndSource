@@ -10,6 +10,7 @@ import org.gymanager.model.client.ClientePlanResumenDto;
 import org.gymanager.model.client.PlanDto;
 import org.gymanager.model.client.PlanDtoDetails;
 import org.gymanager.model.enums.PlanesFilter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +41,7 @@ public interface PlanController {
     ResponseEntity<List<PlanDto>> getPlansByIdCliente(
             @PathVariable("idCliente") Long idCliente,
             @RequestParam(name = "planesFilter", required = false, defaultValue = "TODOS") PlanesFilter planesFilter,
-            @RequestParam(name = "fechaDesde", required = false) LocalDate fechaDesde);
+            @RequestParam(name = "fechaDesde", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fechaDesde);
 
     @Operation(summary = "Obtener un plan por Id", description = "Esta operación es para buscar un plan por Id")
     @ApiResponses(value = {
