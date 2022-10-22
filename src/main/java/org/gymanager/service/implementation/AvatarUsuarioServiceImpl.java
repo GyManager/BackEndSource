@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -37,7 +39,9 @@ public class AvatarUsuarioServiceImpl implements AvatarUsuarioService {
 
         var avatar = avatarRepository.findById(idUsuario).orElseGet(Avatar::new);
 
-        avatar.setIdUsuario(idUsuario);
+        if(Objects.isNull(avatar.getIdUsuario())){
+            avatar.setIdUsuario(idUsuario);
+        }
         avatar.setImagen(avatarDto.imagen());
 
         avatarRepository.save(avatar);
