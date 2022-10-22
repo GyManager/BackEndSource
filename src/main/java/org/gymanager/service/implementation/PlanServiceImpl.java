@@ -24,10 +24,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.time.LocalDateTime.now;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -71,23 +73,32 @@ public class PlanServiceImpl implements PlanService {
     private UsuarioService usuarioService;
 
     @Override
-    public List<PlanDto> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter, Boolean validateUser) {
+    public List<PlanDto> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter, LocalDate fechaDesde, Boolean validateUser) {
         if(validateUser){
             usuarioService.validarIdClienteMatchUserFromRequest(idCliente);
         }
-        return planEntityToDtoConverter.convert(getPlansEntitiesByIdCliente(idCliente, planesFilter));
+        return planEntityToDtoConverter.convert(getPlansEntitiesByIdCliente(idCliente, planesFilter, fechaDesde));
     }
 
     @Override
     public List<Plan> getPlansEntitiesByIdCliente(Long idCliente, PlanesFilter planesFilter) {
+        return getPlansEntitiesByIdCliente(idCliente, planesFilter, null);
+    }
+
+    @Override
+    public List<Plan> getPlansEntitiesByIdCliente(Long idCliente, PlanesFilter planesFilter, LocalDate fechaDesde) {
         var now = now();
-        return switch (planesFilter) {
+        var planes = switch (planesFilter) {
             case TODOS -> planRepository.findByClienteIdCliente(idCliente);
             case ACTIVOS -> planRepository.findAllByClienteIdClienteAndFechaHastaGreaterThanAndFechaDesdeLessThanEqualAndFechaEliminadoNull(idCliente, now, now);
             case VENCIDOS -> planRepository.findAllByClienteIdClienteAndFechaHastaLessThanEqualAndFechaEliminadoNull(idCliente, now);
             case FUTUROS -> planRepository.findAllByClienteIdClienteAndFechaDesdeAfterAndFechaEliminadoNull(idCliente, now);
             case ELIMINADOS -> planRepository.findAllByClienteIdClienteAndFechaEliminadoNotNull(idCliente);
         };
+        if(Objects.isNull(fechaDesde)){
+            return planes;
+        }
+        return planes.stream().filter(plan -> plan.getFechaHasta().toLocalDate().isAfter(fechaDesde)).collect(Collectors.toList());
     }
 
     @Override

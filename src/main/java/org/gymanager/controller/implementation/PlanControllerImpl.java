@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -25,12 +26,12 @@ public class PlanControllerImpl implements PlanController {
     private PlanService planService;
 
     @Override
-    public ResponseEntity<List<PlanDto>> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter) {
+    public ResponseEntity<List<PlanDto>> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter, LocalDate fechaDesde) {
         var validateUser = !UserPermissionValidation.userHasPermission(
                 SecurityContextHolder.getContext().getAuthentication(),
                 Permisos.GET_PLANES);
 
-        return ResponseEntity.ok(planService.getPlansByIdCliente(idCliente, planesFilter, validateUser));
+        return ResponseEntity.ok(planService.getPlansByIdCliente(idCliente, planesFilter, fechaDesde, validateUser));
     }
 
     @Override

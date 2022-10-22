@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 
 @RequestMapping("/api")
@@ -38,7 +39,8 @@ public interface PlanController {
     @PreAuthorize("hasAnyAuthority('get-planes','get-mis-planes')")
     ResponseEntity<List<PlanDto>> getPlansByIdCliente(
             @PathVariable("idCliente") Long idCliente,
-            @RequestParam(name = "planesFilter", required = false, defaultValue = "TODOS") PlanesFilter planesFilter);
+            @RequestParam(name = "planesFilter", required = false, defaultValue = "TODOS") PlanesFilter planesFilter,
+            @RequestParam(name = "fechaDesde", required = false) LocalDate fechaDesde);
 
     @Operation(summary = "Obtener un plan por Id", description = "Esta operación es para buscar un plan por Id")
     @ApiResponses(value = {
