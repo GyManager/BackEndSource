@@ -6,8 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.MedidasClienteEntityToDtoConverter;
 import org.gymanager.converter.MedidasClienteEntityToSmallDtoConverter;
 import org.gymanager.model.client.MedidasClienteDto;
+import org.gymanager.model.client.MedidasClienteHistoryDto;
 import org.gymanager.model.client.MedidasClienteSmallDto;
+import org.gymanager.model.client.MedidasClienteSummaryDto;
 import org.gymanager.model.domain.MedidasCliente;
+import org.gymanager.model.enums.MedidasTipo;
 import org.gymanager.repository.specification.MedidasClienteRepository;
 import org.gymanager.service.specification.ClienteService;
 import org.gymanager.service.specification.MedidasClienteService;
@@ -18,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -145,6 +149,50 @@ public class MedidasClienteServiceImpl implements MedidasClienteService {
         validarMedidasCorrespondeConCliente(medidasCliente, idCliente);
 
         medidasClienteRepository.delete(medidasCliente);
+    }
+
+    @Override
+    public MedidasClienteSummaryDto getSummaryMedidaByIdClienteAndTipo(Long idCliente,
+                                                                       MedidasTipo medidasTipo,
+                                                                       LocalDate fechaInicial) {
+        var history =  medidasClienteRepository
+                .findAllByClienteIdClienteAndFechaGreaterThanEqual(idCliente, fechaInicial)
+                .stream()
+                .map(medida -> new MedidasClienteHistoryDto(medida.getFecha(),extractMedida(medida, medidasTipo)))
+                .toList();
+
+        var summaryStatistics = history.stream()
+                .map(MedidasClienteHistoryDto::valor)
+                .filter(Objects::nonNull)
+                .mapToDouble(x -> x)
+                .summaryStatistics();
+
+        return new MedidasClienteSummaryDto(
+                medidasTipo.getName(),
+                history,
+                summaryStatistics.getAverage(),
+                summaryStatistics.getCount(),
+                summaryStatistics.getMin(),
+                summaryStatistics.getMax()
+        );
+    }
+
+    private Float extractMedida(MedidasCliente medidasCliente, MedidasTipo medidasTipo){
+        return switch (medidasTipo) {
+            case PESO -> medidasCliente.getPeso();
+            case CERVICAL -> medidasCliente.getCervical();
+            case LUMBAR -> medidasCliente.getCervical();
+            case COXAL_PELVICA -> medidasCliente.getCoxalPelvica();
+            case CADERA -> medidasCliente.getCadera();
+            case MUSLOS_IZQ -> medidasCliente.getMuslosIzq();
+            case MUSLOS_DER -> medidasCliente.getMuslosDer();
+            case RODILLAS_IZQ -> medidasCliente.getRodillasIzq();
+            case RODILLAS_DER -> medidasCliente.getRodillasDer();
+            case GEMELOS_IZQ -> medidasCliente.getGemelosIzq();
+            case GEMELOS_DER -> medidasCliente.getGemelosDer();
+            case BRAZO_IZQ -> medidasCliente.getBrazoIzq();
+            case BRAZO_DEr -> medidasCliente.getBrazoDer();
+        };
     }
 
     private void validarMedidasCorrespondeConCliente(MedidasCliente medidasCliente, Long idCliente){

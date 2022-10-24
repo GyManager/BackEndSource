@@ -5,12 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.MedidasClienteController;
 import org.gymanager.model.client.MedidasClienteDto;
 import org.gymanager.model.client.MedidasClienteSmallDto;
+import org.gymanager.model.client.MedidasClienteSummaryDto;
 import org.gymanager.model.enums.MedidasClienteFilter;
+import org.gymanager.model.enums.MedidasTipo;
 import org.gymanager.service.specification.MedidasClienteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -47,5 +50,12 @@ public class MedidasClienteControllerImpl implements MedidasClienteController {
     public ResponseEntity<Void> deleteMedidasById(Long idCliente, Long idMedidas) {
         medidasClienteService.deleteMedidasById(idCliente, idMedidas);
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<MedidasClienteSummaryDto> getSummaryMedidaByIdClienteAndTipo(Long idCliente,
+                                                                                       MedidasTipo medidasTipo,
+                                                                                       LocalDate fechaInicial) {
+        return ResponseEntity.ok(medidasClienteService.getSummaryMedidaByIdClienteAndTipo(idCliente, medidasTipo, fechaInicial));
     }
 }
