@@ -8,10 +8,14 @@ import org.gymanager.model.client.PlanDto;
 import org.gymanager.model.client.PlanDtoDetails;
 import org.gymanager.model.enums.PlanesFilter;
 import org.gymanager.service.specification.PlanService;
+import org.gymanager.utils.Permisos;
+import org.gymanager.utils.UserPermissionValidation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -22,13 +26,21 @@ public class PlanControllerImpl implements PlanController {
     private PlanService planService;
 
     @Override
-    public ResponseEntity<List<PlanDto>> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter) {
-        return ResponseEntity.ok(planService.getPlansByIdCliente(idCliente, planesFilter));
+    public ResponseEntity<List<PlanDto>> getPlansByIdCliente(Long idCliente, PlanesFilter planesFilter, LocalDate fechaDesde) {
+        var validateUser = !UserPermissionValidation.userHasPermission(
+                SecurityContextHolder.getContext().getAuthentication(),
+                Permisos.GET_PLANES);
+
+        return ResponseEntity.ok(planService.getPlansByIdCliente(idCliente, planesFilter, fechaDesde, validateUser));
     }
 
     @Override
     public ResponseEntity<PlanDto> getPlanById(Long idPlan) {
-        return ResponseEntity.ok(planService.getPlanById(idPlan));
+        var validateUser = !UserPermissionValidation.userHasPermission(
+                SecurityContextHolder.getContext().getAuthentication(),
+                Permisos.GET_PLANES);
+
+        return ResponseEntity.ok(planService.getPlanById(idPlan, validateUser));
     }
 
     @Override

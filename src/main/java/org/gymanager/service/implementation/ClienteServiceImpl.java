@@ -103,7 +103,11 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     @Transactional
-    public void updateClienteById(Long idCliente, ClienteDto clienteDto) {
+    public void updateClienteById(Long idCliente, ClienteDto clienteDto, Boolean validateUser) {
+        if(validateUser){
+            usuarioService.validarIdClienteMatchUserFromRequest(idCliente);
+        }
+
         Cliente cliente = getClienteEntityById(idCliente);
 
         Long idUsuario = cliente.getUsuario().getIdUsuario();

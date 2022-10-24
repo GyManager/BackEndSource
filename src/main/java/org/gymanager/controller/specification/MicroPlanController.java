@@ -53,7 +53,7 @@ public interface MicroPlanController {
             @ApiResponse(responseCode = "200", description = "OK")
     })
     @GetMapping(value = "/micro-planes/{idMicroPlan}", produces = { "application/json"})
-    @PreAuthorize("hasAuthority('get-micro-planes')")
+    @PreAuthorize("hasAnyAuthority('get-micro-planes','get-mis-planes')")
     ResponseEntity<MicroPlanDtoDetails> getMicroPlanById(@PathVariable("idMicroPlan") Long idMicroPlan);
 
     @Operation(summary = "Agregar micro plan", description = "Esta operación es para agregar un micro plan")
@@ -93,6 +93,6 @@ public interface MicroPlanController {
             @ApiResponse(responseCode = "200", description = "OK")
     })
     @GetMapping(value = "/planes/{idPlan}/micro-planes", produces = { "application/json"})
-    @PreAuthorize("hasAuthority('get-planes')")
+    @PreAuthorize("hasAnyAuthority('get-planes','get-mis-planes')")
     ResponseEntity<List<MicroPlanDto>> getMicroPlanesByIdPlan(@PathVariable("idPlan") Long idPlan);
 }

@@ -12,5 +12,7 @@ public interface EjercicioAplicadoService {
 
     List<EjercicioAplicado> crearEjerciciosAplicados(List<EjercicioAplicadoDto> ejerciciosAplicados);
 
+    EjercicioAplicado getEjercicioAplicadoEntityById(Long idEjercicioAplicado);
+
     void actualizarEjerciciosAplicadosRutina(List<EjercicioAplicadoDto> ejerciciosAplicados, Rutina rutina);
 }

@@ -17,7 +17,7 @@ public interface ClienteService {
 
     Long addCliente(ClienteDto clienteDto);
 
-    void updateClienteById(Long idCliente, ClienteDto clienteDto);
+    void updateClienteById(Long idCliente, ClienteDto clienteDto, Boolean validateUser);
 
     void deleteClienteById(Long idCliente);
 }

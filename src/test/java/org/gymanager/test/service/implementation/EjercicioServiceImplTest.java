@@ -37,9 +37,7 @@ import static org.gymanager.test.constants.Constantes.ID_EJERCICIO;
 import static org.gymanager.test.constants.Constantes.ID_HERRAMIENTA;
 import static org.gymanager.test.constants.Constantes.ID_PASO;
 import static org.gymanager.test.constants.Constantes.ID_TIPO_EJERCICIO;
-import static org.gymanager.test.constants.Constantes.NOMBRE;
 import static org.gymanager.test.constants.Constantes.NOMBRE_EJERCICIO;
-import static org.gymanager.test.constants.Constantes.NOMBRE_HERRAMIENTA;
 import static org.gymanager.test.constants.Constantes.TIPO_EJERCICIO;
 import static org.gymanager.test.constants.Constantes.VIDEO_EJERCICIO;
 import static org.mockito.ArgumentMatchers.any;
@@ -154,7 +152,7 @@ class EjercicioServiceImplTest {
         ejercicio.setIdEjercicio(ID_EJERCICIO);
 
         when(tipoEjercicioService.getTipoEjercicioByNombre(TIPO_EJERCICIO)).thenReturn(tipoEjercicio);
-        when(ejercicioRepository.findByTipoEjercicioAndNombreIgnoreCase(tipoEjercicio, NOMBRE_EJERCICIO))
+        when(ejercicioRepository.findByTipoEjercicioAndNombreIgnoreCaseAndFechaBajaIsNull(tipoEjercicio, NOMBRE_EJERCICIO))
                 .thenReturn(Optional.empty());
         when(herramientaService.getHerramientasByIds(List.of(ID_HERRAMIENTA))).thenReturn(List.of(herramienta));
         when(pasoService.crearPasos(List.of(pasoDto))).thenReturn(List.of(paso));
@@ -186,7 +184,7 @@ class EjercicioServiceImplTest {
         var ejercicio = new Ejercicio();
 
         when(tipoEjercicioService.getTipoEjercicioByNombre(TIPO_EJERCICIO)).thenReturn(tipoEjercicio);
-        when(ejercicioRepository.findByTipoEjercicioAndNombreIgnoreCase(tipoEjercicio, NOMBRE_EJERCICIO))
+        when(ejercicioRepository.findByTipoEjercicioAndNombreIgnoreCaseAndFechaBajaIsNull(tipoEjercicio, NOMBRE_EJERCICIO))
                 .thenReturn(Optional.of(ejercicio));
 
         assertThatThrownBy(() -> ejercicioService.addEjercicio(ejercicioDtoRequest))
@@ -221,7 +219,7 @@ class EjercicioServiceImplTest {
 
         when(ejercicioRepository.findById(ID_EJERCICIO)).thenReturn(Optional.of(ejercicio));
         when(tipoEjercicioService.getTipoEjercicioByNombre(TIPO_EJERCICIO)).thenReturn(tipoEjercicio);
-        when(ejercicioRepository.findByTipoEjercicioAndNombreIgnoreCase(tipoEjercicio, nombreEjercicioCambiado))
+        when(ejercicioRepository.findByTipoEjercicioAndNombreIgnoreCaseAndFechaBajaIsNull(tipoEjercicio, nombreEjercicioCambiado))
                 .thenReturn(Optional.empty());
         when(herramientaService.getHerramientasByIds(ejercicioDtoRequest.getIdHerramientaList()))
                 .thenReturn(List.of(herramienta));

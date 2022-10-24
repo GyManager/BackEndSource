@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface EjercicioRepository extends JpaRepository<Ejercicio, Long>, JpaSpecificationExecutor<Ejercicio> {
 
-    Optional<Ejercicio> findByTipoEjercicioAndNombreIgnoreCase(TipoEjercicio tipoEjercicio, String nombre);
+    Optional<Ejercicio> findByTipoEjercicioAndNombreIgnoreCaseAndFechaBajaIsNull(TipoEjercicio tipoEjercicio, String nombre);
 }

@@ -11,7 +11,9 @@ import org.gymanager.repository.specification.EjercicioAplicadoRepository;
 import org.gymanager.service.specification.BloqueService;
 import org.gymanager.service.specification.EjercicioAplicadoService;
 import org.gymanager.service.specification.EjercicioService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -23,6 +25,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class EjercicioAplicadoServiceImpl implements EjercicioAplicadoService {
+
+    private static final String EJERCICIO_APLICADO_NO_ENCONTRADO = """
+            No se ha encontrado el registro de este ejercicio encontrado""";
 
     @NonNull
     private EjercicioAplicadoRepository ejercicioAplicadoRepository;
@@ -45,6 +50,18 @@ public class EjercicioAplicadoServiceImpl implements EjercicioAplicadoService {
     @Override
     public List<EjercicioAplicado> crearEjerciciosAplicados(List<EjercicioAplicadoDto> ejerciciosAplicados) {
         return ejerciciosAplicados.stream().map(this::crearEjercicioAplicado).collect(Collectors.toList());
+    }
+
+    @Override
+    public EjercicioAplicado getEjercicioAplicadoEntityById(Long idEjercicioAplicado) {
+        var ejercicioAplicado = ejercicioAplicadoRepository.findById(idEjercicioAplicado);
+
+        if(ejercicioAplicado.isEmpty()){
+            log.error(EJERCICIO_APLICADO_NO_ENCONTRADO);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, EJERCICIO_APLICADO_NO_ENCONTRADO);
+        }
+
+        return ejercicioAplicado.get();
     }
 
     @Override

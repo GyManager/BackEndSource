@@ -13,9 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -27,6 +29,9 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUsuario;
+
+    @OneToOne(mappedBy = "usuario")
+    private Cliente cliente;
 
     @Column(nullable = false)
     private Long numeroDocumento;
@@ -59,4 +64,9 @@ public class Usuario {
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_rol"))
     private List<Rol> roles;
+
+    public Boolean esClienteActivo(){
+        return Objects.nonNull(this.cliente)
+                && this.roles.stream().map(Rol::getNombreRol).anyMatch(nombre -> nombre.equals("CLIENTE"));
+    }
 }

@@ -29,6 +29,9 @@ public class PlanDto {
     @NotBlank(message = "El plan debe tener una descripcion")
     private String descripcion;
 
+    private String observacionCliente;
+    private EstadoSeguimientoDto estadoSeguimientoDto;
+
     public void setDescripcion(String descripcion) {
         this.descripcion = Objects.isNull(descripcion) ? null : descripcion.trim();
     }

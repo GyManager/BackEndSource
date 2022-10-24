@@ -16,6 +16,7 @@ import org.gymanager.repository.specification.MicroPlanRepository;
 import org.gymanager.service.specification.MicroPlanService;
 import org.gymanager.service.specification.ObservacionService;
 import org.gymanager.service.specification.RutinaService;
+import org.gymanager.service.specification.UsuarioService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -60,6 +61,9 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     @NonNull
     private ObservacionService observacionService;
 
+    @NonNull
+    private UsuarioService usuarioService;
+
     @Override
     public GyManagerPage<MicroPlanDto> getMicroPlanes(String search, Boolean esTemplate, Integer cantidadRutinas, Boolean excluirEliminados,
                                                       Integer page, Integer pageSize, MicroPlanSortBy sortBy, Sort.Direction direction) {
@@ -77,8 +81,15 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     }
 
     @Override
-    public MicroPlanDtoDetails getMicroPlanById(Long idMicroPlan) {
-        return microPlanEntityToDtoDetailsConverter.convert(getMicroPlanEntityById(idMicroPlan));
+    public MicroPlanDtoDetails getMicroPlanById(Long idMicroPlan, Boolean validateUser) {
+        var microPlan = getMicroPlanEntityById(idMicroPlan);
+        if(validateUser){
+            var idCliente = Objects.isNull(microPlan.getPlan()) ? null :
+                    microPlan.getPlan().getCliente().getIdCliente();
+            usuarioService.validarIdClienteMatchUserFromRequest(idCliente);
+        }
+
+        return microPlanEntityToDtoDetailsConverter.convert(microPlan);
     }
 
     @Override
@@ -140,7 +151,14 @@ public class MicroPlanServiceImpl implements MicroPlanService {
     }
 
     @Override
-    public List<MicroPlanDto> getMicroPlanesByIdPlan(Long idPlan) {
+    public List<MicroPlanDto> getMicroPlanesByIdPlan(Long idPlan, Boolean validateUser) {
+        var microPlans = microPlanRepository.findByPlanIdPlan(idPlan);
+        if(validateUser && !microPlans.isEmpty()){
+            usuarioService.validarIdClienteMatchUserFromRequest(microPlans.get(0)
+                    .getPlan()
+                    .getCliente()
+                    .getIdCliente());
+        }
         return microPlanEntityToDtoConverter.convert(microPlanRepository.findByPlanIdPlan(idPlan));
     }
 

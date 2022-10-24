@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.gymanager.model.client.RutinaDto;
+import org.gymanager.model.client.RutinaDtoDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,4 +26,15 @@ public interface RutinaController {
     @GetMapping(value = "/micro-planes/{idMicroPlan}/rutinas", produces = { "application/json"})
     @PreAuthorize("hasAuthority('get-micro-planes')")
     ResponseEntity<List<RutinaDto>> getRutinasByIdMicroPlan(@PathVariable("idMicroPlan") Long idMicroPlan);
+
+    @Operation(summary = "Obtener una rutina de un micro plan por el ID de la rutina",
+            description = "Esta operación es para obtener una rutina de un micro plan por el ID de la rutina")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    @GetMapping(value = "/micro-planes/{idMicroPlan}/rutinas/{idRutina}", produces = { "application/json"})
+    @PreAuthorize("hasAnyAuthority('get-micro-planes','mis-planes')")
+    ResponseEntity<RutinaDtoDetails> getRutinasByIdRutinaAndIdMicroPlan(
+            @PathVariable("idMicroPlan") Long idMicroPlan,
+            @PathVariable("idRutina") Long idRutina);
 }

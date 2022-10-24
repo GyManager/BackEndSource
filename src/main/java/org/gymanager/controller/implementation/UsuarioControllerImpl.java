@@ -5,13 +5,20 @@ import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.UsuarioController;
 import org.gymanager.model.client.UsuarioDto;
 import org.gymanager.model.client.UsuarioDtoDetails;
+import org.gymanager.model.client.UsuarioInfoDto;
+import org.gymanager.model.client.UsuarioPasswordDto;
 import org.gymanager.model.enums.UsuarioSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.UsuarioService;
+import org.gymanager.utils.Permisos;
+import org.gymanager.utils.UserPermissionValidation;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collections;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,8 +52,36 @@ public class UsuarioControllerImpl implements UsuarioController {
     }
 
     @Override
+    public ResponseEntity<Void> updateMiUsuario(UsuarioDto usuarioDto) {
+        var idUsuario = usuarioService.getUsuarioEntityFromCurrentToken().getIdUsuario();
+        usuarioService.updateUsuarioById(idUsuario, usuarioDto, Collections.emptyList(), Boolean.FALSE);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
     public ResponseEntity<Void> deleteUsuarioById(Long idUsuario) {
         usuarioService.deleteUsuarioById(idUsuario);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<UsuarioInfoDto> getUsuarioByToken() {
+        var mail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(usuarioService.getUsuarioInfoByMail(mail));
+    }
+
+    @Override
+    public ResponseEntity<Void> updatePasswordUsuarioById(Long idUsuario, UsuarioPasswordDto usuarioPasswordDto) {
+        var mail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        usuarioService.updatePasswordUsuarioById(idUsuario, mail, usuarioPasswordDto);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> resetPasswordUsuarioById(Long idUsuario) {
+        usuarioService.resetPasswordUsuarioById(idUsuario);
         return ResponseEntity.noContent().build();
     }
 }
