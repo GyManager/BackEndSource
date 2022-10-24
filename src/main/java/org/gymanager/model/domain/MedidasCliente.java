@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -28,7 +28,7 @@ public class MedidasCliente {
     private Cliente cliente;
 
     @Column(nullable = false)
-    private Date fecha;
+    private LocalDate fecha;
     private Float peso;
     private Float altura;
     private Float cervical;

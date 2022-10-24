@@ -1,8 +1,8 @@
 package org.gymanager.model.client;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record MedidasClienteSmallDto(
         Long idMedidas,
-        Date fecha) {
+        LocalDate fecha) {
 }

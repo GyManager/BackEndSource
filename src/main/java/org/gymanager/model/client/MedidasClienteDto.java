@@ -1,10 +1,10 @@
 package org.gymanager.model.client;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record MedidasClienteDto(
         Long idMedidas,
-        Date fecha,
+        LocalDate fecha,
         Float peso,
         Float altura,
         Float cervical,
