@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.MedidasClienteController;
 import org.gymanager.model.client.MedidasClienteDto;
+import org.gymanager.model.client.MedidasClienteSmallDto;
 import org.gymanager.model.enums.MedidasClienteFilter;
 import org.gymanager.service.specification.MedidasClienteService;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,13 @@ public class MedidasClienteControllerImpl implements MedidasClienteController {
     private MedidasClienteService medidasClienteService;
 
     @Override
-    public ResponseEntity<List<MedidasClienteDto>> getMedidasByIdCliente(Long idCliente, MedidasClienteFilter medidasClienteFilter) {
-        return ResponseEntity.ok(medidasClienteService.getMedidasByIdCliente(idCliente, medidasClienteFilter));
+    public ResponseEntity<List<MedidasClienteSmallDto>> getMedidasByIdCliente(Long idCliente) {
+        return ResponseEntity.ok(medidasClienteService.getMedidasByIdCliente(idCliente));
+    }
+
+    @Override
+    public ResponseEntity<MedidasClienteDto> getMedidasClienteById(Long idCliente, Long idMedidas) {
+        return ResponseEntity.ok(medidasClienteService.getMedidasClienteById(idCliente, idMedidas));
     }
 
     @Override
@@ -32,8 +38,8 @@ public class MedidasClienteControllerImpl implements MedidasClienteController {
     }
 
     @Override
-    public ResponseEntity<Void> updateMedidasById(Long idMedidas, MedidasClienteDto medidasClienteDto) {
-        medidasClienteService.updateMedidasById(idMedidas, medidasClienteDto);
+    public ResponseEntity<Void> updateMedidasById(Long idCliente, Long idMedidas, MedidasClienteDto medidasClienteDto) {
+        medidasClienteService.updateMedidasById(idCliente, idMedidas, medidasClienteDto);
         return ResponseEntity.noContent().build();
     }
 

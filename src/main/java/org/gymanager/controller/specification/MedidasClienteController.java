@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.gymanager.model.client.MedidasClienteDto;
+import org.gymanager.model.client.MedidasClienteSmallDto;
 import org.gymanager.model.enums.MedidasClienteFilter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,9 +34,17 @@ public interface MedidasClienteController {
     })
     @GetMapping(produces = { "application/json"})
     @PreAuthorize("hasAuthority('get-medidas')")
-    ResponseEntity<List<MedidasClienteDto>> getMedidasByIdCliente(
-            @PathVariable("idCliente") Long idCliente,
-            @RequestParam(name = "medidasClienteFilter", required = false, defaultValue = "LAST") MedidasClienteFilter medidasClienteFilter);
+    ResponseEntity<List<MedidasClienteSmallDto>> getMedidasByIdCliente(@PathVariable("idCliente") Long idCliente);
+
+    @Operation(summary = "Obtener una medida del cliente", description = """
+            Esta operación es para obtener una medida del cliente""")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    @GetMapping(value = "/{idMedidas}", produces = { "application/json"})
+    @PreAuthorize("hasAuthority('get-medidas')")
+    ResponseEntity<MedidasClienteDto> getMedidasClienteById(@PathVariable("idCliente") Long idCliente,
+                                                            @PathVariable("idMedidas") Long idMedidas);
 
     @Operation(summary = "Cargar medidas del cliente", description = "Esta operación es para cargar las medidas del cliente")
     @ApiResponses(value = {
@@ -57,6 +66,7 @@ public interface MedidasClienteController {
     @PutMapping(value = "/{idMedidas}", consumes = { "application/json"})
     @PreAuthorize("hasAuthority('put-medidas')")
     ResponseEntity<Void> updateMedidasById(
+            @PathVariable("idCliente") Long idCliente,
             @PathVariable("idMedidas") Long idMedidas,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Medidas request body.",
                     content = @Content(schema = @Schema(implementation = MedidasClienteDto.class)), required = true)
