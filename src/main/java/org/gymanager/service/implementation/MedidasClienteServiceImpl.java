@@ -105,6 +105,8 @@ public class MedidasClienteServiceImpl implements MedidasClienteService {
         medidasCliente.setCadera(medidasClienteDto.cadera());
         medidasCliente.setMuslosIzq(medidasClienteDto.muslosIzq());
         medidasCliente.setMuslosDer(medidasClienteDto.muslosDer());
+        medidasCliente.setRodillasIzq(medidasClienteDto.rodillasIzq());
+        medidasCliente.setRodillasDer(medidasClienteDto.rodillasDer());
         medidasCliente.setGemelosIzq(medidasClienteDto.gemelosIzq());
         medidasCliente.setGemelosDer(medidasClienteDto.gemelosDer());
         medidasCliente.setBrazoIzq(medidasClienteDto.brazoIzq());
@@ -131,6 +133,8 @@ public class MedidasClienteServiceImpl implements MedidasClienteService {
         medidasCliente.setCadera(medidasClienteDto.cadera());
         medidasCliente.setMuslosIzq(medidasClienteDto.muslosIzq());
         medidasCliente.setMuslosDer(medidasClienteDto.muslosDer());
+        medidasCliente.setRodillasIzq(medidasClienteDto.rodillasIzq());
+        medidasCliente.setRodillasDer(medidasClienteDto.rodillasDer());
         medidasCliente.setGemelosIzq(medidasClienteDto.gemelosIzq());
         medidasCliente.setGemelosDer(medidasClienteDto.gemelosDer());
         medidasCliente.setBrazoIzq(medidasClienteDto.brazoIzq());
