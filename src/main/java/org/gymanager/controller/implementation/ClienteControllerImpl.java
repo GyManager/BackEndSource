@@ -41,12 +41,12 @@ public class ClienteControllerImpl implements ClienteController {
     }
 
     @Override
-    public ResponseEntity<Void> updateClienteById(Long idCliente, ClienteDto clienteDto) {
+    public ResponseEntity<Void> updateClienteById(Long idCliente, Boolean reactivate, ClienteDto clienteDto) {
         var validateUser = !UserPermissionValidation.userHasPermission(
                 SecurityContextHolder.getContext().getAuthentication(),
                 Permisos.PUT_CLIENTES);
 
-        clienteService.updateClienteById(idCliente, clienteDto, validateUser);
+        clienteService.updateClienteById(idCliente, clienteDto, validateUser, reactivate && !validateUser);
         return ResponseEntity.noContent().build();
     }
 
