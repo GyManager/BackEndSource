@@ -38,6 +38,8 @@ public interface UsuarioService {
 
     void removeRolUsuarioById(Long idUsuario, List<String> roles);
 
+    void addRolUsuarioById(Long idUsuario, List<String> roles);
+
     UsuarioInfoDto getUsuarioInfoByMail(String mail);
 
     void updatePasswordUsuarioById(Long idUsuario, String mailFromToken, UsuarioPasswordDto usuarioPasswordDto);

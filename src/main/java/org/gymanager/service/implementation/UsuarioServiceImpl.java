@@ -270,6 +270,20 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     @Override
+    public void addRolUsuarioById(Long idUsuario, List<String> roles){
+        var usuario = getUsuarioEntityById(idUsuario);
+        var rolList = rolService.getRolEntitiesByRolNames(roles);
+
+        rolList.forEach(rol -> {
+            if (!usuario.getRoles().contains(rol)) {
+                usuario.getRoles().add(rol);
+            }
+        });
+
+        usuarioRepository.save(usuario);
+    }
+
+    @Override
     public UsuarioInfoDto getUsuarioInfoByMail(String mail) {
         return usuarioEntityToInfoDtoConverter.convert(getUsuarioEntityByMail(mail));
     }

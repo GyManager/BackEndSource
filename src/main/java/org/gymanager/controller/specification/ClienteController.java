@@ -69,6 +69,7 @@ public interface ClienteController {
     @PutMapping(value = "/{idCliente}", consumes = { "application/json"})
     ResponseEntity<Void> updateClienteById(
             @PathVariable("idCliente") Long idCliente,
+            @RequestParam(name = "reactivate", required = false, defaultValue = "false") Boolean reactivate,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Cliente request body.",
                     content = @Content(schema = @Schema(implementation = ClienteDto.class)), required = true)
             @RequestBody @Valid ClienteDto clienteDto);

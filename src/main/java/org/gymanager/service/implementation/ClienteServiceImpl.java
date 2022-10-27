@@ -8,6 +8,7 @@ import org.gymanager.model.client.ClienteDto;
 import org.gymanager.model.domain.Cliente;
 import org.gymanager.model.domain.Objetivo;
 import org.gymanager.model.domain.Usuario;
+import org.gymanager.model.enums.ClienteEstado;
 import org.gymanager.model.enums.ClienteSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.repository.filters.ClienteSpecification;
@@ -103,7 +104,7 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     @Transactional
-    public void updateClienteById(Long idCliente, ClienteDto clienteDto, Boolean validateUser) {
+    public void updateClienteById(Long idCliente, ClienteDto clienteDto, Boolean validateUser, Boolean reactivate) {
         if(validateUser){
             usuarioService.validarIdClienteMatchUserFromRequest(idCliente);
         }
@@ -112,6 +113,10 @@ public class ClienteServiceImpl implements ClienteService {
 
         Long idUsuario = cliente.getUsuario().getIdUsuario();
         usuarioService.updateUsuarioById(idUsuario, clienteDto.getUsuario(), Collections.emptyList(), Boolean.FALSE);
+        if(reactivate && cliente.getClienteEstado().equals(ClienteEstado.DESACTIVADO)){
+            usuarioService.addRolUsuarioById(idUsuario, Collections.singletonList(ROL_CLIENTE));
+        }
+
         Usuario usuario = usuarioService.getUsuarioEntityById(idUsuario);
         Objetivo objetivo = objetivoService.getObjetivoByObjetivo(clienteDto.getObjetivo());
 
