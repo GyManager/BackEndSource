@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.gymanager.model.client.EjercicioDto;
 import org.gymanager.model.client.SeguimientoEjercicioDto;
 import org.gymanager.model.client.SeguimientoEjercicioRequestDto;
 import org.gymanager.model.enums.SeguimientosFilter;
@@ -46,4 +47,20 @@ public interface SeguimientoEjercicioController {
             @PathVariable("idMicroPlan") Long idMicroPlan,
             @PathVariable("idRutina") Long idRutina,
             @RequestParam(value = "seguimientosFilter", required = false, defaultValue = "TODAS") SeguimientosFilter seguimientosFilter);
+
+    @Operation(summary = "Historial de seguimientos de un ejercicio para un cliente")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
+    @GetMapping(value = "/cliente/{idCliente}/seguimientos-ejercicios/{idEjercicio}",
+            produces = { "application/json"})
+    @PreAuthorize("hasAuthority('get-mis-feedbacks')")
+    ResponseEntity<List<SeguimientoEjercicioDto>> getSeguimientoEjercicioByIdEjercicio(
+            @PathVariable("idCliente") Long idCliente,
+            @PathVariable("idEjercicio") Long idEjercicio);
+
+    @Operation(summary = "Listado de ejercicios para los que un cliente tiene seguimientos")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
+    @GetMapping(value = "/cliente/{idCliente}/seguimientos-ejercicios",
+            produces = { "application/json"})
+    @PreAuthorize("hasAuthority('get-mis-feedbacks')")
+    ResponseEntity<List<EjercicioDto>> getSeguimientoEjercicios(@PathVariable("idCliente") Long idCliente);
 }

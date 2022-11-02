@@ -21,10 +21,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -88,6 +91,17 @@ public class EjercicioServiceImpl implements EjercicioService {
         }
 
         return ejercicio.get();
+    }
+
+    @Override
+    public List<EjercicioDto> getEjerciciosByIdIn(List<Long> idEjercicioList){
+        return ejercicioEntityToDtoConverter.convert(getEjerciciosEntityByIdIn(idEjercicioList));
+    }
+
+    @Override
+    public List<Ejercicio> getEjerciciosEntityByIdIn(List<Long> idEjercicioList){
+        return CollectionUtils.isEmpty(idEjercicioList) ? new ArrayList<>() :
+                ejercicioRepository.findAllById(idEjercicioList);
     }
 
     @Override
