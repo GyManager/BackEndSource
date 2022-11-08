@@ -1,6 +1,7 @@
 package org.gymanager.repository.specification;
 
 import org.gymanager.model.domain.Cliente;
+import org.gymanager.model.domain.CountClienteEstado;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long>, JpaSpec
             	and mfutura.fecha_inicio > current_date
             )""")
     List<Long> getIdClientesConMatriculaProximoVencimiento(Long dayCount, Long dayOverdue);
+
+
+    @Query(value = "select cec from CountClienteEstado cec")
+    List<CountClienteEstado> getCountClientesByClienteEstado();
 }

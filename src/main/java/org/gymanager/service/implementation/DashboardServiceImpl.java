@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gymanager.model.client.ClientsSummary;
+import org.gymanager.model.client.CountClienteEstadoDto;
 import org.gymanager.service.specification.ClienteService;
 import org.gymanager.service.specification.DashboardService;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,13 @@ public class DashboardServiceImpl implements DashboardService {
                 dayOverdueVencimientoMatricula
         );
 
+        var countClientesByEstado = clienteService.getCountClientesByClienteEstado().stream()
+                .map(CountClienteEstadoDto::new)
+                .toList();
+
         return new ClientsSummary(
-                cantidadClientesConMatriculaProximoVencimiento.size()
+                cantidadClientesConMatriculaProximoVencimiento.size(),
+                countClientesByEstado
         );
     }
 }

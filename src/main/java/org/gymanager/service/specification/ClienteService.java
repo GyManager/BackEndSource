@@ -1,6 +1,7 @@
 package org.gymanager.service.specification;
 
 import org.gymanager.model.client.ClienteDto;
+import org.gymanager.model.domain.CountClienteEstado;
 import org.gymanager.model.domain.Cliente;
 import org.gymanager.model.enums.ClienteSortBy;
 import org.gymanager.model.page.GyManagerPage;
@@ -24,4 +25,6 @@ public interface ClienteService {
     void deleteClienteById(Long idCliente);
 
     List<Long> getIdClientesConMatriculaProximoVencimiento(Long dayCount, Long dayOverdue);
+
+    List<CountClienteEstado> getCountClientesByClienteEstado();
 }

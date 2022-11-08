@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.ClienteEntityToDtoConverter;
 import org.gymanager.model.client.ClienteDto;
 import org.gymanager.model.domain.Cliente;
+import org.gymanager.model.domain.CountClienteEstado;
 import org.gymanager.model.domain.Objetivo;
 import org.gymanager.model.domain.Usuario;
 import org.gymanager.model.enums.ClienteEstado;
@@ -147,5 +148,10 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public List<Long> getIdClientesConMatriculaProximoVencimiento(Long dayCount, Long dayOverdue){
         return clienteRepository.getIdClientesConMatriculaProximoVencimiento(dayCount, (-dayOverdue));
+    }
+
+    @Override
+    public List<CountClienteEstado> getCountClientesByClienteEstado(){
+        return clienteRepository.getCountClientesByClienteEstado();
     }
 }
