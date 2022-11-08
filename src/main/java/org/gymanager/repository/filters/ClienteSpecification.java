@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.gymanager.model.domain.Cliente;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -30,8 +31,10 @@ public class ClienteSpecification implements Specification<Cliente> {
     private static final String CAMPO_MAIL = "mail";
     private static final String CAMPO_NOMBRE = "nombre";
     private static final String CAMPO_APELLIDO = "apellido";
+    private static final String ID_CLIENTE = "idCliente";
 
     private String fuzzySearch;
+    private List<Long> clienteIdIn;
 
     @Override
     public Predicate toPredicate(Root<Cliente> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
@@ -42,7 +45,7 @@ public class ClienteSpecification implements Specification<Cliente> {
             var parameters = Arrays.stream(fuzzySearch.split(" "))
                     .filter(member -> !member.isBlank())
                     .map(String::trim)
-                    .collect(Collectors.toList());
+                    .toList();
 
             var joinUsuario = root.join(TABLA_USUARIO);
 
@@ -79,8 +82,20 @@ public class ClienteSpecification implements Specification<Cliente> {
             }
         }
 
+        if(!CollectionUtils.isEmpty(clienteIdIn)){
+            predicateList.add(root.get(ID_CLIENTE).in(clienteIdIn));
+        }
+
         return predicateList.stream().reduce(builder::and)
                 .orElse(builder.isTrue(builder.literal(true)));
+    }
+
+    public void addAndCrossClienteIdIn(List<Long> clienteIds){
+        if(CollectionUtils.isEmpty(this.clienteIdIn)){
+            this.clienteIdIn = clienteIds;
+        } else {
+            this.clienteIdIn.retainAll(clienteIds);
+        }
     }
 
     private String rodearConLikeWildcard(String valor){

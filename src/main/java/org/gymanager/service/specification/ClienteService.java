@@ -12,7 +12,8 @@ import java.util.List;
 public interface ClienteService {
 
     GyManagerPage<ClienteDto> getClientes(String fuzzySearch, Integer page, Integer pageSize, ClienteSortBy sortBy,
-                                          Sort.Direction direction);
+                                          Sort.Direction direction, Long matriculaVenceEn, Long matriculaVenceEnOverdue,
+                                          Long sinFinalizarRutinaEn);
 
     ClienteDto getClientesById(Long idCliente);
 

@@ -41,7 +41,10 @@ public interface ClienteController {
             @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
             @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
             @RequestParam(name = "sortBy", required = false, defaultValue = "NONE") ClienteSortBy sortBy,
-            @RequestParam(name = "direction", required = false, defaultValue = "ASC") Sort.Direction direction);
+            @RequestParam(name = "direction", required = false, defaultValue = "ASC") Sort.Direction direction,
+            @RequestParam(name = "matriculaVenceEn", required = false) Long matriculaVenceEn,
+            @RequestParam(name = "matriculaVenceEnOverdue", required = false, defaultValue = "0") Long matriculaVenceEnOverdue,
+            @RequestParam(name = "sinFinalizarRutinaEn", required = false) Long sinFinalizarRutinaEn);
 
     @Operation(summary = "Obtener un cliente por Id", description = "Esta operación es para buscar un cliente por Id")
     @ApiResponses(value = {

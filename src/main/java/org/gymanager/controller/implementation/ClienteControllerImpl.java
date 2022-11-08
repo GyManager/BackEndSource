@@ -24,8 +24,19 @@ public class ClienteControllerImpl implements ClienteController {
 
     @Override
     public ResponseEntity<GyManagerPage<ClienteDto>> getClientes(String fuzzySearch, Integer page, Integer pageSize,
-                                                                 ClienteSortBy sortBy, Sort.Direction direction) {
-        return ResponseEntity.ok(clienteService.getClientes(fuzzySearch, page, pageSize, sortBy, direction));
+                                                                 ClienteSortBy sortBy, Sort.Direction direction,
+                                                                 Long matriculaVenceEn, Long matriculaVenceEnOverdue,
+                                                                 Long sinFinalizarRutinaEn) {
+        return ResponseEntity.ok(clienteService.getClientes(
+                fuzzySearch,
+                page,
+                pageSize,
+                sortBy,
+                direction,
+                matriculaVenceEn,
+                matriculaVenceEnOverdue,
+                sinFinalizarRutinaEn
+        ));
     }
 
     @Override

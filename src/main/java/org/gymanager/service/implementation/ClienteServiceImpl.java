@@ -22,11 +22,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -57,9 +60,27 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public GyManagerPage<ClienteDto> getClientes(String fuzzySearch, Integer page, Integer pageSize,
-                                                 ClienteSortBy sortBy, Sort.Direction direction) {
+                                                 ClienteSortBy sortBy, Sort.Direction direction,
+                                                 Long matriculaVenceEn, Long matriculaVenceEnOverdue,
+                                                 Long sinFinalizarRutinaEn) {
+
         var clienteSpecification = new ClienteSpecification();
         clienteSpecification.setFuzzySearch(fuzzySearch);
+
+        if(Objects.nonNull(matriculaVenceEn)){
+            var clienteIds = getIdClientesConMatriculaProximoVencimiento(matriculaVenceEn, matriculaVenceEnOverdue);
+            if(CollectionUtils.isEmpty(clienteIds)){
+                return new GyManagerPage<>(new ArrayList<>());
+            }
+            clienteSpecification.addAndCrossClienteIdIn(clienteIds);
+        }
+        if(Objects.nonNull(sinFinalizarRutinaEn)){
+            var clienteIds = getIdClientesSinFinalizarDia(sinFinalizarRutinaEn);
+            if(CollectionUtils.isEmpty(clienteIds)){
+                return new GyManagerPage<>(new ArrayList<>());
+            }
+            clienteSpecification.addAndCrossClienteIdIn(clienteIds);
+        }
 
         Sort sort = sortBy.equals(ClienteSortBy.NONE) ? Sort.unsorted() : Sort.by(direction, sortBy.getField());
         PageRequest pageable = PageRequest.of(page, pageSize, sort);
