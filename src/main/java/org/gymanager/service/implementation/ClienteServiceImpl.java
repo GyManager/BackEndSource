@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -141,5 +142,10 @@ public class ClienteServiceImpl implements ClienteService {
             clienteRepository.delete(cliente);
             usuarioService.deleteUsuarioById(cliente.getUsuario().getIdUsuario());
         }
+    }
+
+    @Override
+    public List<Long> getIdClientesConMatriculaProximoVencimiento(Long dayCount, Long dayOverdue){
+        return clienteRepository.getIdClientesConMatriculaProximoVencimiento(dayCount, (-dayOverdue));
     }
 }
