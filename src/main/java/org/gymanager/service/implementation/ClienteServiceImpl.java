@@ -88,6 +88,27 @@ public class ClienteServiceImpl implements ClienteService {
         return new GyManagerPage<>(clienteRepository.findAll(clienteSpecification, pageable)
                 .map(clienteEntityToDtoConverter::convert));
     }
+    @Override
+    @Transactional
+    public GyManagerPage<ClienteDto> getClientes(String fuzzySearch, Integer page, Integer pageSize,
+                                                 ClienteSortBy sortBy, Sort.Direction direction,
+                                                 List<Long> idClientes) {
+
+        var clienteSpecification = new ClienteSpecification();
+        clienteSpecification.setFuzzySearch(fuzzySearch);
+
+        if(CollectionUtils.isEmpty(idClientes)){
+            return new GyManagerPage<>(new ArrayList<>());
+        }
+
+        clienteSpecification.addAndCrossClienteIdIn(idClientes);
+
+        Sort sort = sortBy.equals(ClienteSortBy.NONE) ? Sort.unsorted() : Sort.by(direction, sortBy.getField());
+        PageRequest pageable = PageRequest.of(page, pageSize, sort);
+
+        return new GyManagerPage<>(clienteRepository.findAll(clienteSpecification, pageable)
+                .map(clienteEntityToDtoConverter::convert));
+    }
 
     @Override
     @Transactional

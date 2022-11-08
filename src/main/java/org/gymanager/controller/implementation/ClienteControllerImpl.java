@@ -3,7 +3,9 @@ package org.gymanager.controller.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.ClienteController;
+import org.gymanager.handler.specification.ClienteServiceHandler;
 import org.gymanager.model.client.ClienteDto;
+import org.gymanager.model.client.ClienteUltimosSeguimientosDto;
 import org.gymanager.model.enums.ClienteSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.ClienteService;
@@ -15,12 +17,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class ClienteControllerImpl implements ClienteController {
 
     @NonNull
     private ClienteService clienteService;
+
+    @NonNull
+    private ClienteServiceHandler clienteServiceHandler;
 
     @Override
     public ResponseEntity<GyManagerPage<ClienteDto>> getClientes(String fuzzySearch, Integer page, Integer pageSize,
@@ -36,6 +43,22 @@ public class ClienteControllerImpl implements ClienteController {
                 matriculaVenceEn,
                 matriculaVenceEnOverdue,
                 sinFinalizarRutinaEn
+        ));
+    }
+
+    @Override
+    public ResponseEntity<GyManagerPage<ClienteUltimosSeguimientosDto>> getClientesByUltimosSeguimientos(
+            String fuzzySearch, Integer page, Integer pageSize, ClienteSortBy sortBy, Sort.Direction direction,
+            Long cantidadDias, List<Long> idEstadoSeguimientoList) {
+
+        return ResponseEntity.ok(clienteServiceHandler.getClientesByUltimosSeguimientos(
+                fuzzySearch,
+                page,
+                pageSize,
+                sortBy,
+                direction,
+                cantidadDias,
+                idEstadoSeguimientoList
         ));
     }
 
