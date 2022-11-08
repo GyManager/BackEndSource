@@ -51,30 +51,6 @@ class ClienteServiceImplTest {
     private ObjetivoService objetivoService;
 
     @Test
-    public void getClientes_WhenOk_ThenReturnClientes(){
-        String fuzzySearch = "";
-        Integer page = 1;
-        Integer size = 10;
-        ClienteSortBy sortBy = ClienteSortBy.NONE;
-        Sort.Direction direction = Sort.Direction.ASC;
-
-        Cliente cliente = mock(Cliente.class);
-        ClienteDto clienteDto = mock(ClienteDto.class);
-
-        when(clienteRepository.findAll(any(ClienteSpecification.class), any(Pageable.class)))
-                .thenReturn(new PageImpl<>(List.of(cliente)));
-        when(clienteEntityToDtoConverter.convert(cliente)).thenReturn(clienteDto);
-
-        GyManagerPage<ClienteDto> resultado = clienteService.getClientes(fuzzySearch, page, size, sortBy, direction);
-
-        assertThat(resultado).isNotNull();
-        assertThat(resultado.getContent().contains(clienteDto)).isTrue();
-
-        verify(clienteRepository).findAll(any(ClienteSpecification.class), any(Pageable.class));
-        verify(clienteEntityToDtoConverter).convert(cliente);
-    }
-
-    @Test
     public void getClientesById_WhenOk_ThenReturnCliente(){
         Cliente cliente = mock(Cliente.class);
         ClienteDto clienteDto = mock(ClienteDto.class);

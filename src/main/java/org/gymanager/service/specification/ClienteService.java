@@ -1,13 +1,12 @@
 package org.gymanager.service.specification;
 
 import org.gymanager.model.client.ClienteDto;
-import org.gymanager.model.domain.CountClienteEstado;
 import org.gymanager.model.domain.Cliente;
+import org.gymanager.model.domain.CountClienteEstado;
 import org.gymanager.model.enums.ClienteSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.springframework.data.domain.Sort;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 public interface ClienteService {
@@ -16,7 +15,6 @@ public interface ClienteService {
                                           Sort.Direction direction, Long matriculaVenceEn, Long matriculaVenceEnOverdue,
                                           Long sinFinalizarRutinaEn);
 
-    @Transactional
     GyManagerPage<ClienteDto> getClientes(String fuzzySearch, Integer page, Integer pageSize,
                                           ClienteSortBy sortBy, Sort.Direction direction,
                                           List<Long> idClientes);
