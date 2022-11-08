@@ -5,5 +5,6 @@ import java.util.List;
 public record ClientsSummary(
         Integer cantidadClientesConMatriculaProximoVencimiento,
         List<CountClienteEstadoDto> countClienteEstado,
-        Integer cantidadClientesSinFinalizarDia) {
+        Integer cantidadClientesSinFinalizarDia,
+        List<EstadoSeguimientoCountDto> estadoSeguimientoCounts) {
 }

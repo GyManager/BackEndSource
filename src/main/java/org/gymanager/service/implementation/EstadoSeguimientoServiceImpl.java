@@ -41,6 +41,11 @@ public class EstadoSeguimientoServiceImpl implements EstadoSeguimientoService {
 
     @Override
     public List<EstadoSeguimientoDto> getEstadoSeguimientos() {
-        return estadoSeguimientoEntityToDtoConverter.convert(estadoSeguimientoRepository.findAll());
+        return estadoSeguimientoEntityToDtoConverter.convert(getEstadoSeguimientosEntities());
+    }
+
+    @Override
+    public List<EstadoSeguimiento> getEstadoSeguimientosEntities(){
+        return estadoSeguimientoRepository.findAll();
     }
 }

@@ -6,5 +6,6 @@ public interface DashboardService {
 
     ClientsSummary getSummary(Long dayCountVencimientoMatricula,
                               Long dayOverdueVencimientoMatricula,
-                              Long dayCountSinFinalizarDia);
+                              Long dayCountSinFinalizarDia,
+                              Long dayCountSeguimientoFinDiaEstado);
 }

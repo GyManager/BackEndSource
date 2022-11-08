@@ -7,6 +7,7 @@ import org.gymanager.converter.SeguimientoFinDiaEntityToDtoConverter;
 import org.gymanager.model.client.SeguimientoFinDiaDto;
 import org.gymanager.model.client.SeguimientoFinDiaDtoDetail;
 import org.gymanager.model.client.SeguimientoPlanDto;
+import org.gymanager.model.domain.EstadoSeguimiento;
 import org.gymanager.model.domain.SeguimientoFinDia;
 import org.gymanager.model.enums.SeguimientosFilter;
 import org.gymanager.repository.specification.SeguimientoFinDiaRepository;
@@ -107,5 +108,13 @@ public class SeguimientoServiceImpl implements SeguimientoService {
         var estadoSeguimiento = estadoSeguimientoService.getEstadoSeguimientoById(seguimientoPlanDto.idEstadoSeguimiento());
 
         planService.updatePlanSeguimientoById(plan, seguimientoPlanDto.observacion(), estadoSeguimiento);
+    }
+
+    @Override
+    public List<Long> getIdClientesCountSeguimientoFinDiaByEstado(Long dayCount, EstadoSeguimiento estadoSeguimiento){
+        return seguimientoFinDiaRepository.findCountByIdEstadoSeguimientoAndFechaNotOlderThanDays(
+                dayCount,
+                estadoSeguimiento.getIdEstadoSeguimiento()
+        );
     }
 }
