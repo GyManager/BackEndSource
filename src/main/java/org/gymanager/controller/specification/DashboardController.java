@@ -25,6 +25,7 @@ public interface DashboardController {
             @RequestParam(required = false, defaultValue = "7") Long dayCountVencimientoMatricula,
             @RequestParam(required = false, defaultValue = "0") Long dayOverdueVencimientoMatricula,
             @RequestParam(required = false, defaultValue = "7") Long dayCountSinFinalizarDia,
-            @RequestParam(required = false, defaultValue = "7") Long dayCountSeguimientoFinDiaEstado
+            @RequestParam(required = false, defaultValue = "7") Long dayCountSeguimientoFinDiaEstado,
+            @RequestParam(required = false, defaultValue = "7") Long dayCountSeguimientoFinDiaFecha
     );
 }

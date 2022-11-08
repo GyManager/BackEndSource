@@ -1,5 +1,6 @@
 package org.gymanager.repository.specification;
 
+import org.gymanager.model.domain.CountFeedbackFinDia;
 import org.gymanager.model.domain.SeguimientoFinDia;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,4 +27,9 @@ public interface SeguimientoFinDiaRepository extends JpaRepository<SeguimientoFi
             where current_date - sfd.fecha_carga <= :dayCount \
             and sfd.id_estado_seguimiento = :idEstadoSeguimiento""")
     List<Long> findCountByIdEstadoSeguimientoAndFechaNotOlderThanDays(Long dayCount, Long idEstadoSeguimiento);
+
+    @Query(value = """
+            select cffd from CountFeedbackFinDia cffd
+            where current_date - cffd.fechaCarga <= :dayCount""")
+    List<CountFeedbackFinDia> findCountByFechaNotOlderThanDays(Double dayCount);
 }

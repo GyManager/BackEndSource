@@ -6,5 +6,6 @@ public record ClientsSummary(
         Integer cantidadClientesConMatriculaProximoVencimiento,
         List<CountClienteEstadoDto> countClienteEstado,
         Integer cantidadClientesSinFinalizarDia,
-        List<EstadoSeguimientoCountDto> estadoSeguimientoCounts) {
+        List<EstadoSeguimientoCountDto> estadoSeguimientoCounts,
+        List<CountFeedbackFinDiaDto> countByFechaNotOlderThanDays) {
 }

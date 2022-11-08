@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gymanager.model.client.ClientsSummary;
 import org.gymanager.model.client.CountClienteEstadoDto;
+import org.gymanager.model.client.CountFeedbackFinDiaDto;
 import org.gymanager.model.client.EstadoSeguimientoCountDto;
 import org.gymanager.model.domain.EstadoSeguimiento;
 import org.gymanager.service.specification.ClienteService;
@@ -31,7 +32,9 @@ public class DashboardServiceImpl implements DashboardService {
     public ClientsSummary getSummary(Long dayCountVencimientoMatricula,
                                      Long dayOverdueVencimientoMatricula,
                                      Long dayCountSinFinalizarDia,
-                                     Long dayCountSeguimientoFinDiaEstado) {
+                                     Long dayCountSeguimientoFinDiaEstado,
+                                     Long dayCountSeguimientoFinDiaFecha) {
+
         var cantidadClientesConMatriculaProximoVencimiento = clienteService.getIdClientesConMatriculaProximoVencimiento(
                 dayCountVencimientoMatricula,
                 dayOverdueVencimientoMatricula
@@ -50,11 +53,18 @@ public class DashboardServiceImpl implements DashboardService {
                 .map(estadoSeguimiento -> mapEstadoSeguimientoToCount(estadoSeguimiento, dayCountSeguimientoFinDiaEstado))
                 .toList();
 
+        var countByFechaNotOlderThanDays = seguimientoService
+                .getCountByFechaNotOlderThanDays(dayCountSeguimientoFinDiaFecha)
+                .stream()
+                .map(CountFeedbackFinDiaDto::new)
+                .toList();
+
         return new ClientsSummary(
                 cantidadClientesConMatriculaProximoVencimiento.size(),
                 countClientesByEstado,
                 cantidadClientesSinFinalizarDia.size(),
-                estadoSeguimientoCountList
+                estadoSeguimientoCountList,
+                countByFechaNotOlderThanDays
         );
     }
 

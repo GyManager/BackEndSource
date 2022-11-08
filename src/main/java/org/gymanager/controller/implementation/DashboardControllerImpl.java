@@ -19,12 +19,14 @@ public class DashboardControllerImpl implements DashboardController {
     public ResponseEntity<ClientsSummary> getSummary(Long dayCountVencimientoMatricula,
                                                      Long dayOverdueVencimientoMatricula,
                                                      Long dayCountSinFinalizarDia,
-                                                     Long dayCountSeguimientoFinDiaEstado) {
+                                                     Long dayCountSeguimientoFinDiaEstado,
+                                                     Long dayCountSeguimientoFinDiaFecha) {
         return ResponseEntity.ok(dashboardService.getSummary(
                 dayCountVencimientoMatricula,
                 dayOverdueVencimientoMatricula,
                 dayCountSinFinalizarDia,
-                dayCountSeguimientoFinDiaEstado
+                dayCountSeguimientoFinDiaEstado,
+                dayCountSeguimientoFinDiaFecha
         ));
     }
 }

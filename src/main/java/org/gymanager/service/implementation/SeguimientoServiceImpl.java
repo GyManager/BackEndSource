@@ -7,6 +7,7 @@ import org.gymanager.converter.SeguimientoFinDiaEntityToDtoConverter;
 import org.gymanager.model.client.SeguimientoFinDiaDto;
 import org.gymanager.model.client.SeguimientoFinDiaDtoDetail;
 import org.gymanager.model.client.SeguimientoPlanDto;
+import org.gymanager.model.domain.CountFeedbackFinDia;
 import org.gymanager.model.domain.EstadoSeguimiento;
 import org.gymanager.model.domain.SeguimientoFinDia;
 import org.gymanager.model.enums.SeguimientosFilter;
@@ -116,5 +117,10 @@ public class SeguimientoServiceImpl implements SeguimientoService {
                 dayCount,
                 estadoSeguimiento.getIdEstadoSeguimiento()
         );
+    }
+
+    @Override
+    public List<CountFeedbackFinDia> getCountByFechaNotOlderThanDays(Long dayCount){
+        return seguimientoFinDiaRepository.findCountByFechaNotOlderThanDays(dayCount.doubleValue());
     }
 }
