@@ -23,6 +23,7 @@ public interface DashboardController {
     @PreAuthorize("hasAuthority('get-clientes')")
     ResponseEntity<ClientsSummary> getSummary(
             @RequestParam(required = false, defaultValue = "7") Long dayCountVencimientoMatricula,
-            @RequestParam(required = false, defaultValue = "0") Long dayOverdueVencimientoMatricula
+            @RequestParam(required = false, defaultValue = "0") Long dayOverdueVencimientoMatricula,
+            @RequestParam(required = false, defaultValue = "7") Long dayCountSinFinalizarDia
     );
 }

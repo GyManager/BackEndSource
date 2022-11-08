@@ -154,4 +154,9 @@ public class ClienteServiceImpl implements ClienteService {
     public List<CountClienteEstado> getCountClientesByClienteEstado(){
         return clienteRepository.getCountClientesByClienteEstado();
     }
+
+    @Override
+    public List<Long> getIdClientesSinFinalizarDia(Long dayCount){
+        return clienteRepository.getIdClientesSinFinalizarDia(dayCount);
+    }
 }

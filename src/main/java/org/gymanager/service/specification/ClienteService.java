@@ -27,4 +27,6 @@ public interface ClienteService {
     List<Long> getIdClientesConMatriculaProximoVencimiento(Long dayCount, Long dayOverdue);
 
     List<CountClienteEstado> getCountClientesByClienteEstado();
+
+    List<Long> getIdClientesSinFinalizarDia(Long dayCount);
 }

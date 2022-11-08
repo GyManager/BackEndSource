@@ -18,7 +18,9 @@ public class DashboardServiceImpl implements DashboardService {
     private ClienteService clienteService;
 
     @Override
-    public ClientsSummary getSummary(Long dayCountVencimientoMatricula, Long dayOverdueVencimientoMatricula) {
+    public ClientsSummary getSummary(Long dayCountVencimientoMatricula,
+                                     Long dayOverdueVencimientoMatricula,
+                                     Long dayCountSinFinalizarDia) {
         var cantidadClientesConMatriculaProximoVencimiento = clienteService.getIdClientesConMatriculaProximoVencimiento(
                 dayCountVencimientoMatricula,
                 dayOverdueVencimientoMatricula
@@ -28,9 +30,14 @@ public class DashboardServiceImpl implements DashboardService {
                 .map(CountClienteEstadoDto::new)
                 .toList();
 
+        var cantidadClientesSinFinalizarDia = clienteService.getIdClientesSinFinalizarDia(
+                dayCountSinFinalizarDia
+        );
+
         return new ClientsSummary(
                 cantidadClientesConMatriculaProximoVencimiento.size(),
-                countClientesByEstado
+                countClientesByEstado,
+                cantidadClientesSinFinalizarDia.size()
         );
     }
 }

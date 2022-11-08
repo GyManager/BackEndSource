@@ -4,5 +4,7 @@ import org.gymanager.model.client.ClientsSummary;
 
 public interface DashboardService {
 
-    ClientsSummary getSummary(Long dayCountVencimientoMatricula, Long dayOverdueVencimientoMatricula);
+    ClientsSummary getSummary(Long dayCountVencimientoMatricula,
+                              Long dayOverdueVencimientoMatricula,
+                              Long dayCountSinFinalizarDia);
 }

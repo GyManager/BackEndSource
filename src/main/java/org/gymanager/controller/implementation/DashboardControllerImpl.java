@@ -16,7 +16,13 @@ public class DashboardControllerImpl implements DashboardController {
     private DashboardService dashboardService;
 
     @Override
-    public ResponseEntity<ClientsSummary> getSummary(Long dayCountVencimientoMatricula, Long dayOverdueVencimientoMatricula) {
-        return ResponseEntity.ok(dashboardService.getSummary(dayCountVencimientoMatricula, dayOverdueVencimientoMatricula));
+    public ResponseEntity<ClientsSummary> getSummary(Long dayCountVencimientoMatricula,
+                                                     Long dayOverdueVencimientoMatricula,
+                                                     Long dayCountSinFinalizarDia) {
+        return ResponseEntity.ok(dashboardService.getSummary(
+                dayCountVencimientoMatricula,
+                dayOverdueVencimientoMatricula,
+                dayCountSinFinalizarDia
+        ));
     }
 }
