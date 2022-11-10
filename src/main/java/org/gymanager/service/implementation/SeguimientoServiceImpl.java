@@ -3,6 +3,7 @@ package org.gymanager.service.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.jni.Local;
 import org.gymanager.converter.SeguimientoFinDiaEntityToDtoConverter;
 import org.gymanager.model.client.SeguimientoFinDiaDto;
 import org.gymanager.model.client.SeguimientoFinDiaDtoDetail;
@@ -122,5 +123,12 @@ public class SeguimientoServiceImpl implements SeguimientoService {
     @Override
     public List<CountFeedbackFinDia> getCountByFechaNotOlderThanDays(Long dayCount){
         return seguimientoFinDiaRepository.findCountByFechaNotOlderThanDays(dayCount.doubleValue());
+    }
+
+    @Override
+    public List<SeguimientoFinDiaDtoDetail> getSeguimientoFinDiaByIdCliente(Long idCliente, Long cantidadDias) {
+        return seguimientoFinDiaEntityToDtoConverter.convert(
+                seguimientoFinDiaRepository.findAllByRutinaMicroPlanPlanClienteIdClienteAndFechaCargaGreaterThanEqual(idCliente, LocalDate.now().minusDays(cantidadDias))
+        );
     }
 }

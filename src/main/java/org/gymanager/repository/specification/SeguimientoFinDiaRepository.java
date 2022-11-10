@@ -32,4 +32,10 @@ public interface SeguimientoFinDiaRepository extends JpaRepository<SeguimientoFi
             select cffd from CountFeedbackFinDia cffd
             where current_date - cffd.fechaCarga <= :dayCount""")
     List<CountFeedbackFinDia> findCountByFechaNotOlderThanDays(Double dayCount);
+
+//    @Query(value = """
+//            select sfd from SeguimientoFinDia sfd \
+//            where sfd.rutina.microPlan.plan.cliente.idCliente = :idCliente \
+//            AND (current_date - sfd.fechaCarga) <= :dayCount""")
+    List<SeguimientoFinDia> findAllByRutinaMicroPlanPlanClienteIdClienteAndFechaCargaGreaterThanEqual(Long idCliente, LocalDate dayCount);
 }

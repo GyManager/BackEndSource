@@ -45,6 +45,11 @@ public class SeguimientoControllerImpl implements SeguimientoController {
     }
 
     @Override
+    public ResponseEntity<List<SeguimientoFinDiaDtoDetail>> getSeguimientoFinDiaByIdCliente(Long idCliente, Long cantidadDias) {
+        return ResponseEntity.ok(seguimientoService.getSeguimientoFinDiaByIdCliente(idCliente, cantidadDias));
+    }
+
+    @Override
     public ResponseEntity<Void> addSeguimientoPlan(Long idPlan, SeguimientoPlanDto seguimientoPlanDto) {
         seguimientoService.addSeguimientoPlan(idPlan,seguimientoPlanDto);
         return ResponseEntity.noContent().build();
