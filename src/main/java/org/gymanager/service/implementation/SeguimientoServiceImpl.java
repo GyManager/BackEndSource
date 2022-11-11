@@ -66,7 +66,12 @@ public class SeguimientoServiceImpl implements SeguimientoService {
         var rutina = rutinaService.getRutinaEntityById(idRutina);
         var estadoSeguimiento = estadoSeguimientoService.getEstadoSeguimientoById(seguimientoFinDiaDto.idEstadoSeguimiento());
 
-        var seguimientoFinDia = new SeguimientoFinDia();
+        var seguimientoFinDia = getSeguimientoFinDiaEntityByIdMicroPlan(idMicroPlan, SeguimientosFilter.HOY)
+                .stream()
+                .filter(seguimiento -> seguimiento.getRutina().getIdRutina().equals(idRutina))
+                .findFirst()
+                .orElseGet(SeguimientoFinDia::new);
+
         seguimientoFinDia.setRutina(rutina);
         seguimientoFinDia.setFechaCarga(LocalDate.now());
         seguimientoFinDia.setObservacion(seguimientoFinDiaDto.observacion());
@@ -80,8 +85,18 @@ public class SeguimientoServiceImpl implements SeguimientoService {
         var plan = planService.getPlanEntityById(idPlan);
         usuarioService.validarIdClienteMatchUserFromRequest(plan.getCliente().getIdCliente());
 
+
+        var seguimientos = getSeguimientoFinDiaEntityByIdMicroPlan(idMicroPlan, seguimientosFilter);
+
+        return seguimientos.stream()
+                .map(seguimientoFinDiaEntityToDtoConverter::convert)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    public List<SeguimientoFinDia> getSeguimientoFinDiaEntityByIdMicroPlan(Long idMicroPlan, SeguimientosFilter seguimientosFilter){
         var now = LocalDate.now();
-        var seguimientos = switch (seguimientosFilter){
+        return switch (seguimientosFilter){
             case HOY -> seguimientoFinDiaRepository.findAllByRutinaMicroPlanIdMicroPlanAndFechaCarga(idMicroPlan, LocalDate.now());
             case TODAS -> seguimientoFinDiaRepository.findAllByRutinaMicroPlanIdMicroPlan(idMicroPlan);
             case ESTA_SEMANA -> seguimientoFinDiaRepository.findAllByRutinaMicroPlanIdMicroPlanAndFechaCargaGreaterThanEqualAndFechaCargaLessThan(
@@ -90,11 +105,6 @@ public class SeguimientoServiceImpl implements SeguimientoService {
                     now.with(TemporalAdjusters.next(DayOfWeek.MONDAY))
             );
         };
-
-        return seguimientos.stream()
-                .map(seguimientoFinDiaEntityToDtoConverter::convert)
-                .filter(Objects::nonNull)
-                .toList();
     }
 
     @Override
