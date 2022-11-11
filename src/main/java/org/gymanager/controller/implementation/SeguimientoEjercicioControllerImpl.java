@@ -3,6 +3,7 @@ package org.gymanager.controller.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.SeguimientoEjercicioController;
+import org.gymanager.model.client.EjercicioDto;
 import org.gymanager.model.client.SeguimientoEjercicioDto;
 import org.gymanager.model.client.SeguimientoEjercicioRequestDto;
 import org.gymanager.model.enums.SeguimientosFilter;
@@ -42,5 +43,18 @@ public class SeguimientoEjercicioControllerImpl implements SeguimientoEjercicioC
                 idRutina,
                 seguimientosFilter
         ));
+    }
+
+    @Override
+    public ResponseEntity<List<SeguimientoEjercicioDto>> getSeguimientoEjercicioByIdEjercicio(Long idCliente, Long idEjercicio) {
+        return ResponseEntity.ok(seguimientoEjercicioService.getSeguimientoEjercicioByIdEjercicio(
+                idCliente,
+                idEjercicio
+        ));
+    }
+
+    @Override
+    public ResponseEntity<List<EjercicioDto>> getSeguimientoEjercicios(Long idCliente) {
+        return ResponseEntity.ok(seguimientoEjercicioService.getSeguimientoEjercicios(idCliente));
     }
 }

@@ -4,12 +4,14 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.SeguimientoEjercicioEntityToDtoConverter;
+import org.gymanager.model.client.EjercicioDto;
 import org.gymanager.model.client.SeguimientoEjercicioDto;
 import org.gymanager.model.client.SeguimientoEjercicioRequestDto;
 import org.gymanager.model.domain.SeguimientoEjercicio;
 import org.gymanager.model.enums.SeguimientosFilter;
 import org.gymanager.repository.specification.SeguimientoEjercicioRepository;
 import org.gymanager.service.specification.EjercicioAplicadoService;
+import org.gymanager.service.specification.EjercicioService;
 import org.gymanager.service.specification.PlanService;
 import org.gymanager.service.specification.SeguimientoEjercicioService;
 import org.gymanager.service.specification.UsuarioService;
@@ -36,6 +38,9 @@ public class SeguimientoEjercicioServiceImpl implements SeguimientoEjercicioServ
 
     @NonNull
     private EjercicioAplicadoService ejercicioAplicadoService;
+
+    @NonNull
+    private EjercicioService ejercicioService;
 
     @NonNull
     private PlanService planService;
@@ -89,5 +94,22 @@ public class SeguimientoEjercicioServiceImpl implements SeguimientoEjercicioServ
                 .map(seguimientoEjercicioEntityToDtoConverter::convert)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    @Override
+    public List<EjercicioDto> getSeguimientoEjercicios(Long idCliente) {
+
+        usuarioService.validarIdClienteMatchUserFromRequest(idCliente);
+        var idEjerciciosConSeguimiento = seguimientoEjercicioRepository
+                .findDistinctIdEjercicioByHasSeguimientoWithIdCliente(idCliente);
+        return ejercicioService.getEjerciciosByIdIn(idEjerciciosConSeguimiento);
+    }
+
+    @Override
+    public List<SeguimientoEjercicioDto> getSeguimientoEjercicioByIdEjercicio(Long idCliente, Long idEjercicio) {
+
+        usuarioService.validarIdClienteMatchUserFromRequest(idCliente);
+        return seguimientoEjercicioEntityToDtoConverter.convert(seguimientoEjercicioRepository
+                .findAllByPlanClienteIdClienteAndEjercicioAplicadoEjercicioIdEjercicio(idCliente, idEjercicio));
     }
 }

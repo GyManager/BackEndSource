@@ -50,6 +50,16 @@ public interface SeguimientoController {
             @PathVariable("idMicroPlan") Long idMicroPlan,
             @RequestParam(value = "seguimientosFilter", required = false, defaultValue = "TODAS") SeguimientosFilter seguimientosFilter);
 
+    @Operation(summary = "Ver los ultimos seguimientos de las rutinas de un cliente")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
+    @GetMapping(value = "/clientes/{idCliente}/seguimientos-rutinas",
+            produces = { "application/json"})
+    @PreAuthorize("hasAuthority('get-clientes')")
+    ResponseEntity<List<SeguimientoFinDiaDtoDetail>> getSeguimientoFinDiaByIdCliente(
+            @PathVariable("idCliente") Long idCliente,
+            @RequestParam(value = "cantidadDias", defaultValue = "7") Long cantidadDias,
+            @RequestParam(name = "idEstadoSeguimientoList") List<Long> idEstadoSeguimientoList);
+
     @Operation(summary = "Cargar el feedback del final de un plan")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     @PutMapping(value = "/planes/{idPlan}/seguimientos"

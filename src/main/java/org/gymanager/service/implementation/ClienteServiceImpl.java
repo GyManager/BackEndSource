@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.gymanager.converter.ClienteEntityToDtoConverter;
 import org.gymanager.model.client.ClienteDto;
 import org.gymanager.model.domain.Cliente;
+import org.gymanager.model.domain.CountClienteEstado;
 import org.gymanager.model.domain.Objetivo;
 import org.gymanager.model.domain.Usuario;
 import org.gymanager.model.enums.ClienteEstado;
@@ -21,10 +22,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -55,9 +60,48 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public GyManagerPage<ClienteDto> getClientes(String fuzzySearch, Integer page, Integer pageSize,
-                                                 ClienteSortBy sortBy, Sort.Direction direction) {
+                                                 ClienteSortBy sortBy, Sort.Direction direction,
+                                                 Long matriculaVenceEn, Long matriculaVenceEnOverdue,
+                                                 Long sinFinalizarRutinaEn) {
+
         var clienteSpecification = new ClienteSpecification();
         clienteSpecification.setFuzzySearch(fuzzySearch);
+
+        if(Objects.nonNull(matriculaVenceEn)){
+            var clienteIds = getIdClientesConMatriculaProximoVencimiento(matriculaVenceEn, matriculaVenceEnOverdue);
+            if(CollectionUtils.isEmpty(clienteIds)){
+                return new GyManagerPage<>(new ArrayList<>());
+            }
+            clienteSpecification.addAndCrossClienteIdIn(clienteIds);
+        }
+        if(Objects.nonNull(sinFinalizarRutinaEn)){
+            var clienteIds = getIdClientesSinFinalizarDia(sinFinalizarRutinaEn);
+            if(CollectionUtils.isEmpty(clienteIds)){
+                return new GyManagerPage<>(new ArrayList<>());
+            }
+            clienteSpecification.addAndCrossClienteIdIn(clienteIds);
+        }
+
+        Sort sort = sortBy.equals(ClienteSortBy.NONE) ? Sort.unsorted() : Sort.by(direction, sortBy.getField());
+        PageRequest pageable = PageRequest.of(page, pageSize, sort);
+
+        return new GyManagerPage<>(clienteRepository.findAll(clienteSpecification, pageable)
+                .map(clienteEntityToDtoConverter::convert));
+    }
+    @Override
+    @Transactional
+    public GyManagerPage<ClienteDto> getClientes(String fuzzySearch, Integer page, Integer pageSize,
+                                                 ClienteSortBy sortBy, Sort.Direction direction,
+                                                 List<Long> idClientes) {
+
+        var clienteSpecification = new ClienteSpecification();
+        clienteSpecification.setFuzzySearch(fuzzySearch);
+
+        if(CollectionUtils.isEmpty(idClientes)){
+            return new GyManagerPage<>(new ArrayList<>());
+        }
+
+        clienteSpecification.addAndCrossClienteIdIn(idClientes);
 
         Sort sort = sortBy.equals(ClienteSortBy.NONE) ? Sort.unsorted() : Sort.by(direction, sortBy.getField());
         PageRequest pageable = PageRequest.of(page, pageSize, sort);
@@ -141,5 +185,20 @@ public class ClienteServiceImpl implements ClienteService {
             clienteRepository.delete(cliente);
             usuarioService.deleteUsuarioById(cliente.getUsuario().getIdUsuario());
         }
+    }
+
+    @Override
+    public List<Long> getIdClientesConMatriculaProximoVencimiento(Long dayCount, Long dayOverdue){
+        return clienteRepository.getIdClientesConMatriculaProximoVencimiento(dayCount, (-dayOverdue));
+    }
+
+    @Override
+    public List<CountClienteEstado> getCountClientesByClienteEstado(){
+        return clienteRepository.getCountClientesByClienteEstado();
+    }
+
+    @Override
+    public List<Long> getIdClientesSinFinalizarDia(Long dayCount){
+        return clienteRepository.getIdClientesSinFinalizarDia(dayCount);
     }
 }
