@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.gymanager.controller.specification.SeguimientoController;
 import org.gymanager.model.client.SeguimientoFinDiaDto;
 import org.gymanager.model.client.SeguimientoFinDiaDtoDetail;
+import org.gymanager.model.client.SeguimientoPlanDto;
 import org.gymanager.model.enums.SeguimientosFilter;
 import org.gymanager.service.specification.SeguimientoService;
 import org.springframework.http.HttpStatus;
@@ -41,5 +42,20 @@ public class SeguimientoControllerImpl implements SeguimientoController {
                 idMicroPlan,
                 seguimientosFilter
         ));
+    }
+
+    @Override
+    public ResponseEntity<List<SeguimientoFinDiaDtoDetail>> getSeguimientoFinDiaByIdCliente(Long idCliente, Long cantidadDias, List<Long> idEstadoSeguimientoList) {
+        return ResponseEntity.ok(seguimientoService.getSeguimientoFinDiaByIdCliente(
+                idCliente,
+                cantidadDias,
+                idEstadoSeguimientoList)
+        );
+    }
+
+    @Override
+    public ResponseEntity<Void> addSeguimientoPlan(Long idPlan, SeguimientoPlanDto seguimientoPlanDto) {
+        seguimientoService.addSeguimientoPlan(idPlan,seguimientoPlanDto);
+        return ResponseEntity.noContent().build();
     }
 }

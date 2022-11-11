@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PlanRepository extends JpaRepository<Plan, Long> {
 
-    List<Plan> findByClienteIdCliente(Long idCliente);
+    List<Plan> findByClienteIdClienteAndFechaEliminadoNull(Long idCliente);
 
     List<Plan> findAllByClienteIdClienteAndFechaDesdeAfterAndFechaEliminadoNull(Long idCliente, LocalDateTime date);
 

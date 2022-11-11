@@ -31,7 +31,7 @@ public interface MatriculaController {
             @ApiResponse(responseCode = "200", description = "OK")
     })
     @GetMapping(produces = { "application/json"})
-    @PreAuthorize("hasAuthority('get-matriculas')")
+    @PreAuthorize("hasAnyAuthority('get-matriculas','get-mis-matriculas')")
     ResponseEntity<List<MatriculaDto>> getMatriculasByIdCliente(
             @PathVariable("idCliente") Long idCliente,
             @RequestParam(name = "matriculasFilter", required = false, defaultValue = "TODAS") MatriculasFilter matriculasFilter);

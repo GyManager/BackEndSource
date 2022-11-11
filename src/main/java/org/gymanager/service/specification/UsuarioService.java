@@ -34,7 +34,11 @@ public interface UsuarioService {
 
     void validarIdClienteMatchUserFromRequest(Long idCliente);
 
+    Usuario getUsuarioEntityFromCurrentToken();
+
     void removeRolUsuarioById(Long idUsuario, List<String> roles);
+
+    void addRolUsuarioById(Long idUsuario, List<String> roles);
 
     UsuarioInfoDto getUsuarioInfoByMail(String mail);
 

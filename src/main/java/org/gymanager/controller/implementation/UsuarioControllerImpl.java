@@ -10,11 +10,15 @@ import org.gymanager.model.client.UsuarioPasswordDto;
 import org.gymanager.model.enums.UsuarioSortBy;
 import org.gymanager.model.page.GyManagerPage;
 import org.gymanager.service.specification.UsuarioService;
+import org.gymanager.utils.Permisos;
+import org.gymanager.utils.UserPermissionValidation;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collections;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,6 +48,13 @@ public class UsuarioControllerImpl implements UsuarioController {
     @Override
     public ResponseEntity<Void> updateUsuarioById(Long idUsuario, UsuarioDtoDetails usuarioDtoDetails) {
         usuarioService.updateUsuarioById(idUsuario, usuarioDtoDetails);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> updateMiUsuario(UsuarioDto usuarioDto) {
+        var idUsuario = usuarioService.getUsuarioEntityFromCurrentToken().getIdUsuario();
+        usuarioService.updateUsuarioById(idUsuario, usuarioDto, Collections.emptyList(), Boolean.FALSE);
         return ResponseEntity.noContent().build();
     }
 
