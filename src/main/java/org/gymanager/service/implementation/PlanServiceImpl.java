@@ -47,6 +47,8 @@ public class PlanServiceImpl implements PlanService {
             Si actualiza la fecha de fin / fecha hasta del plan, la misma no puede ser anterior a la fecha de hoy""";
     private static final String YA_EXISTE_UN_PLAN_EN_ESE_ESTADO_PARA_EL_CLIENTE = """
             El cliente elegido ya tiene un plan %s""";
+    private static final String AUN_NO_POSEE_ACCESO_A_ESTE_PLAN = """
+            Aun no puede acceder a visualizar este plan""";
 
     @Value("${logical-delete}")
     private Boolean logicalDelete;
@@ -107,6 +109,9 @@ public class PlanServiceImpl implements PlanService {
         var plan = getPlanEntityById(idPlan);
         if(validateUser){
             usuarioService.validarIdClienteMatchUserFromRequest(plan.getCliente().getIdCliente());
+            if(plan.getFechaDesde().isAfter(LocalDateTime.now())){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, AUN_NO_POSEE_ACCESO_A_ESTE_PLAN);
+            }
         }
         return planEntityToDtoDetailsConverter.convert(plan);
     }
