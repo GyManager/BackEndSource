@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,29 +36,6 @@ public class ExportControllerImpl implements ExportController {
                 matriculaVenceEn,
                 matriculaVenceEnOverdue,
                 sinFinalizarRutinaEn,
-                response
-        );
-
-
-    }
-
-    @Override
-    public void getClientesByUltimosSeguimientos(
-            String fuzzySearch, ClienteSortBy sortBy, Sort.Direction direction,Long cantidadDias,
-            List<Long> idEstadoSeguimientoList, HttpServletResponse response) {
-
-        response.setContentType("application/pdf");
-        var currentDateTime = LocalDateTime.now();
-        var headerKey = "Content-Disposition";
-        var headerValue = "attachment; filename=clientes_" + currentDateTime + ".pdf";
-        response.setHeader(headerKey, headerValue);
-
-        exportServiceHandler.exportClientesByUltimosSeguimientos(
-                fuzzySearch,
-                sortBy,
-                direction,
-                cantidadDias,
-                idEstadoSeguimientoList,
                 response
         );
     }

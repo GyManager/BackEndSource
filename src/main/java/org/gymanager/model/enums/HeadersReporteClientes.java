@@ -8,7 +8,6 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public enum HeadersReporteClientes {
-    AVATAR("Avatar"),
     NOMBRE("Nombre"),
     APELLIDO("Apellido"),
     EMAIL("Email");
@@ -16,6 +15,6 @@ public enum HeadersReporteClientes {
     private final String valor;
 
     public static List<HeadersReporteClientes> getOrderedList(){
-        return List.of(AVATAR, NOMBRE, APELLIDO, EMAIL);
+        return List.of(NOMBRE, APELLIDO, EMAIL);
     }
 }

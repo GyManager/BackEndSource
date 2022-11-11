@@ -51,8 +51,7 @@ public class ExportServiceHandlerImpl implements ExportServiceHandler {
 
         var tableData = clientes.getContent()
                 .stream()
-                .map(clienteDto -> List.of(clienteDto.getIdCliente().toString(),
-                        clienteDto.getUsuario().getNombre(),
+                .map(clienteDto -> List.of(clienteDto.getUsuario().getNombre(),
                         clienteDto.getUsuario().getApellido(),
                         clienteDto.getUsuario().getMail()))
                 .toList();
@@ -70,13 +69,5 @@ public class ExportServiceHandlerImpl implements ExportServiceHandler {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Problema procesando el reporte");
         }
-    }
-
-
-
-    @Override
-    public void exportClientesByUltimosSeguimientos(String fuzzySearch, ClienteSortBy sortBy, Sort.Direction direction,
-                                                      Long cantidadDias, List<Long> idEstadoSeguimientoList,
-                                                      HttpServletResponse response) {
     }
 }

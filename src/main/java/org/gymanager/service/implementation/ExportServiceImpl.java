@@ -54,7 +54,7 @@ public class ExportServiceImpl implements ExportService {
     private PdfPTable createTable(Integer colNumber) throws DocumentException {
         var table = new PdfPTable(colNumber);
         table.setWidthPercentage(100f);
-        table.setWidths(new float[] {1.5f, 3.0f, 3.0f, 4.5f}); // TODO should be configurable
+        table.setWidths(new float[] {3.0f, 3.0f, 4.5f}); // TODO should be configurable
         table.setSpacingBefore(15);
         return table;
     }
