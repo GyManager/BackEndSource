@@ -26,4 +26,8 @@ public class UsuarioPasswordDto {
     public Boolean passConfimacionMatches(){
         return pass.equals(confirmacionPass);
     }
+
+    public Boolean passNuevaEsDiferente(){
+        return !pass.equals(passActual);
+    }
 }
