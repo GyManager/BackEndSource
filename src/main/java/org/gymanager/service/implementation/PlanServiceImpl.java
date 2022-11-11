@@ -89,7 +89,7 @@ public class PlanServiceImpl implements PlanService {
     public List<Plan> getPlansEntitiesByIdCliente(Long idCliente, PlanesFilter planesFilter, LocalDate fechaDesde) {
         var now = now();
         var planes = switch (planesFilter) {
-            case TODOS -> planRepository.findByClienteIdCliente(idCliente);
+            case TODOS -> planRepository.findByClienteIdClienteAndFechaEliminadoNull(idCliente);
             case ACTIVOS -> planRepository.findAllByClienteIdClienteAndFechaHastaGreaterThanAndFechaDesdeLessThanEqualAndFechaEliminadoNull(idCliente, now, now);
             case VENCIDOS -> planRepository.findAllByClienteIdClienteAndFechaHastaLessThanEqualAndFechaEliminadoNull(idCliente, now);
             case FUTUROS -> planRepository.findAllByClienteIdClienteAndFechaDesdeAfterAndFechaEliminadoNull(idCliente, now);
