@@ -41,7 +41,7 @@ public class ParameterControllerImpl implements ParameterController {
     public ResponseEntity<List<String>> getBloques() {
         return ResponseEntity.ok(parameterService.getBloques());
     }
-    
+
     @Override
     public ResponseEntity<List<EstadoSeguimientoDto>> getEstadoSeguimientos() {
         return ResponseEntity.ok(parameterService.getEstadoSeguimientos());

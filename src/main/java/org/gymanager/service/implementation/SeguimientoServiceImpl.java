@@ -3,9 +3,13 @@ package org.gymanager.service.implementation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.jni.Local;
 import org.gymanager.converter.SeguimientoFinDiaEntityToDtoConverter;
 import org.gymanager.model.client.SeguimientoFinDiaDto;
 import org.gymanager.model.client.SeguimientoFinDiaDtoDetail;
+import org.gymanager.model.client.SeguimientoPlanDto;
+import org.gymanager.model.domain.CountFeedbackFinDia;
+import org.gymanager.model.domain.EstadoSeguimiento;
 import org.gymanager.model.domain.SeguimientoFinDia;
 import org.gymanager.model.enums.SeguimientosFilter;
 import org.gymanager.repository.specification.SeguimientoFinDiaRepository;
@@ -62,7 +66,12 @@ public class SeguimientoServiceImpl implements SeguimientoService {
         var rutina = rutinaService.getRutinaEntityById(idRutina);
         var estadoSeguimiento = estadoSeguimientoService.getEstadoSeguimientoById(seguimientoFinDiaDto.idEstadoSeguimiento());
 
-        var seguimientoFinDia = new SeguimientoFinDia();
+        var seguimientoFinDia = getSeguimientoFinDiaEntityByIdMicroPlan(idMicroPlan, SeguimientosFilter.HOY)
+                .stream()
+                .filter(seguimiento -> seguimiento.getRutina().getIdRutina().equals(idRutina))
+                .findFirst()
+                .orElseGet(SeguimientoFinDia::new);
+
         seguimientoFinDia.setRutina(rutina);
         seguimientoFinDia.setFechaCarga(LocalDate.now());
         seguimientoFinDia.setObservacion(seguimientoFinDiaDto.observacion());
@@ -76,8 +85,18 @@ public class SeguimientoServiceImpl implements SeguimientoService {
         var plan = planService.getPlanEntityById(idPlan);
         usuarioService.validarIdClienteMatchUserFromRequest(plan.getCliente().getIdCliente());
 
+
+        var seguimientos = getSeguimientoFinDiaEntityByIdMicroPlan(idMicroPlan, seguimientosFilter);
+
+        return seguimientos.stream()
+                .map(seguimientoFinDiaEntityToDtoConverter::convert)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    public List<SeguimientoFinDia> getSeguimientoFinDiaEntityByIdMicroPlan(Long idMicroPlan, SeguimientosFilter seguimientosFilter){
         var now = LocalDate.now();
-        var seguimientos = switch (seguimientosFilter){
+        return switch (seguimientosFilter){
             case HOY -> seguimientoFinDiaRepository.findAllByRutinaMicroPlanIdMicroPlanAndFechaCarga(idMicroPlan, LocalDate.now());
             case TODAS -> seguimientoFinDiaRepository.findAllByRutinaMicroPlanIdMicroPlan(idMicroPlan);
             case ESTA_SEMANA -> seguimientoFinDiaRepository.findAllByRutinaMicroPlanIdMicroPlanAndFechaCargaGreaterThanEqualAndFechaCargaLessThan(
@@ -86,10 +105,45 @@ public class SeguimientoServiceImpl implements SeguimientoService {
                     now.with(TemporalAdjusters.next(DayOfWeek.MONDAY))
             );
         };
+    }
 
-        return seguimientos.stream()
-                .map(seguimientoFinDiaEntityToDtoConverter::convert)
-                .filter(Objects::nonNull)
-                .toList();
+    @Override
+    public void addSeguimientoPlan(Long idPlan, SeguimientoPlanDto seguimientoPlanDto) {
+        var plan = planService.getPlanEntityById(idPlan);
+
+        if(Objects.isNull(plan)){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, PLAN_NO_CORRESPONDE_AL_CLIENTE);
+        }
+
+        usuarioService.validarIdClienteMatchUserFromRequest(plan.getCliente().getIdCliente());
+
+        var estadoSeguimiento = estadoSeguimientoService.getEstadoSeguimientoById(seguimientoPlanDto.idEstadoSeguimiento());
+
+        planService.updatePlanSeguimientoById(plan, seguimientoPlanDto.observacion(), estadoSeguimiento);
+    }
+
+    @Override
+    public List<Long> getIdClientesCountSeguimientoFinDiaByEstado(Long dayCount, EstadoSeguimiento estadoSeguimiento){
+        return seguimientoFinDiaRepository.findCountByIdEstadoSeguimientoAndFechaNotOlderThanDays(
+                dayCount,
+                estadoSeguimiento.getIdEstadoSeguimiento()
+        );
+    }
+
+    @Override
+    public List<CountFeedbackFinDia> getCountByFechaNotOlderThanDays(Long dayCount){
+        return seguimientoFinDiaRepository.findCountByFechaNotOlderThanDays(dayCount.doubleValue());
+    }
+
+    @Override
+    public List<SeguimientoFinDiaDtoDetail> getSeguimientoFinDiaByIdCliente(Long idCliente, Long cantidadDias,
+                                                                            List<Long> idEstadoSeguimientoList) {
+        return seguimientoFinDiaEntityToDtoConverter.convert(
+                seguimientoFinDiaRepository.findAllByRutinaMicroPlanPlanClienteIdClienteAndFechaCargaGreaterThanEqualAndEstadoSeguimientoIdEstadoSeguimientoIn(
+                        idCliente,
+                        LocalDate.now().minusDays(cantidadDias),
+                        idEstadoSeguimientoList
+                )
+        );
     }
 }

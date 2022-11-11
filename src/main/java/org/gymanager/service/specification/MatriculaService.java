@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MatriculaService {
 
-    List<MatriculaDto> getMatriculasByIdCliente(Long idCliente, MatriculasFilter matriculasFilter);
+    List<MatriculaDto> getMatriculasByIdCliente(Long idCliente, MatriculasFilter matriculasFilter, Boolean validateUser);
 
     List<Matricula> getMatriculasEntitiesByIdCliente(Long idCliente, MatriculasFilter matriculasFilter);
 

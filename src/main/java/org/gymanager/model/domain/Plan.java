@@ -46,6 +46,11 @@ public class Plan {
     private LocalDateTime fechaHasta;
     private LocalDateTime fechaEliminado;
     private String descripcion;
+    private String observacionCliente;
+
+    @ManyToOne
+    @JoinColumn(name = "id_estado_seguimiento")
+    private EstadoSeguimiento estadoSeguimiento;
 
     public void setMicroPlans(List<MicroPlan> microPlans) {
         this.microPlans = microPlans;

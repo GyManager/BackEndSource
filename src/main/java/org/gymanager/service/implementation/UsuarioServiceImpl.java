@@ -62,6 +62,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
             " y tipo (%s) de documento";
     private static final String MAIL_VACIO = "El mail de login no debe ser vacio";
     private static final String PASS_NO_COINCIDEN = "La contraseña y la confirmacion de la contraseña no coinciden";
+    private static final String NUEVA_PASS_IGUAL_A_ACTUAL = "La nueva contraseña debe ser distinta a la actual";
     private static final String ACTUALIZAR_PASS_USUARIO_NO_AUTORIZADO = """
             Esta intentando actualizar la contraseña de un usuario que no le corresponde""";
     private static final String ACTUALIZAR_PASS_USUARIO_PASS_ACTUAL_INCORRECTA = """
@@ -248,11 +249,16 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public void validarIdClienteMatchUserFromRequest(Long idCliente) {
-        var user = UserPermissionValidation.getUsername(SecurityContextHolder.getContext().getAuthentication());
-        var cliente = getUsuarioEntityByMail(user).getCliente();
+        var cliente = getUsuarioEntityFromCurrentToken().getCliente();
         if(Objects.isNull(cliente) || Objects.isNull(idCliente) || !cliente.getIdCliente().equals(idCliente)){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "El usuario no tiene permitido ver este plan");
         }
+    }
+
+    @Override
+    public Usuario getUsuarioEntityFromCurrentToken(){
+        var user = UserPermissionValidation.getUsername(SecurityContextHolder.getContext().getAuthentication());
+        return getUsuarioEntityByMail(user);
     }
 
     @Override
@@ -260,6 +266,20 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         var usuario = getUsuarioEntityById(idUsuario);
 
         usuario.getRoles().removeIf(rol -> roles.contains(rol.getNombreRol()));
+
+        usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public void addRolUsuarioById(Long idUsuario, List<String> roles){
+        var usuario = getUsuarioEntityById(idUsuario);
+        var rolList = rolService.getRolEntitiesByRolNames(roles);
+
+        rolList.forEach(rol -> {
+            if (!usuario.getRoles().contains(rol)) {
+                usuario.getRoles().add(rol);
+            }
+        });
 
         usuarioRepository.save(usuario);
     }
@@ -283,6 +303,10 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
         if(!usuarioPasswordDto.passConfimacionMatches()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PASS_NO_COINCIDEN);
+        }
+
+        if(!usuarioPasswordDto.passNuevaEsDiferente()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, NUEVA_PASS_IGUAL_A_ACTUAL);
         }
 
         usuario.setPass(passwordEncoder.encode(usuarioPasswordDto.getPass()));

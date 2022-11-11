@@ -10,4 +10,6 @@ public interface EstadoSeguimientoService {
     EstadoSeguimiento getEstadoSeguimientoById(Long idEstadoSeguimiento);
 
     List<EstadoSeguimientoDto> getEstadoSeguimientos();
+
+    List<EstadoSeguimiento> getEstadoSeguimientosEntities();
 }

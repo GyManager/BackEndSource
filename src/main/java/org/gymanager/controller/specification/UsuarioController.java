@@ -83,6 +83,16 @@ public interface UsuarioController {
                     content = @Content(schema = @Schema(implementation = UsuarioDtoDetails.class)), required = true)
             @RequestBody @Valid UsuarioDtoDetails usuarioDtoDetails);
 
+    @Operation(summary = "Actualizar mi usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO CONTENT")
+    })
+    @PutMapping(value = "/mis-datos", consumes = { "application/json"})
+    ResponseEntity<Void> updateMiUsuario(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario request body.",
+                    content = @Content(schema = @Schema(implementation = UsuarioDto.class)), required = true)
+            @RequestBody @Valid UsuarioDto usuarioDto);
+
     @Operation(summary = "Borrar un usuario", description = "Esta operación es para borrar un usuario")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "NO CONTENT")

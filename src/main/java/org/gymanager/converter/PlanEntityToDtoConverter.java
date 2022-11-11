@@ -1,5 +1,6 @@
 package org.gymanager.converter;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.gymanager.model.client.PlanDto;
 import org.gymanager.model.domain.Plan;
@@ -10,6 +11,9 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class PlanEntityToDtoConverter implements GyManagerConverter<Plan, PlanDto> {
+
+    @NonNull
+    private EstadoSeguimientoEntityToDtoConverter estadoSeguimientoEntityToDtoConverter;
 
     @Override
     public PlanDto convert(Plan source) {
@@ -22,6 +26,9 @@ public class PlanEntityToDtoConverter implements GyManagerConverter<Plan, PlanDt
         planDto.setFechaDesde(source.getFechaDesde());
         planDto.setFechaHasta(source.getFechaHasta());
         planDto.setDescripcion(source.getDescripcion());
+        planDto.setObservacionCliente(source.getObservacionCliente());
+        planDto.setEstadoSeguimientoDto(Objects.isNull(source.getEstadoSeguimiento()) ? null :
+                estadoSeguimientoEntityToDtoConverter.convert(source.getEstadoSeguimiento()));
         return planDto;
     }
 }
