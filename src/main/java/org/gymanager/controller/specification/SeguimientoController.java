@@ -57,7 +57,8 @@ public interface SeguimientoController {
     @PreAuthorize("hasAuthority('get-clientes')")
     ResponseEntity<List<SeguimientoFinDiaDtoDetail>> getSeguimientoFinDiaByIdCliente(
             @PathVariable("idCliente") Long idCliente,
-            @RequestParam(value = "cantidadDias", defaultValue = "7") Long cantidadDias);
+            @RequestParam(value = "cantidadDias", defaultValue = "7") Long cantidadDias,
+            @RequestParam(name = "idEstadoSeguimientoList") List<Long> idEstadoSeguimientoList);
 
     @Operation(summary = "Cargar el feedback del final de un plan")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})

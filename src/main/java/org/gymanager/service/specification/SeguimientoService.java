@@ -21,5 +21,6 @@ public interface SeguimientoService {
 
     List<CountFeedbackFinDia> getCountByFechaNotOlderThanDays(Long dayCount);
 
-    List<SeguimientoFinDiaDtoDetail> getSeguimientoFinDiaByIdCliente(Long idCliente, Long cantidadDias);
+    List<SeguimientoFinDiaDtoDetail> getSeguimientoFinDiaByIdCliente(Long idCliente, Long cantidadDias,
+                                                                     List<Long> idEstadoSeguimientoList);
 }

@@ -126,9 +126,14 @@ public class SeguimientoServiceImpl implements SeguimientoService {
     }
 
     @Override
-    public List<SeguimientoFinDiaDtoDetail> getSeguimientoFinDiaByIdCliente(Long idCliente, Long cantidadDias) {
+    public List<SeguimientoFinDiaDtoDetail> getSeguimientoFinDiaByIdCliente(Long idCliente, Long cantidadDias,
+                                                                            List<Long> idEstadoSeguimientoList) {
         return seguimientoFinDiaEntityToDtoConverter.convert(
-                seguimientoFinDiaRepository.findAllByRutinaMicroPlanPlanClienteIdClienteAndFechaCargaGreaterThanEqual(idCliente, LocalDate.now().minusDays(cantidadDias))
+                seguimientoFinDiaRepository.findAllByRutinaMicroPlanPlanClienteIdClienteAndFechaCargaGreaterThanEqualAndEstadoSeguimientoIdEstadoSeguimientoIn(
+                        idCliente,
+                        LocalDate.now().minusDays(cantidadDias),
+                        idEstadoSeguimientoList
+                )
         );
     }
 }
