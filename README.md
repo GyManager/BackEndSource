@@ -53,6 +53,10 @@ Configuraciones para enviar verbosamente errores de input.
     server.port=8081;
     spring.application.name=GyManager;
 
+##### Configuraciones de Mails
+    email-google-remitente=<Correo de gmail>
+    email-google-password=<Contraseña de aplicacion creada para ese correo>
+
 ##### Configuraciones de la Base de datos
 La aplicacion esta configurada para funcionar con una base de datos PostgreSQL
 

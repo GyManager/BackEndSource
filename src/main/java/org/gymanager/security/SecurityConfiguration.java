@@ -73,7 +73,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.cors().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.csrf().disable().anonymous();
         http.authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                .antMatchers("/health", refreshPath, loginPath).permitAll();
+                .antMatchers("/health", refreshPath, loginPath, "/api/recovery").permitAll();
         http.addFilter(authenticationFilter);
         http.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }

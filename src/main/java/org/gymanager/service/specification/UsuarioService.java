@@ -45,4 +45,6 @@ public interface UsuarioService {
     void updatePasswordUsuarioById(Long idUsuario, String mailFromToken, UsuarioPasswordDto usuarioPasswordDto);
 
     void resetPasswordUsuarioById(Long idUsuario);
+
+    void resetPasswordUsuarioById(Long idUsuario, String password);
 }
