@@ -321,6 +321,14 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuarioRepository.save(usuario);
     }
 
+    @Override
+    public void resetPasswordUsuarioById(Long idUsuario, String password) {
+        var usuario = getUsuarioEntityById(idUsuario);
+
+        usuario.setPass(passwordEncoder.encode(password));
+        usuarioRepository.save(usuario);
+    }
+
     private void validarUsuarioConMailNoExiste(String mail){
         if(usuarioRepository.findByMailIgnoreCase(mail).isPresent()){
             log.error(String.format(MAIL_EN_USO, mail));
